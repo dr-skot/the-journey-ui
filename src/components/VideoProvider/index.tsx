@@ -8,7 +8,7 @@ import {
   TwilioError,
 } from 'twilio-video';
 import { Callback, ErrorCallback } from '../../types';
-import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
+import { SelectedParticipantsProvider } from './useSelectedParticipants/useSelectedParticipants';
 
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
@@ -81,8 +81,8 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         removeLocalVideoTrack,
       }}
     >
-      <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
-      {/* 
+      <SelectedParticipantsProvider room={room}>{children}</SelectedParticipantsProvider>
+      {/*
         The AttachVisibilityHandler component is using the useLocalVideoToggle hook
         which must be used within the VideoContext Provider.
       */}

@@ -5,10 +5,11 @@ import Controls from './components/Controls/Controls';
 import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
 import MenuBar from './components/MenuBar/MenuBar';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-import Room from './components/Room/Room';
+// import Room from './components/Room/Room';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
+import Gallery from './components/Gallery/Gallery';
 
 const Container = styled('div')({
   display: 'grid',
@@ -33,7 +34,7 @@ export default function App() {
     <Container style={{ height }}>
       <MenuBar />
       <Main>
-        {roomState === 'disconnected' ? <LocalVideoPreview /> : <Room />}
+        {roomState === 'disconnected' ? <LocalVideoPreview /> : <Gallery />}
         <Controls />
       </Main>
       <ReconnectingNotification />
