@@ -28,25 +28,20 @@ export default function Gallery() {
   const [selectedParticipants, toggleSelectedParticipant] = useSelectedParticipants();
 
   useEffect(() => {
-    console.log('doing it');
     let row: string | null = null;
     let column: string | null = null;
     const selectKeyListener = (e: KeyboardEvent) => {
-      console.log('keyup at all');
       if ('abcdeABCDE'.includes(e.key)) column = e.key.toUpperCase();
       if ('123456'.includes(e.key)) row = e.key;
       if (column && row) {
         const idx = '123456'.indexOf(row) * 5 + 'ABCDE'.indexOf(column);
-        console.log(`toggling participant ${idx}: ${participants[idx]?.sid}`);
         if (participants[idx]) toggleSelectedParticipant(participants[idx]);
-        row = null;
-        column = null;
+        row = null; column = null;
       }
-      console.log('key listener', { column, row });
     }
     document.addEventListener('keyup', selectKeyListener);
     return () => document.removeEventListener('keyup', selectKeyListener);
-  }, [toggleSelectedParticipant]);
+  }, []);
 
   return (
     <Container>

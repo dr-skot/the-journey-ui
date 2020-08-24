@@ -18,15 +18,15 @@ type SelectedParticipantsProviderProps = {
 // @ts-ignore
 const not = (f) => (...args) => !f(...args);
 // @ts-ignore
-const matchSid = (p1) => (p2) => p1.sid === p2.sid;
+const propsEqual = (prop) => (a) => (b) => a[prop] === b[prop];
 
 export function SelectedParticipantsProvider({ room, children }: SelectedParticipantsProviderProps) {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
   const toggleSelectedParticipant = (participant: Participant) => {
     console.log('selectedParticipants', selectedParticipants.map((p) => p.sid));
     console.log('toggling', participant.sid);
-    return setSelectedParticipants(selectedParticipants.find(matchSid(participant))
-      ? selectedParticipants.filter(not(matchSid(participant)))
+    return setSelectedParticipants(selectedParticipants.find(propsEqual('sid')(participant))
+      ? selectedParticipants.filter(not(propsEqual('sid')(participant)))
       : [...selectedParticipants, participant]);
   }
 
