@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { range } from 'lodash';
 import { styled } from '@material-ui/core/styles';
 import Nobody from '../Nobody/Nobody';
+import { getBoxSize, getBoxSizeInContainer, size } from '../../utils/galleryBoxes';
+
+// ugh there must be a better way
+
 
 export interface Participant {
   sid: number,
@@ -17,6 +21,14 @@ function getRandomColor() {
   return color;
 }
 
+function elementClientSize(el: HTMLElement) {
+  return { width: el.clientWidth, height: el.clientHeight };
+}
+
+const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
+
+const imgForParticipant = (n: number) => '';
+
 const participants: Participant[] = range(0, 30).map((idx) => ({ sid: idx, color: getRandomColor() }));
 const KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'
 
@@ -30,7 +42,6 @@ const Container = styled('div')(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: `1fr 1fr 1fr 1fr 1fr 1fr`,
   gridTemplateRows: '1fr 1fr 1fr 1fr 1fr',
-  gridGap: '2px',
   [theme.breakpoints.down('xs')]: {
     gridTemplateColumns: `auto`,
     gridTemplateRows: `calc(100% - ${theme.sidebarMobileHeight + 12}px) ${theme.sidebarMobileHeight + 6}px`,
@@ -38,9 +49,20 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
+const EnlargedContainer = styled('div')(({ theme }) => ({
+  position: 'relative',
+  height: '100vh',
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  alignContent: 'center',
+}));
+
 export default function Gallery() {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState<size>({ width: 0, height: 0 });
 
   const toggleSelectedParticipant = (participant: Participant) => {
     console.log('selectedParticipants', selectedParticipants.map((p) => p.sid));
@@ -71,28 +93,28 @@ export default function Gallery() {
     }
   }, [toggleSelectedParticipant]);
 
-  return selectedParticipants.length === 0 || forceGallery
-    ? (
-      <Container>
-        { participants.map((participant) => (
+  // update container size when element changes
+  useEffect(() => {
+    if (containerRef.current) setContainerSize(elementClientSize(containerRef.current));
+  }, [containerRef.current])
+
+  console.log('change', selectedParticipants.length, containerRef.current);
+  const boxes = (selectedParticipants.length === 0 || forceGallery ? participants : selectedParticipants);
+  const boxSize = getBoxSize(containerSize, 16/9, boxes.length);
+
+  console.log('containerRef.current', containerRef.current);  return (
+    <EnlargedContainer ref={containerRef}>
+        { boxes.map((participant) => (
           <Nobody
             key={participant.sid}
             participant={participant}
             onClick={() => toggleSelectedParticipant(participant)}
             isSelected={!!selectedParticipants.find(propsEqual('sid')(participant))}
+            width={boxSize.width}
+            height={boxSize.height}
+            img={twoDigit(participant.sid + 1)}
           />
         )) }
-      </Container>
-    ) : (
-      <Container>
-        { selectedParticipants.map((participant) => (
-          <Nobody
-            key={participant.sid}
-            participant={participant}
-            onClick={() => toggleSelectedParticipant(participant)}
-            isSelected={!!selectedParticipants.find(propsEqual('sid')(participant))}
-          />
-        )) }
-      </Container>
+      </EnlargedContainer>
     );
 }

@@ -49,7 +49,6 @@ ReactDOM.render(
           <Route path="/login">
             <LoginPage />
           </Route>
-          <Redirect to="/" />
         </Switch>
       </AppStateProvider>
     </Router>

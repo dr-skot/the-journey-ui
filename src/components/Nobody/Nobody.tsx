@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import PinIcon from '../ParticipantInfo/PinIcon/PinIcon';
 import { Participant } from '../MockGallery/Gallery';
 
+
 const sid2coords = (sid: number) => {
   const row = Math.floor(sid / 5) + 1;
   const col = "ABCDE"[sid % 5];
@@ -16,10 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-      height: `${(theme.sidebarWidth * 9) / 16}px`,
       overflow: 'hidden',
       cursor: 'pointer',
-      border: '1px solid red',
+      backgroundSize: 'cover',
       '& video': {
         filter: 'none',
       },
@@ -64,15 +64,21 @@ interface ParticipantInfoProps {
   children: React.ReactNode;
   onClick: () => void;
   isSelected: boolean;
+  width: number;
+  height: number;
+  img: string;
 }
 
-function ParticipantInfo({ participant, onClick, isSelected, children }: ParticipantInfoProps) {
+function ParticipantInfo({ participant, onClick, isSelected, children, width, height, img }: ParticipantInfoProps) {
   const classes = useStyles();
+
+  const src = `url(${process.env.PUBLIC_URL}/mock-participants/${img}.png)`;
+  console.log('src', src);
 
   return (
     <div
       className={classes.container}
-      style={{backgroundColor: participant.color, opacity: '50%'}}
+      style={{backgroundColor: participant.color, opacity: '50%', width, height, backgroundImage: src }}
       onClick={onClick}
       data-cy-participant={participant.sid}
     >
@@ -93,15 +99,21 @@ interface NobodyProps {
   participant: Participant,
   onClick: () => void;
   isSelected: boolean;
+  width: number,
+  height: number,
+  img: string,
 }
 
 export default function Nobody({
   participant,
   onClick,
   isSelected,
+  width,
+  height,
+  img,
 }: NobodyProps) {
   return (
-    <ParticipantInfo participant={participant} onClick={onClick} isSelected={isSelected}>
+    <ParticipantInfo participant={participant} onClick={onClick} isSelected={isSelected} width={width} height={height} img={img}>
       {KEYS[participant.sid]}
     </ParticipantInfo>
   );
