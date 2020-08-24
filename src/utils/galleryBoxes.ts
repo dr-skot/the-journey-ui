@@ -21,7 +21,6 @@ export function boxesPerRow(screen: size, boxRatio: number, numBoxes: number): n
 }
 
 export function getBoxSize(containerSize: size, boxRatio: number, numBoxes: number) {
-  console.log('container size', containerSize);
   const columns = boxesPerRow(containerSize, boxRatio, numBoxes);
   const rows = Math.ceil(numBoxes / columns);
   return boxSize(containerSize, boxRatio, rows, columns);

@@ -5,7 +5,7 @@ import { LocalAudioTrack, LocalVideoTrack, Participant, RemoteAudioTrack, Remote
 
 import AudioLevelIndicator from '../AudioLevelIndicator/AudioLevelIndicator';
 import BandwidthWarning from '../BandwidthWarning/BandwidthWarning';
-import NetworkQualityLevel from '../NewtorkQualityLevel/NetworkQualityLevel';
+import NetworkQualityLevel from '../NetworkQualityLevel/NetworkQualityLevel';
 import ParticipantConnectionIndicator from './ParticipantConnectionIndicator/ParticipantConnectionIndicator';
 import PinIcon from './PinIcon/PinIcon';
 import ScreenShare from '@material-ui/icons/ScreenShare';

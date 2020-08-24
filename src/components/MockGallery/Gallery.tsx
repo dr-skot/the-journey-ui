@@ -4,9 +4,6 @@ import { styled } from '@material-ui/core/styles';
 import Nobody from '../Nobody/Nobody';
 import { getBoxSize, getBoxSizeInContainer, size } from '../../utils/galleryBoxes';
 
-// ugh there must be a better way
-
-
 export interface Participant {
   sid: number,
   color: string,
@@ -30,7 +27,7 @@ const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
 const imgForParticipant = (n: number) => '';
 
 const participants: Participant[] = range(0, 30).map((idx) => ({ sid: idx, color: getRandomColor() }));
-const KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'
+const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./';
 
 const not = (f: (...args: any[]) => boolean) => (...args: any[]) => !f(...args);
 // @ts-ignore
@@ -61,12 +58,11 @@ const EnlargedContainer = styled('div')(({ theme }) => ({
 export default function Gallery() {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
+  const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState<size>({ width: 0, height: 0 });
 
   const toggleSelectedParticipant = (participant: Participant) => {
-    console.log('selectedParticipants', selectedParticipants.map((p) => p.sid));
-    console.log('toggling', participant.sid);
     return setSelectedParticipants(selectedParticipants.find(propsEqual('sid')(participant))
       ? selectedParticipants.filter(not(propsEqual('sid')(participant)))
       : [...selectedParticipants, participant]);
@@ -75,15 +71,15 @@ export default function Gallery() {
   useEffect(() => {
     let row: string | null = null;
     let column: string | null = null;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setForceGallery(true);
+      if (e.key === 'Control') setShowHotKeys(true);
+    }
     const handleKeyUp = (e: KeyboardEvent) => {
-      console.log('keyup', e.key);
       if (e.key === 'Shift') setForceGallery(false);
+      if (e.key === 'Control') setShowHotKeys(false);
       const idx = KEYS.indexOf(e.key.toUpperCase());
       if (participants[idx]) toggleSelectedParticipant(participants[idx]);
-    }
-    const handleKeyDown = (e: KeyboardEvent) => {
-      console.log('keydown', e.key);
-      if (e.key === 'Shift') setForceGallery(true);
     }
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
@@ -98,18 +94,19 @@ export default function Gallery() {
     if (containerRef.current) setContainerSize(elementClientSize(containerRef.current));
   }, [containerRef.current])
 
-  console.log('change', selectedParticipants.length, containerRef.current);
-  const boxes = (selectedParticipants.length === 0 || forceGallery ? participants : selectedParticipants);
+  const showingGallery = (selectedParticipants.length === 0 || forceGallery);
+  const boxes = showingGallery ? participants : selectedParticipants;
   const boxSize = getBoxSize(containerSize, 16/9, boxes.length);
 
-  console.log('containerRef.current', containerRef.current);  return (
+  return (
     <EnlargedContainer ref={containerRef}>
         { boxes.map((participant) => (
           <Nobody
             key={participant.sid}
             participant={participant}
             onClick={() => toggleSelectedParticipant(participant)}
-            isSelected={!!selectedParticipants.find(propsEqual('sid')(participant))}
+            selectedIndex={forceGallery ? selectedParticipants.findIndex(propsEqual('sid')(participant)) + 1: 0}
+            showHotKey={showingGallery || showHotKeys}
             width={boxSize.width}
             height={boxSize.height}
             img={twoDigit(participant.sid + 1)}

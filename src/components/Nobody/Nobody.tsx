@@ -1,15 +1,11 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import PinIcon from '../ParticipantInfo/PinIcon/PinIcon';
 import { Participant } from '../MockGallery/Gallery';
+import KeyIcon from './KeyIcon/KeyIcon';
+import SelectionNumber from './SelectionNumber/SelectionNumber';
 
 
-const sid2coords = (sid: number) => {
-  const row = Math.floor(sid / 5) + 1;
-  const col = "ABCDE"[sid % 5];
-  return `${col}${row}`;
-}
-const KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234';
+const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,17 +59,20 @@ interface ParticipantInfoProps {
   participant: Participant;
   children: React.ReactNode;
   onClick: () => void;
-  isSelected: boolean;
+  selectedIndex: number;
   width: number;
   height: number;
   img: string;
+  showHotKey: boolean,
 }
 
-function ParticipantInfo({ participant, onClick, isSelected, children, width, height, img }: ParticipantInfoProps) {
+function ParticipantInfo({
+  participant, onClick, selectedIndex, children, width, height, img, showHotKey
+}: ParticipantInfoProps) {
   const classes = useStyles();
 
   const src = `url(${process.env.PUBLIC_URL}/mock-participants/${img}.png)`;
-  console.log('src', src);
+  const key = KEYS[participant.sid]
 
   return (
     <div
@@ -84,9 +83,12 @@ function ParticipantInfo({ participant, onClick, isSelected, children, width, he
     >
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
+          <h4 className={classes.identity}>
+          </h4>
         </div>
         <div>
-          {isSelected && <PinIcon />}
+          {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
+          {showHotKey && <KeyIcon keyName={key} />}
         </div>
       </div>
       {children}
@@ -98,23 +100,25 @@ function ParticipantInfo({ participant, onClick, isSelected, children, width, he
 interface NobodyProps {
   participant: Participant,
   onClick: () => void;
-  isSelected: boolean;
+  selectedIndex: number;
   width: number,
   height: number,
   img: string,
+  showHotKey: boolean,
 }
 
 export default function Nobody({
   participant,
   onClick,
-  isSelected,
+  selectedIndex,
   width,
   height,
   img,
+  showHotKey,
 }: NobodyProps) {
   return (
-    <ParticipantInfo participant={participant} onClick={onClick} isSelected={isSelected} width={width} height={height} img={img}>
-      {KEYS[participant.sid]}
+    <ParticipantInfo {...{ participant, onClick, selectedIndex, width, height, img, showHotKey }}>
+      {' '}
     </ParticipantInfo>
   );
 }
