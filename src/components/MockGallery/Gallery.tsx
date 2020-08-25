@@ -59,8 +59,7 @@ export default function Gallery() {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState<size>({ width: 0, height: 0 });
+  const [container, setContainer] = useState<HTMLElement | null>(null);
 
   const toggleSelectedParticipant = (participant: Participant) => {
     return setSelectedParticipants(selectedParticipants.find(propsEqual('sid')(participant))
@@ -89,10 +88,8 @@ export default function Gallery() {
     }
   }, [toggleSelectedParticipant]);
 
-  // update container size when element changes
-  useEffect(() => {
-    if (containerRef.current) setContainerSize(elementClientSize(containerRef.current));
-  }, [containerRef.current])
+  const containerRef = (node: HTMLElement | null) => setContainer(node);
+  const containerSize = container ? elementClientSize(container) : { width: 0, height: 0 };
 
   const showingGallery = (selectedParticipants.length === 0 || forceGallery);
   const boxes = showingGallery ? participants : selectedParticipants;

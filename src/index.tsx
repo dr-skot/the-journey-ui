@@ -43,7 +43,7 @@ ReactDOM.render(
           <PrivateRoute path="/room/:URLRoomName">
             <VideoApp />
           </PrivateRoute>
-          <Route path="/gallery">
+          <Route path="/mockup/gallery">
             <MockGallery />
           </Route>
           <Route path="/login">
