@@ -27,7 +27,7 @@ const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
 const imgForParticipant = (n: number) => '';
 
 const participants: Participant[] = range(0, 30).map((idx) => ({ sid: idx, color: getRandomColor() }));
-const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./';
+const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
 
 const not = (f: (...args: any[]) => boolean) => (...args: any[]) => !f(...args);
 // @ts-ignore
@@ -77,7 +77,7 @@ export default function Gallery() {
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === 'Shift') setForceGallery(false);
       if (e.key === 'Control') setShowHotKeys(false);
-      const idx = KEYS.indexOf(e.key.toUpperCase());
+      const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS
       if (participants[idx]) toggleSelectedParticipant(participants[idx]);
     }
     document.addEventListener('keydown', handleKeyDown);
