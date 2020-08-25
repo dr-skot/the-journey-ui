@@ -74,8 +74,6 @@ export default function Gallery() {
   }
 
   useEffect(() => {
-    let row: string | null = null;
-    let column: string | null = null;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Shift') setForceGallery(true);
       if (e.key === 'Control') setShowHotKeys(true);
