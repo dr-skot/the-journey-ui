@@ -16,6 +16,7 @@ import './types';
 import { VideoProvider } from './components/VideoProvider';
 import UnsupportedBrowserWarning from './components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import MockGallery from './components/MockGallery/Gallery';
+import Gallery from './components/Gallery/Gallery';
 
 const VideoApp = () => {
   const { error, setError, settings } = useAppState();
@@ -42,6 +43,9 @@ ReactDOM.render(
           </PrivateRoute>
           <PrivateRoute path="/room/:URLRoomName">
             <VideoApp />
+          </PrivateRoute>
+          <PrivateRoute path="/gallery/:URLRoomName">
+            <Gallery />
           </PrivateRoute>
           <Route path="/mockup/gallery">
             <MockGallery />
