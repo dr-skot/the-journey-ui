@@ -11,6 +11,7 @@ const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
 
 app.use(express.static(path.join(__dirname, 'build')));
+const port = process.env.PORT || 8081;
 
 app.get('/token', (req, res) => {
   const { identity, roomName } = req.query;
