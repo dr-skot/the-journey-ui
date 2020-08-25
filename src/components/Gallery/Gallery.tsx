@@ -9,7 +9,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
 
 const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
-const PALETTE = ['#FFD800', '#587058', '#587498', '#E86850'];
+// const PALETTE = ['#FFD800', '#587058', '#E86850', '#587498'];
+const PALETTE = ['#EFE2F4', '#D2D3F3', '#E1DAF4', '#C4CBF2'];
 const paletteColor = (i: number) => PALETTE[i % PALETTE.length];
 
 const fixedLength = (n: number) => (xs: any[]) => range(0, n).map((i) => xs[i]);
