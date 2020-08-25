@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Participant from './Participant/Participant';
 import { Participant as IParticipant } from 'twilio-video';
@@ -8,12 +8,14 @@ import { range, sortBy } from 'lodash';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
 
-const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
-// const PALETTE = ['#FFD800', '#587058', '#E86850', '#587498'];
+// both with and without shift key; first half of this string will be used for the labels
+const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./qwertyuiopasdfghjkl:zxcvbnm<>?';
+
 const PALETTE = ['#EFE2F4', '#D2D3F3', '#E1DAF4', '#C4CBF2'];
 const paletteColor = (i: number) => PALETTE[i % PALETTE.length];
 
-const fixedLength = (n: number) => (xs: any[]) => range(0, n).map((i) => xs[i]);
+// truncate an array, or pad it with undefined, to set its length to n
+const arrayOfLength = (n: number) => (xs: any[]) => range(0, n).map((i) => xs[i]);
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -26,7 +28,7 @@ const Container = styled('div')(() => ({
 
 export default function Gallery() {
   const { room } = useVideoContext();
-  const participants = sortBy([room.localParticipant, ...useParticipants()], 'start');
+  const participants = useParticipants();
   const [focusGroup, setFocusGroup] = useState<IParticipant[]>([]);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
@@ -34,11 +36,11 @@ export default function Gallery() {
 
   console.log('sids', participants.map((p) => p.sid));
 
-  const toggleSelectedParticipant = (participant: IParticipant) => {
+  const toggleSelectedParticipant = useCallback((participant: IParticipant) => {
     return setFocusGroup(focusGroup.find(propsEqual('sid')(participant))
       ? focusGroup.filter(not(propsEqual('sid')(participant)))
       : [...focusGroup, participant]);
-  }
+  }, [setFocusGroup, focusGroup])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,7 +51,7 @@ export default function Gallery() {
       if (e.key === 'Shift') setForceGallery(false);
       if (e.key === 'Control') setShowHotKeys(false);
       if (e.key === '0' || e.key === ')') setFocusGroup([]);
-      const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS, so % 2
+      const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS, so % length / 2
       if (participants[idx]) toggleSelectedParticipant(participants[idx]);
     }
     document.addEventListener('keydown', handleKeyDown);
@@ -58,13 +60,13 @@ export default function Gallery() {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     }
-  }, [toggleSelectedParticipant]);
+  }, [toggleSelectedParticipant, participants]);
 
   const containerRef = (node: HTMLElement | null) => setContainer(node);
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
   const showingGallery = (focusGroup.length === 0 || forceGallery);
-  const boxes = showingGallery ? fixedLength(30)(participants) : focusGroup;
+  const boxes = showingGallery ? arrayOfLength(30)(participants) : focusGroup;
   const boxSize = getBoxSize(containerSize, 16/9, boxes.length);
   const selectedIndex = (p: IParticipant) => focusGroup.findIndex(propsEqual('sid')(p)) + 1;
 
@@ -85,7 +87,7 @@ export default function Gallery() {
             />
           )
           : (
-            <div style={{ ...boxSize, backgroundColor: paletteColor(i) }}></div>
+            <div style={{ ...boxSize, backgroundColor: paletteColor(i) }} />
           )
         )
       ) }

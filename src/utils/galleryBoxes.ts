@@ -1,5 +1,4 @@
 import { range } from 'lodash';
-import { MutableRefObject } from 'react';
 
 export interface size {
   width: number,

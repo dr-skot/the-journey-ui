@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useParams } from 'react-router-dom';
 
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -16,15 +17,15 @@ import './types';
 import { VideoProvider } from './components/VideoProvider';
 import UnsupportedBrowserWarning from './components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import MockGallery from './components/MockGallery/Gallery';
-import Gallery from './components/Gallery/Gallery';
 
 const VideoApp = () => {
   const { error, setError, settings } = useAppState();
   const connectionOptions = generateConnectionOptions(settings);
+  const { view } = useParams()
 
   return (
     <UnsupportedBrowserWarning>
-      <VideoProvider options={connectionOptions} onError={setError}>
+      <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery'}>
         <ErrorDialog dismissError={() => setError(null)} error={error} />
         <App />
       </VideoProvider>
@@ -41,15 +42,15 @@ ReactDOM.render(
           <PrivateRoute exact path="/">
             <VideoApp />
           </PrivateRoute>
-          <PrivateRoute path="/room/:URLRoomName">
-            <VideoApp />
-          </PrivateRoute>
           <Route path="/mockup/gallery">
             <MockGallery />
           </Route>
           <Route path="/login">
             <LoginPage />
           </Route>
+          <PrivateRoute path="/:view/:URLRoomName">
+            <VideoApp />
+          </PrivateRoute>
         </Switch>
       </AppStateProvider>
     </Router>

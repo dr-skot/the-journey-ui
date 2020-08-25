@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { range } from 'lodash';
 import { styled } from '@material-ui/core/styles';
 import Nobody from '../Nobody/Nobody';
-import { getBoxSize, getBoxSizeInContainer, size } from '../../utils/galleryBoxes';
+import { getBoxSize } from '../../utils/galleryBoxes';
+import { not, propsEqual } from '../../utils/functional';
 
 export interface Participant {
   sid: number,
@@ -35,24 +36,7 @@ const participants: Participant[] = range(0, 30).map((idx) => ({
 }));
 const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
 
-const not = (f: (...args: any[]) => boolean) => (...args: any[]) => !f(...args);
-// @ts-ignore
-const propsEqual = (prop: string) => (a: object) => (b: object) => a[prop] === b[prop];
-
 const Container = styled('div')(({ theme }) => ({
-  position: 'relative',
-  height: '100%',
-  display: 'grid',
-  gridTemplateColumns: `1fr 1fr 1fr 1fr 1fr 1fr`,
-  gridTemplateRows: '1fr 1fr 1fr 1fr 1fr',
-  [theme.breakpoints.down('xs')]: {
-    gridTemplateColumns: `auto`,
-    gridTemplateRows: `calc(100% - ${theme.sidebarMobileHeight + 12}px) ${theme.sidebarMobileHeight + 6}px`,
-    gridGap: '6px',
-  },
-}));
-
-const EnlargedContainer = styled('div')(({ theme }) => ({
   position: 'relative',
   height: '100vh',
   display: 'flex',
@@ -67,11 +51,11 @@ export default function Gallery() {
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
-  const toggleSelectedParticipant = (participant: Participant) => {
+  const toggleSelectedParticipant = useCallback((participant: Participant) => {
     return setSelectedParticipants(selectedParticipants.find(propsEqual('sid')(participant))
       ? selectedParticipants.filter(not(propsEqual('sid')(participant)))
       : [...selectedParticipants, participant]);
-  }
+  }, [selectedParticipants, setSelectedParticipants])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -101,7 +85,7 @@ export default function Gallery() {
   const boxSize = getBoxSize(containerSize, 16/9, boxes.length);
 
   return (
-    <EnlargedContainer ref={containerRef}>
+    <Container ref={containerRef}>
         { boxes.map((participant) => (
           <Nobody
             key={participant.sid}
@@ -114,6 +98,6 @@ export default function Gallery() {
             img={twoDigit(participant.sid + 1)}
           />
         )) }
-      </EnlargedContainer>
+      </Container>
     );
 }

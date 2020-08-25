@@ -1,15 +1,17 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { styled } from '@material-ui/core/styles';
 
 import Controls from './components/Controls/Controls';
 import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
-import MenuBar from './components/MenuBar/MenuBar';
+import MenuBar from './components/MenuBar/NamelessMenuBar';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-// import Room from './components/Room/Room';
+import Gallery from './components/Gallery/Gallery';
+import GalleryMenuBar from './components/Gallery/JoinGallery';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
-import Gallery from './components/Gallery/Gallery';
+import Room from './components/Show/Room';
 
 const Container = styled('div')({
   display: 'grid',
@@ -22,6 +24,14 @@ const Main = styled('main')({
 
 export default function App() {
   const roomState = useRoomState();
+  const { view } = useParams();
+
+  function getView() {
+    console.log('getView', { view, roomState });
+    if (view === 'gallery') return roomState === 'disconnected' ? <div /> : <Gallery />;
+    if (roomState === 'disconnected') return <LocalVideoPreview />;
+    if (view === 'show') return <Room />
+  }
 
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -32,9 +42,9 @@ export default function App() {
 
   return (
     <Container style={{ height }}>
-      <MenuBar />
+      { view === 'gallery' ? <GalleryMenuBar /> : <MenuBar /> }
       <Main>
-        {roomState === 'disconnected' ? <LocalVideoPreview /> : <Gallery />}
+        {getView()}
         <Controls />
       </Main>
       <ReconnectingNotification />

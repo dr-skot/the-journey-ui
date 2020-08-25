@@ -44,9 +44,10 @@ interface VideoProviderProps {
   onError: ErrorCallback;
   onDisconnect?: Callback;
   children: ReactNode;
+  lurk?: boolean;
 }
 
-export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
+export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {}, lurk }: VideoProviderProps) {
   const onErrorCallback = (error: TwilioError) => {
     console.log(`ERROR: ${error.message}`, error);
     onError(error);
@@ -58,7 +59,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
     getLocalAudioTrack,
     isAcquiringLocalTracks,
     removeLocalVideoTrack,
-  } = useLocalTracks();
+  } = useLocalTracks({ lurk });
   const { room, isConnecting, connect } = useRoom(localTracks, onErrorCallback, options);
 
   // Register onError and onDisconnect callback functions.

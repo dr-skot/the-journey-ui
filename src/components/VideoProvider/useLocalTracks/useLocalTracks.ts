@@ -2,7 +2,11 @@ import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../constants';
 import { useCallback, useEffect, useState } from 'react';
 import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions } from 'twilio-video';
 
-export default function useLocalTracks() {
+interface UseLocalTracksOptions {
+  lurk?: boolean;
+}
+
+export default function useLocalTracks(options: UseLocalTracksOptions = {}) {
   const [audioTrack, setAudioTrack] = useState<LocalAudioTrack>();
   const [videoTrack, setVideoTrack] = useState<LocalVideoTrack>();
   const [isAcquiringLocalTracks, setIsAcquiringLocalTracks] = useState(false);
@@ -46,6 +50,7 @@ export default function useLocalTracks() {
   }, [videoTrack]);
 
   useEffect(() => {
+    if (options.lurk) return;
     setIsAcquiringLocalTracks(true);
     Video.createLocalTracks({
       video: {
