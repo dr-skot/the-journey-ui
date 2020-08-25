@@ -7,6 +7,7 @@ import { getBoxSize, getBoxSizeInContainer, size } from '../../utils/galleryBoxe
 export interface Participant {
   sid: number,
   color: string,
+  identity: string,
 }
 
 function getRandomColor() {
@@ -24,9 +25,14 @@ function elementClientSize(el: HTMLElement) {
 
 const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
 
-const imgForParticipant = (n: number) => '';
+const names = ['Swedish Chef', 'Fozzie', 'Miss Piggy', 'Gonzo', 'Doctor Teeth', 'Floyd', 'Kermit', 'Animal',
+  'Walter', 'Janice', 'Pepé', 'Rowlf', 'Bunsen & Beaker', 'Scooter', 'Joe from Legal', 'Turquoise', 'Bird',
+  'B & E', 'sick in bed', 'Cookie', 'The Count', 'Grover', '???', 'Lin', 'anonymous', 'O Trafficker',
+  'Caroling Chickens', 'Meryl Sheep', 'Yoda', 'Darth'];
 
-const participants: Participant[] = range(0, 30).map((idx) => ({ sid: idx, color: getRandomColor() }));
+const participants: Participant[] = range(0, 30).map((idx) => ({
+  sid: idx, color: getRandomColor(), identity: names[idx]
+}));
 const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
 
 const not = (f: (...args: any[]) => boolean) => (...args: any[]) => !f(...args);
@@ -77,7 +83,8 @@ export default function Gallery() {
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === 'Shift') setForceGallery(false);
       if (e.key === 'Control') setShowHotKeys(false);
-      const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS
+      if (e.key === '0' || e.key === ')') setSelectedParticipants([]);
+      const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS, so % 2
       if (participants[idx]) toggleSelectedParticipant(participants[idx]);
     }
     document.addEventListener('keydown', handleKeyDown);

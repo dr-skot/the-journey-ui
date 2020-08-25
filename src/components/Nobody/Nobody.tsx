@@ -84,6 +84,7 @@ function ParticipantInfo({
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
+            {participant.identity}
           </h4>
         </div>
         <div>
