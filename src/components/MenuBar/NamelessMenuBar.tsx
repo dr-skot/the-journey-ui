@@ -111,7 +111,7 @@ export default function MenuBar() {
             {(isConnecting || isFetching) && <CircularProgress className={classes.loadingSpinner} />}
           </form>
         ) : (
-          <h3>{roomName}</h3>
+          <h3>The Journey</h3>
         )}
         <div className={classes.rightButtonContainer}>
           <FlipCameraButton />

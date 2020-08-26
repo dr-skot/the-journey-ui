@@ -48,7 +48,7 @@ export default function App() {
   // TODO too many conditionals here; make different components for show and gallery
   return (
     <Container style={{ height }}>
-      { view === 'gallery' ? <GalleryMenuBar /> : roomState === 'connected' ? null : <MenuBar /> }
+      { view === 'gallery' ? <GalleryMenuBar /> : <MenuBar /> }
       <Main>
         {getView()}
         { view !== 'gallery' && <Controls /> }
