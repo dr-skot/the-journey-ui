@@ -1,6 +1,6 @@
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../constants';
 import { useCallback, useEffect, useState } from 'react';
-import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions } from 'twilio-video';
+import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions, LocalDataTrack } from 'twilio-video';
 
 interface UseLocalTracksOptions {
   lurk?: boolean;

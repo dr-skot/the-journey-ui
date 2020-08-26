@@ -8,6 +8,7 @@ import { range } from 'lodash';
 // import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
+import useLocalDataTrack from './useLocalDataTrack';
 
 // both with and without shift key; first half of this string will be used for the labels
 const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./qwertyuiopasdfghjkl:zxcvbnm<>?';
@@ -47,21 +48,24 @@ function useWindowSize() {
 }
 
 export default function Gallery() {
-  // const { room } = useVideoContext();
   const participants = useParticipants();
   const [focusGroup, setFocusGroup] = useState<IParticipant[]>([]);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
   const [windowWidth, windowHeight] = useWindowSize();
+  const localDataTrack = useLocalDataTrack();
 
-  console.log('sids', participants.map((p) => p.sid));
-
-  const toggleSelectedParticipant = useCallback((participant: IParticipant) => {
-    return setFocusGroup(focusGroup.find(propsEqual('sid')(participant))
+  const toggleFocus = useCallback((participant: IParticipant) => (
+    setFocusGroup(focusGroup.find(propsEqual('sid')(participant))
       ? focusGroup.filter(not(propsEqual('sid')(participant)))
-      : [...focusGroup, participant]);
-  }, [setFocusGroup, focusGroup])
+      : [...focusGroup, participant])
+  ), [setFocusGroup, focusGroup])
+
+  // send the focusGroup sids when they change
+  useEffect(() => {
+    localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
+  }, [focusGroup]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -73,7 +77,7 @@ export default function Gallery() {
       if (e.key === 'Control') setShowHotKeys(false);
       if (e.key === '0' || e.key === ')') setFocusGroup([]);
       const idx = KEYS.indexOf(e.key) % (KEYS.length / 2); // KEYS includes shifted KEYS, so % length / 2
-      if (participants[idx]) toggleSelectedParticipant(participants[idx]);
+      if (participants[idx]) toggleFocus(participants[idx]);
     }
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
@@ -81,7 +85,7 @@ export default function Gallery() {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     }
-  }, [toggleSelectedParticipant, participants]);
+  }, [toggleFocus, participants]);
 
 
   const containerRef = (node: HTMLElement | null) => setContainer(node);
@@ -104,7 +108,7 @@ export default function Gallery() {
             <Participant
               key={participant.sid}
               participant={participant}
-              onClick={() => toggleSelectedParticipant(participant)}
+              onClick={() => toggleFocus(participant)}
               selectedIndex={forceGallery ? selectedIndex(participant): 0}
               hotKey={showingGallery || showHotKeys ? KEYS[i] : undefined}
               width={boxSize.width}

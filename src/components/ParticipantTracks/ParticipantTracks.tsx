@@ -7,6 +7,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 interface ParticipantTracksProps {
   participant: Participant;
   disableAudio?: boolean;
+  disableVideo?: boolean;
   enableScreenShare?: boolean;
   videoPriority?: Track.Priority | null;
 }
@@ -22,6 +23,7 @@ interface ParticipantTracksProps {
 export default function ParticipantTracks({
   participant,
   disableAudio,
+  disableVideo,
   enableScreenShare,
   videoPriority,
 }: ParticipantTracksProps) {
@@ -36,6 +38,8 @@ export default function ParticipantTracks({
   } else {
     filteredPublications = publications.filter(p => !p.trackName.includes('screen'));
   }
+
+  if (disableVideo) filteredPublications = publications.filter(p => p.track?.kind !== 'video');
 
   return (
     <>
