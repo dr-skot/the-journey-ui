@@ -4,9 +4,10 @@ import Participant from './Participant/Participant';
 import { Participant as IParticipant } from 'twilio-video';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { range, sortBy } from 'lodash';
+import { range } from 'lodash';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
+import { listKey } from '../../utils/react-help';
 
 // both with and without shift key; first half of this string will be used for the labels
 const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./qwertyuiopasdfghjkl:zxcvbnm<>?';
@@ -64,6 +65,7 @@ export default function Gallery() {
 
   const containerRef = (node: HTMLElement | null) => setContainer(node);
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
+  console.log({ containerSize });
 
   const showingGallery = (focusGroup.length === 0 || forceGallery);
   const boxes = showingGallery ? arrayOfLength(30)(participants) : focusGroup;
@@ -87,7 +89,7 @@ export default function Gallery() {
             />
           )
           : (
-            <div style={{ ...boxSize, backgroundColor: paletteColor(i) }} />
+            <div key={listKey('nobody', i)} style={{ ...boxSize, backgroundColor: paletteColor(i) }} />
           )
         )
       ) }

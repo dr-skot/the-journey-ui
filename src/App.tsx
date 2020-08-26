@@ -24,13 +24,18 @@ const Main = styled('main')({
 
 export default function App() {
   const roomState = useRoomState();
-  const { view } = useParams();
+  const params = useParams();
+  // @ts-ignore
+  const { view } = params;
+
+  console.log('render App', { roomState, params });
 
   function getView() {
     console.log('getView', { view, roomState });
+    // @ts-ignore
     if (view === 'gallery') return roomState === 'disconnected' ? <div /> : <Gallery />;
     if (roomState === 'disconnected') return <LocalVideoPreview />;
-    if (view === 'show') return <Room />
+    return <Room />
   }
 
   // Here we would like the height of the main container to be the height of the viewport.

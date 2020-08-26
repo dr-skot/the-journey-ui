@@ -23,34 +23,38 @@ const VideoApp = () => {
   const connectionOptions = generateConnectionOptions(settings);
   const { view } = useParams()
 
+  console.log('render VideoApp', { connectionOptions, view, error, setError, settings });
+
   return (
     <UnsupportedBrowserWarning>
       <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery'}>
-        <ErrorDialog dismissError={() => setError(null)} error={error} />
+        { /* TODO reinstate error reporting */ }
+        { /* <ErrorDialog dismissError={() => setError(null)} error={error} /> */ }
         <App />
       </VideoProvider>
     </UnsupportedBrowserWarning>
   );
 };
 
+console.log('ReoctDOM.render');
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
       <AppStateProvider>
         <Switch>
-          <PrivateRoute exact path="/">
-            <VideoApp />
-          </PrivateRoute>
-          <Route path="/mockup/gallery">
-            <MockGallery />
-          </Route>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
+            <Route path="/mockup/gallery">
+              <MockGallery />
+            </Route>
+            <Route path="/login">
+              <LoginPage />
+            </Route>
           <PrivateRoute path="/:view/:URLRoomName">
             <VideoApp />
           </PrivateRoute>
+            <PrivateRoute exact path="/">
+              <VideoApp />
+            </PrivateRoute>
         </Switch>
       </AppStateProvider>
     </Router>

@@ -55,21 +55,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+let count = 0;
+
 export default function MenuBar() {
   const classes = useStyles();
   const { user, getToken, isFetching } = useAppState();
   const { isConnecting, connect, isAcquiringLocalTracks } = useVideoContext();
   const roomState = useRoomState();
+  const [tryingToJoin, setTryingToJoin] = useState(false);
 
   const [name, setName] = useState<string>(user?.displayName || '');
   const roomName = 'room';
 
   useEffect(() => {
-    if (roomState === 'disconnected' && !isConnecting && !isFetching && !isAcquiringLocalTracks) {
-      if (!window.location.origin.includes('twil.io')) {
-        window.history.replaceState(null, '', window.encodeURI(`/gallery/${roomName}${window.location.search || ''}`));
-      }
-      getToken('adkfadf', roomName).then(token => connect(token));
+    if (roomState === 'disconnected' && !isConnecting && !isFetching && !isAcquiringLocalTracks && !tryingToJoin) {
+      console.log('join gallery', count++, { roomState, isConnecting, isFetching, isAcquiringLocalTracks, user });
+      setTryingToJoin(true);
+      getToken('adkfadf', roomName).then(token => connect(token)).then(() => setTryingToJoin(false)).catch(() => setTryingToJoin(false));
     }
   }, [roomState, isConnecting, isFetching, isAcquiringLocalTracks]);
 
