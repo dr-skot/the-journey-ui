@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Participant from './Participant/Participant';
 import { Participant as IParticipant } from 'twilio-video';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { range } from 'lodash';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+// import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
 
@@ -27,13 +27,34 @@ const Container = styled('div')(() => ({
   alignContent: 'center',
 }));
 
+const Nobody = styled('div')(() => ({
+  width: '100%',
+  height: '100%',
+  border: '0.5px solid black',
+}));
+
+function useWindowSize() {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
+
 export default function Gallery() {
-  const { room } = useVideoContext();
+  // const { room } = useVideoContext();
   const participants = useParticipants();
   const [focusGroup, setFocusGroup] = useState<IParticipant[]>([]);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
+  const [windowWidth, windowHeight] = useWindowSize();
+  // const [, forceUpdate] = useState();
 
   console.log('sids', participants.map((p) => p.sid));
 
@@ -63,8 +84,12 @@ export default function Gallery() {
     }
   }, [toggleSelectedParticipant, participants]);
 
+
   const containerRef = (node: HTMLElement | null) => setContainer(node);
-  const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
+  // TODO this conditional is just to force rerender on resize; find a better way
+  const containerSize = (windowWidth && windowHeight)
+    ? { width: container?.clientWidth || 0, height: container?.clientHeight || 0 }
+    : { width: 0, height: 0 };
   console.log({ containerSize });
 
   const showingGallery = (focusGroup.length === 0 || forceGallery);
@@ -89,7 +114,9 @@ export default function Gallery() {
             />
           )
           : (
-            <div key={listKey('nobody', i)} style={{ ...boxSize, backgroundColor: paletteColor(i) }} />
+            <div key={listKey('nobody', i)} style={{ ...boxSize, backgroundColor: paletteColor(i) }}>
+              <Nobody />
+            </div>
           )
         )
       ) }

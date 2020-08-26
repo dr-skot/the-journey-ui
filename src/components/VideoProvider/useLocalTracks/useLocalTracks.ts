@@ -70,7 +70,7 @@ export default function useLocalTracks(options: UseLocalTracksOptions = {}) {
         }
       })
       .finally(() => setIsAcquiringLocalTracks(false));
-  }, []);
+  }, [options.lurk]);
 
   const localTracks = [audioTrack, videoTrack].filter(track => track !== undefined) as (
     | LocalAudioTrack

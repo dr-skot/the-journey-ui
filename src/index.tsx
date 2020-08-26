@@ -8,7 +8,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import App from './App';
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import ErrorDialog from './components/ErrorDialog/ErrorDialog';
+// import ErrorDialog from './components/ErrorDialog/ErrorDialog';
 import generateConnectionOptions from './utils/generateConnectionOptions/generateConnectionOptions';
 import LoginPage from './components/LoginPage/LoginPage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
