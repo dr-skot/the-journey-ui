@@ -44,7 +44,7 @@ export default function Room() {
         )) }
       </Floater>
       <Main>
-        <iframe width="100%" height="100%" src="https://viewer.millicast.com/v1?streamId=[ACCOUNT_ID]/[STREAM_NAME]" />
+        <iframe width="100%" height="100%" src="https://viewer.millicast.com/v1?streamId=wbfwt8/ke434gcy" />
       </Main>
     </Container>
   );
