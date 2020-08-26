@@ -47,7 +47,7 @@ export default function App() {
 
   return (
     <Container style={{ height }}>
-      { view === 'gallery' ? <GalleryMenuBar /> : <MenuBar /> }
+      { view === 'gallery' ? <GalleryMenuBar /> : roomState === 'connected' ? null : <MenuBar /> }
       <Main>
         {getView()}
         <Controls />

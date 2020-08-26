@@ -7,6 +7,13 @@ const Container = styled('div')(() => ({
   height: '100%',
 }));
 
+const Main = styled('div')(() => ({
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignContent: 'center',
+}));
+
 const Floater = styled('div')(({ theme }) => ({
   position: 'absolute',
   width: theme.sidebarWidth,
@@ -19,7 +26,9 @@ export default function Room() {
       <Floater>
         <SidebarSelfie />
       </Floater>
-      <video style={{width: '100%'}} src={`${process.env.PUBLIC_URL}/trailer.m4v`} autoPlay />
+      <Main>
+        <video style={{width: '100%'}} src={`${process.env.PUBLIC_URL}/trailer.m4v`} autoPlay controls />
+      </Main>
     </Container>
   );
 }
