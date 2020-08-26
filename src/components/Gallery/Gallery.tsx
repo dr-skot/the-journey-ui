@@ -19,8 +19,8 @@ const paletteColor = (i: number) => PALETTE[i % PALETTE.length];
 const arrayOfLength = (n: number) => (xs: any[]) => range(0, n).map((i) => xs[i]);
 
 const Container = styled('div')(() => ({
-  position: 'relative',
-  height: '100vh',
+  position: 'relative', /* TODO what does this do? */
+  height: '100vh', /* TODO use useHeight */
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
@@ -54,7 +54,6 @@ export default function Gallery() {
   const [forceGallery, setForceGallery] = useState<boolean>(false);
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
   const [windowWidth, windowHeight] = useWindowSize();
-  // const [, forceUpdate] = useState();
 
   console.log('sids', participants.map((p) => p.sid));
 
@@ -110,7 +109,8 @@ export default function Gallery() {
               hotKey={showingGallery || showHotKeys ? KEYS[i] : undefined}
               width={boxSize.width}
               height={boxSize.height}
-              color={'pink'}
+              color={'pink'} /* TODO get rid of color */
+              mute={showingGallery}
             />
           )
           : (

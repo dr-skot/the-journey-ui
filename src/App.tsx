@@ -45,12 +45,13 @@ export default function App() {
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
 
+  // TODO too many conditionals here; make different components for show and gallery
   return (
     <Container style={{ height }}>
       { view === 'gallery' ? <GalleryMenuBar /> : roomState === 'connected' ? null : <MenuBar /> }
       <Main>
         {getView()}
-        <Controls />
+        { view !== 'gallery' && <Controls /> }
       </Main>
       <ReconnectingNotification />
     </Container>

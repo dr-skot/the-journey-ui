@@ -101,6 +101,7 @@ interface ParticipantProps {
   height: number,
   hotKey?: string;
   color: string;
+  mute?: boolean;
 }
 
 export default function Participant({
@@ -111,10 +112,11 @@ export default function Participant({
   height,
   hotKey,
   color,
+  mute,
 }: ParticipantProps) {
   return (
     <ParticipantInfo {...{ participant, onClick, selectedIndex, width, height, hotKey, color }}>
-      <ParticipantTracks participant={participant} />
+      <ParticipantTracks participant={participant} disableAudio={mute} />
     </ParticipantInfo>
   );
 }
