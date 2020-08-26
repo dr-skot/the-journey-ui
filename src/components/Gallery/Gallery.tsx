@@ -5,7 +5,6 @@ import { Participant as IParticipant } from 'twilio-video';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { range } from 'lodash';
-// import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { not, propsEqual } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
 import useLocalDataTrack from './useLocalDataTrack';
@@ -47,8 +46,12 @@ function useWindowSize() {
   return size;
 }
 
-export default function Gallery() {
-  const participants = useParticipants();
+interface GalleryProps {
+  isOperator?: boolean;
+}
+
+export default function Gallery({ isOperator }: GalleryProps) {
+  const participants = useParticipants().filter((p) => !p.identity.match(/^admin-/));
   const [focusGroup, setFocusGroup] = useState<IParticipant[]>([]);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
@@ -64,8 +67,8 @@ export default function Gallery() {
 
   // send the focusGroup sids when they change
   useEffect(() => {
-    localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
-  }, [focusGroup]);
+    if (isOperator) localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
+  }, [focusGroup, isOperator]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,7 +117,7 @@ export default function Gallery() {
               width={boxSize.width}
               height={boxSize.height}
               color={'pink'} /* TODO get rid of color */
-              mute={showingGallery}
+              mute={showingGallery || !isOperator}
             />
           )
           : (

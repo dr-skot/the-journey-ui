@@ -44,7 +44,7 @@ export default function Room() {
         )) }
       </Floater>
       <Main>
-        <video style={{width: '100%'}} src={`${process.env.PUBLIC_URL}/trailer.m4v`} controls />
+        <iframe width="100%" height="100%" src="https://viewer.millicast.com/v1?streamId=[ACCOUNT_ID]/[STREAM_NAME]" />
       </Main>
     </Container>
   );

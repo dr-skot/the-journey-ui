@@ -27,7 +27,7 @@ const VideoApp = () => {
 
   return (
     <UnsupportedBrowserWarning>
-      <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery'}>
+      <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery' || view === 'operator'}>
         { /* TODO reinstate error reporting */ }
         { /* <ErrorDialog dismissError={() => setError(null)} error={error} /> */ }
         <App />
@@ -49,7 +49,7 @@ ReactDOM.render(
             <Route path="/login">
               <LoginPage />
             </Route>
-          <PrivateRoute path="/:view/:URLRoomName">
+          <PrivateRoute path="/:view">
             <VideoApp />
           </PrivateRoute>
             <PrivateRoute exact path="/">

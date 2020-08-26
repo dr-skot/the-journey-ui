@@ -33,7 +33,7 @@ export default function App() {
   function getView() {
     console.log('getView', { view, roomState });
     // @ts-ignore
-    if (view === 'gallery') return roomState === 'disconnected' ? <div /> : <Gallery />;
+    if (view === 'gallery' || view === 'operator') return roomState === 'disconnected' ? <div /> : <Gallery isOperator={view === 'operator'} />;
     if (roomState === 'disconnected') return <LocalVideoPreview />;
     return <Room />
   }
@@ -48,7 +48,7 @@ export default function App() {
   // TODO too many conditionals here; make different components for show and gallery
   return (
     <Container style={{ height }}>
-      { view === 'gallery' ? <GalleryMenuBar /> : <MenuBar /> }
+      { view === 'gallery' || view === 'operator' ? <GalleryMenuBar isOperator={view === 'operator'} /> : <MenuBar /> }
       <Main>
         {getView()}
         { view !== 'gallery' && <Controls /> }

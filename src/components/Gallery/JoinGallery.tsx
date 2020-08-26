@@ -6,14 +6,10 @@ import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import FlipCameraButton from '../MenuBar/FlipCameraButton/FlipCameraButton';
-import LocalAudioLevelIndicator from '../MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
 import ToggleFullscreenButton from '../MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import Menu from '../MenuBar/Menu/Menu';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,7 +58,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 let count = 0;
 
-export default function MenuBar() {
+interface MenuBarProps {
+  isOperator?: boolean;
+}
+
+export default function MenuBar({ isOperator }: MenuBarProps) {
   const { user, getToken, isFetching } = useAppState();
   const { isConnecting, connect, isAcquiringLocalTracks } = useVideoContext();
   const roomState = useRoomState();
@@ -73,9 +73,9 @@ export default function MenuBar() {
 
   useEffect(() => {
     if (roomState === 'disconnected' && !isConnecting && !isFetching && !isAcquiringLocalTracks && !tryingToJoin) {
-      console.log('join gallery', count++, { roomState, isConnecting, isFetching, isAcquiringLocalTracks, user });
       setTryingToJoin(true);
-      getToken('admin-user', roomName).then(token => connect(token)).then(() => setTryingToJoin(false));
+      getToken(isOperator ? 'admin-user' : `admin-${uuidv4()}`, roomName)
+        .then(token => connect(token)).then(() => setTryingToJoin(false));
     }
   }, [roomState, isConnecting, isFetching, isAcquiringLocalTracks, user, tryingToJoin, connect, getToken]);
 
