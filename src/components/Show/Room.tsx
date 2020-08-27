@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './SidebarSelfie';
-import useRemoteDataTracks from './useRemoteDataTrack';
+import useRemoteDataTrack from './useRemoteDataTrack';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
+import { RemoteDataTrack } from 'twilio-video';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -24,27 +27,53 @@ const Floater = styled('div')(({ theme }) => ({
 
 export default function Room() {
   console.log('render Room')
+  const { room } = useVideoContext();
   const participants = useParticipants();
   const [focusGroup, setFocusGroup] = useState<string[]>([]);
+  const subscribe = useSubscriber();
 
+
+  // TODO move all this logic out of a rendering component
   console.log('participants', participants.length);
   console.log('focus group', focusGroup);
 
-  useRemoteDataTracks((data) => {
-    setFocusGroup(JSON.parse(data))
-  });
-
+  useEffect(() => {
+    const tracks: RemoteDataTrack[] =  [];
+    const trackListener = (data: string) => {
+      const newFocus = JSON.parse(data);
+      setFocusGroup(newFocus);
+      subscribe(room.name, room.localParticipant.identity, 'listen', newFocus);
+    }
+    const roomListener = (track: RemoteDataTrack) => {
+      if (track.kind === 'data') {
+        console.log('subscribed to data track!');
+        tracks.push(track);
+        track.on('message', trackListener);
+      }
+    };
+    room.on('trackSubscribed', roomListener);
+    return () => {
+      room.removeListener('trackSubscribed', roomListener);
+      tracks.forEach((track) => track.removeListener('message', trackListener));
+    }
+  }, [room]);
 
   return (
     <Container>
       <Floater>
         <SidebarSelfie />
         { participants.map((participant) => (
-          <ParticipantTracks participant={participant} disableVideo={true} disableAudio={!focusGroup.includes(participant.sid)} />
+          <ParticipantTracks
+            key={participant.sid}
+            participant={participant}
+          />
         )) }
       </Floater>
       <Main>
-        <iframe src="https://viewer.millicast.com/v2?streamId=wbfwt8/ke434gcy" allowFullScreen width="100%" height="100%"></iframe>
+        <iframe
+          src="https://viewer.millicast.com/v2?streamId=wbfwt8/ke434gcy"
+          allowFullScreen width="100%" height="100%"
+        />
       </Main>
     </Container>
   );

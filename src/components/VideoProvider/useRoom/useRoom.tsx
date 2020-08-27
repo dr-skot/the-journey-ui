@@ -22,7 +22,7 @@ export default function useRoom(localTracks: LocalTrack[], onError: Callback, op
   const connect = useCallback(
     token => {
       setIsConnecting(true);
-      return Video.connect(token, { ...options, tracks: [] }).then(
+      return Video.connect(token, { ...options, tracks: [], automaticSubscription: false }).then(
         newRoom => {
           setRoom(newRoom);
           const disconnect = () => newRoom.disconnect();
@@ -58,10 +58,13 @@ export default function useRoom(localTracks: LocalTrack[], onError: Callback, op
             // Add a listener to disconnect from the room when a mobile user closes their browser
             window.addEventListener('pagehide', disconnect);
           }
+
+          return newRoom;
         },
         error => {
           onError(error);
           setIsConnecting(false);
+          return error;
         }
       );
     },

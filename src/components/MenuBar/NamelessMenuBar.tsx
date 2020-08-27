@@ -15,6 +15,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Typography } from '@material-ui/core';
 import FlipCameraButton from './FlipCameraButton/FlipCameraButton';
 import LocalAudioLevelIndicator from './DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
+import { isDev } from '../../utils/react-help';
+import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,9 +65,10 @@ export default function MenuBar() {
   const { user, getToken, isFetching } = useAppState();
   const { isConnecting, connect, isAcquiringLocalTracks } = useVideoContext();
   const roomState = useRoomState();
+  const subscribe = useSubscriber();
 
   const [name, setName] = useState<string>(user?.displayName || '');
-  const roomName = 'room';
+  const roomName = isDev() ? 'dev-room' : 'room';
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -73,7 +76,11 @@ export default function MenuBar() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    getToken(name, roomName).then(token => connect(token));
+    console.log('joining');
+    getToken(name, roomName).then(token => connect(token))
+      .then(newRoom => subscribe(roomName, name,'data-only'))
+      .then((result) => console.log(result))
+      .catch((error) => console.log(error));
   };
 
   return (
