@@ -45,6 +45,7 @@ app.use (function (req, res, next) {
  */
 
 app.get('/token', (req, res) => {
+  console.log('token requested');
   const { identity, roomName } = req.query;
   const token = new AccessToken(twilioAccountSid, twilioApiKeySID, twilioApiKeySecret, {
     ttl: MAX_ALLOWED_SESSION_DURATION,
@@ -86,4 +87,4 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
 
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'build/index.html')));
 
-app.listen(8081, () => console.log('token server running on 8081'));
+app.listen(port, () => console.log(`token server running on ${port}`));
