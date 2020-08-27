@@ -4,7 +4,7 @@ import Participant from './Participant/Participant';
 import { Participant as IParticipant } from 'twilio-video';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { range } from 'lodash';
+import { range, sortBy } from 'lodash';
 import { not, propsEqual } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
 import useLocalDataTrack from './useLocalDataTrack';
@@ -51,7 +51,10 @@ interface GalleryProps {
 }
 
 export default function Gallery({ isOperator }: GalleryProps) {
-  const participants = useParticipants().filter((p) => !p.identity.match(/^admin-/));
+  const participants = sortBy(
+    useParticipants().filter((p) => !p.identity.match(/^admin-/)),
+    'sid',
+  );
   const [focusGroup, setFocusGroup] = useState<IParticipant[]>([]);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
