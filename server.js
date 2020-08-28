@@ -50,8 +50,11 @@ app.use (function (req, res, next) {
 */
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
+  console.log('subscribe');
   const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
   const focus = req.query.focus || '';
+  console.log('focus', focus);
+  console.log('policy', req.params.policy);
   const basicRules = SUBSCRIBE_RULES.basic();
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
   const rules = basicRules.concat(moreRules);
