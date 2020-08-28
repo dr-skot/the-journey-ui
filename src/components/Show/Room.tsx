@@ -65,7 +65,7 @@ export default function Room() {
     <Container>
       <Floater>
         <SidebarSelfie />
-        { participants.map(p => <PartcipantTracks participant={p} />) }
+        { audios.map(p => <PartcipantTracks participant={p} />) }
       </Floater>
       <Main>
         {!isDev() && (
