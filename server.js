@@ -62,10 +62,8 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const { room, user, policy } = req.params;
   const { focus } = req.query;
 
-  const rules = [
-    ...SUBSCRIBE_RULES.basic(),
-    ...(SUBSCRIBE_RULES[policy] || noop)(focus?.split(',') || []) || [],
-  ]
+  const rules = SUBSCRIBE_RULES.basic()
+    .concat((SUBSCRIBE_RULES[policy] || noop)(focus?.split(',') || []) || []);
 
   try {
     client.video.rooms(req.params.room).participants.get(req.params.user)
