@@ -26,17 +26,13 @@ SUBSCRIBE_RULES = {
 app.use(express.static(path.join(__dirname, 'build')));
 const port = process.env.PORT || 8081;
 
-/*
 app.use (function (req, res, next) {
-  if (req.secure) {
-    // request was via https, so do no special handling
+  if (req.secure) { // request was via https, so do no special handling
     next();
-  } else {
-    // request was via http, so redirect to https
+  } else { // request was via http, so redirect to https
     res.redirect('https://' + req.headers.host + req.url);
   }
 });
- */
 
 app.get('/token', (req, res) => {
   console.log('token requested');
@@ -53,19 +49,18 @@ app.get('/token', (req, res) => {
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
-  const { room, user, policy } = req.params;
-  const { focus } = req.query;
-
-  const rules = SUBSCRIBE_RULES.basic().concat((SUBSCRIBE_RULES[policy] || noop)(focus?.split(',') || []) || []);
+  const focus = req.query.focus || '';
+  const basicRules = SUBSCRIBE_RULES.basic();
+  const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
+  const rules = basicRules.concat(moreRules);
 
   try {
-    client.video.rooms(req.params.room).participants.get(req.params.user)
-      .subscribeRules.update({ rules })
-      .then(result => {
+    client.video.rooms(req.params.room).participants.get(req.params.user).subscribeRules.update({
+      rules: rules
+    }).then(result => {
         console.log('Subscribe Rules updated successfully', room, user, policy, focus );
         res.send('Subscribe Rules updated successfully');
-      })
-      .catch(error => {
+      }).catch(error => {
         console.log('Error updating rules', error, room, user, policy, focus);
         res.send('Error updating rules ' + error);
       });
