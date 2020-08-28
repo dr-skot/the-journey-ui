@@ -12,7 +12,7 @@ export default function useLocalDataTrack() {
     if (!values(room.localParticipant.dataTracks).some((publication) => publication.track === dataTrack)) {
       room.localParticipant.publishTrack(dataTrack);
     }
-  }, [dataTrack]);
+  }, [dataTrack, room.localParticipant]);
 
   return dataTrack;
 }

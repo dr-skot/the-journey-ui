@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './SidebarSelfie';
-import useRemoteDataTrack from './useRemoteDataTrack';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
@@ -56,7 +55,7 @@ export default function Room() {
       room.removeListener('trackSubscribed', roomListener);
       tracks.forEach((track) => track.removeListener('message', trackListener));
     }
-  }, [room]);
+  }, [room, subscribe]);
 
   return (
     <Container>
@@ -70,7 +69,7 @@ export default function Room() {
         )) }
       </Floater>
       <Main>
-        <iframe
+        <iframe title="broadcast"
           src="https://viewer.millicast.com/v2?streamId=wbfwt8/ke434gcy"
           allowFullScreen width="100%" height="100%"
         />

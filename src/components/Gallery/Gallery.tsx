@@ -71,7 +71,7 @@ export default function Gallery({ isOperator }: GalleryProps) {
   // send the focusGroup sids when they change
   useEffect(() => {
     if (isOperator) localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
-  }, [focusGroup, isOperator]);
+  }, [focusGroup, isOperator, localDataTrack]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

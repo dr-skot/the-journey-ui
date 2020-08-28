@@ -1,4 +1,3 @@
-import mapValues from 'lodash';
 import { useCallback } from 'react';
 
 export default function useSubscriber() {

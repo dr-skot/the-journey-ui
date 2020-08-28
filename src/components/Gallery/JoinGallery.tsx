@@ -58,8 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-let count = 0;
-
 interface MenuBarProps {
   isOperator?: boolean;
 }
@@ -86,7 +84,7 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
         .then(() => setTryingToJoin(false))
         .catch((error) => console.log(error));
     }
-  }, [roomState, isConnecting, isFetching, isAcquiringLocalTracks, user, tryingToJoin, connect, getToken]);
+  }, [roomState, isConnecting, isFetching, isAcquiringLocalTracks, user, tryingToJoin, connect, getToken, isOperator, roomName, subscribe]);
 
   return (
       <AppBar className={classes.container} position="static">

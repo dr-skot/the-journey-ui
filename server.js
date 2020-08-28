@@ -18,15 +18,9 @@ SUBSCRIBE_RULES = {
     { type: 'exclude', all: true },
     { type: 'include', publisher: 'admin-user', kind: 'data' },
   ],
-  listen: (publishers) => [
-    ...publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
-  ],
-  gallery: () => [
-    { type: 'include', kind: 'video' },
-  ],
-  enlarger: (publishers) => [
-    ...publishers.map((p) => ({ type: 'include', publisher: p })),
-  ],
+  listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
+  gallery: () => [{ type: 'include', kind: 'video' }],
+  enlarger: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
 }
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -62,8 +56,7 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const { room, user, policy } = req.params;
   const { focus } = req.query;
 
-  const rules = SUBSCRIBE_RULES.basic()
-    .concat((SUBSCRIBE_RULES[policy] || noop)(focus?.split(',') || []) || []);
+  const rules = SUBSCRIBE_RULES.basic().concat((SUBSCRIBE_RULES[policy] || noop)(focus?.split(',') || []) || []);
 
   try {
     client.video.rooms(req.params.room).participants.get(req.params.user)
