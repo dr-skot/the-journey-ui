@@ -59,10 +59,13 @@ export default function Room() {
     }
   }, [room, subscribe]);
 
+  const audios = participants.filter(p => focusGroup.includes(p.sid));
+
   return (
     <Container>
       <Floater>
         <SidebarSelfie />
+        { participants.map(p => <PartcipantTracks participant={p} />) }
       </Floater>
       <Main>
         {!isDev() && (
