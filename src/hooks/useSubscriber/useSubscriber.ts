@@ -8,7 +8,7 @@ export default function useSubscriber() {
 
       const uri = encodeURIComponent;
 
-      const params = `/${uri(room)}/${uri(participantId)}/${uri(policy)}?focus=${focus.map(uri).join(',')}`;
+      const params = `${uri(room)}/${uri(participantId)}/${uri(policy)}?focus=${focus.map(uri).join(',')}`;
       console.log(`${endpoint}/${params}`);
 
       return fetch(`${endpoint}/${params}`, { headers }).then(res => res.text());
