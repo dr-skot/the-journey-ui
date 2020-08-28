@@ -76,8 +76,12 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
     console.log('Error updating rules', error, room, user, policy, focus);
     res.send('Error updating rules ' + error);
   }
-
 });
+
+app.get('/subscribe/*', (req, res) => {
+  console.log('uncaught subscribe request!');
+  res.send('Error: bad subscribe request');
+})
 
 app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))

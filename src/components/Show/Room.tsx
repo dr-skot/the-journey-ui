@@ -7,7 +7,7 @@ import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
 import { RemoteDataTrack } from 'twilio-video';
 import PartcipantTracks from '../ParticipantTracks/ParticipantTracks';
 import { isDev } from '../../utils/react-help';
-import useAudioSubscriber from '../../hooks/useAudioSubscriber';
+import useAudioSubscriber from '../../hooks/useAudioSubscriber/useAudioSubscriber';
 
 const Container = styled('div')(() => ({
   position: 'relative',

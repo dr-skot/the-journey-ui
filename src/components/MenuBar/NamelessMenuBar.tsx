@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       backgroundColor: theme.palette.background.default,
+      opacity: '75%',
     },
     toolbar: {
       [theme.breakpoints.down('xs')]: {
@@ -84,7 +85,7 @@ export default function MenuBar() {
   };
 
   return (
-    <AppBar className={classes.container} position="static">
+    <AppBar className={classes.container} position="fixed">
       <Toolbar className={classes.toolbar}>
         {roomState === 'disconnected' ? (
           <form className={classes.form} onSubmit={handleSubmit}>

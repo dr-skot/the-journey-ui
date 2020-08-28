@@ -102,6 +102,7 @@
     }
   },
   "proxy": "http://localhost:8081/",
+  "secure": false,
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

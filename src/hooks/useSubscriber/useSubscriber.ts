@@ -9,11 +9,15 @@ export default function useSubscriber() {
       const uri = encodeURIComponent;
 
       const params = `${uri(room)}/${uri(participantId)}/${uri(policy)}?focus=${focus.map(uri).join(',')}`;
-      console.log(`${endpoint}/${params}`);
+      const url = `${endpoint}/${params}`
+      console.log(url);
+      const delay = 5000;
+      const timeoutId = setTimeout(() => console.log(`fetch ${url} no answer after ${delay}ms`), delay);
 
-      return fetch(`${endpoint}/${params}`, { headers })
-        .then(res => console.log(res))
-        .catch(error => console.log(error));
+      return fetch(url, { headers })
+        .then(res => console.log('fetch successful', res))
+        .catch(error => console.log('error fetching', error))
+        .finally(() => clearTimeout(timeoutId));
     }, []);
 
   return subscribe;
