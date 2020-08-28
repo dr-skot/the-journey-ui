@@ -56,7 +56,8 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
   const rules = basicRules.concat(moreRules);
 
-  console.log('subscribe', JSON.stringify(rules, null, 1));
+  console.log('subscribe', req.params.room, req.params.user, req.params.policy);
+  console.log(JSON.stringify(rules, null, 1));
 
   try {
     client.video.rooms(req.params.room).participants.get(req.params.user).subscribeRules.update({

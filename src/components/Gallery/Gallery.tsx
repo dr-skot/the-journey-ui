@@ -8,6 +8,8 @@ import { range, sortBy } from 'lodash';
 import { not, propsEqual } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
 import useLocalDataTrack from './useLocalDataTrack';
+import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 // both with and without shift key; first half of this string will be used for the labels
 const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./qwertyuiopasdfghjkl:zxcvbnm<>?';
@@ -61,6 +63,9 @@ export default function Gallery({ isOperator }: GalleryProps) {
   const [showHotKeys, setShowHotKeys] = useState<boolean>(false);
   const [windowWidth, windowHeight] = useWindowSize();
   const localDataTrack = useLocalDataTrack();
+  const subscribe = useSubscriber();
+  // TODO make subscribe params default to room.name and room.localParticipant.identity
+  const { room } = useVideoContext();
 
   const toggleFocus = useCallback((participant: IParticipant) => (
     setFocusGroup(focusGroup.find(propsEqual('sid')(participant))
@@ -70,7 +75,11 @@ export default function Gallery({ isOperator }: GalleryProps) {
 
   // send the focusGroup sids when they change
   useEffect(() => {
+    // TODO have focus group send better video
     if (isOperator) localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
+    // TODO subscribe to audio streams if operator
+    subscribe(room.name, room.localParticipant.identity, focusGroup.length ? 'enlarger' : 'gallery',
+      focusGroup.map((p) => p.identity));
   }, [focusGroup, isOperator, localDataTrack]);
 
   useEffect(() => {
