@@ -76,6 +76,8 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
 
 });
 
-app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'build/index.html')));
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, 'build/index.html'))
+});
 
 app.listen(port, () => console.log(`token server running on ${port}`));

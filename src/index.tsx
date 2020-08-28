@@ -19,11 +19,9 @@ import UnsupportedBrowserWarning from './components/UnsupportedBrowserWarning/Un
 import MockGallery from './components/MockGallery/Gallery';
 
 const VideoApp = () => {
-  const { error, setError, settings } = useAppState();
+  const { setError, settings } = useAppState();
   const connectionOptions = generateConnectionOptions(settings);
   const { view } = useParams()
-
-  console.log('render VideoApp', { connectionOptions, view, error, setError, settings });
 
   return (
     <UnsupportedBrowserWarning>
@@ -36,7 +34,6 @@ const VideoApp = () => {
   );
 };
 
-console.log('ReoctDOM.render');
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />

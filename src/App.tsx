@@ -12,6 +12,7 @@ import GalleryMenuBar from './components/Gallery/JoinGallery';
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
 import Room from './components/Show/Room';
+import DelayedRoom from './components/Show/DelayedRoom';
 
 const Container = styled('div')({
   display: 'grid',
@@ -28,14 +29,12 @@ export default function App() {
   // @ts-ignore
   const { view } = params;
 
-  console.log('render App', { roomState, params });
-
   function getView() {
-    console.log('getView', { view, roomState });
     // @ts-ignore
-    if (view === 'gallery' || view === 'operator') return roomState === 'disconnected' ? <div /> : <Gallery isOperator={view === 'operator'} />;
+    if (view === 'gallery' || view === 'operator') return roomState === 'disconnected'
+      ? <div /> : <Gallery isOperator={view === 'operator'} />;
     if (roomState === 'disconnected') return <LocalVideoPreview />;
-    return <Room />
+    return view === 'delayed' ? <DelayedRoom /> :<Room />;
   }
 
   // Here we would like the height of the main container to be the height of the viewport.

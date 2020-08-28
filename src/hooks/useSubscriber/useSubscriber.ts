@@ -11,7 +11,9 @@ export default function useSubscriber() {
       const params = `${uri(room)}/${uri(participantId)}/${uri(policy)}?focus=${focus.map(uri).join(',')}`;
       console.log(`${endpoint}/${params}`);
 
-      return fetch(`${endpoint}/${params}`, { headers }).then(res => res.text());
+      return fetch(`${endpoint}/${params}`, { headers })
+        .then(res => console.log(res))
+        .catch(error => console.log(error));
     }, []);
 
   return subscribe;

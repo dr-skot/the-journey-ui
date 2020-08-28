@@ -5,7 +5,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
 import { RemoteDataTrack } from 'twilio-video';
-import PartcipantTracks from '../ParticipantTracks/ParticipantTracks';
+import DelayedAudioTracks from '../ParticipantTracks/DelayedAudioTracks';
 import { isDev } from '../../utils/react-help';
 import useAudioSubscriber from '../../hooks/useAudioSubscriber';
 
@@ -27,12 +27,12 @@ const Floater = styled('div')(({ theme }) => ({
 }));
 
 export default function Room() {
-  console.log('render undelayed Room')
+  console.log('render delayed Room')
   const { room } = useVideoContext();
   const participants = useParticipants();
   const [focusGroup, setFocusGroup] = useState<string[]>([]);
   const subscribe = useSubscriber();
-  useAudioSubscriber();
+  useAudioSubscriber('delayed');
 
   // TODO move all this logic out of a rendering component
   console.log('participants', participants.length);

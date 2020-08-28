@@ -27,7 +27,7 @@ export default function SidebarSelfie() {
     <Container>
       <ScrollContainer>
         { /* TODO make these attributes optional */ }
-        <Participant participant={localParticipant} onClick={() => {}} isSelected={false} />
+        <Participant participant={localParticipant} onClick={() => {}} isSelected={false} disableAudio={true} />
       </ScrollContainer>
     </Container>
   );

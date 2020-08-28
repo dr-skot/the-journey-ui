@@ -77,10 +77,10 @@ export default function Gallery({ isOperator }: GalleryProps) {
   useEffect(() => {
     // TODO have focus group send better video
     if (isOperator) localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
-    // TODO subscribe to audio streams if operator
+    // TODO don't subscribe to audio streams if not operator
     subscribe(room.name, room.localParticipant.identity, focusGroup.length ? 'enlarger' : 'gallery',
       focusGroup.map((p) => p.identity));
-  }, [focusGroup, isOperator, localDataTrack]);
+  }, [focusGroup, isOperator, localDataTrack, room.localParticipant.identity, room.name, subscribe]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -108,7 +108,6 @@ export default function Gallery({ isOperator }: GalleryProps) {
   const containerSize = (windowWidth && windowHeight)
     ? { width: container?.clientWidth || 0, height: container?.clientHeight || 0 }
     : { width: 0, height: 0 };
-  console.log({ containerSize });
 
   const showingGallery = (focusGroup.length === 0 || forceGallery);
   const boxes = showingGallery ? arrayOfLength(30)(participants) : focusGroup;

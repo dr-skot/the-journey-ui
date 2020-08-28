@@ -18,6 +18,9 @@ export interface StateContextType {
   setActiveSinkId(sinkId: string): void;
   settings: Settings;
   dispatchSetting: React.Dispatch<SettingsAction>;
+  audioDelay: number;
+  setAudioDelay(delay: number): void;
+  audioContext: AudioContext;
 }
 
 export const StateContext = createContext<StateContextType>(null!);
@@ -36,6 +39,8 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [isFetching, setIsFetching] = useState(false);
   const [activeSinkId, setActiveSinkId] = useState('default');
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
+  const [audioDelay, setAudioDelay] = useState(0);
+  const [audioContext] = useState(AudioContext && new AudioContext());
 
   let contextValue = {
     error,
@@ -45,6 +50,9 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     setActiveSinkId,
     settings,
     dispatchSetting,
+    audioDelay,
+    setAudioDelay,
+    audioContext,
   } as StateContextType;
 
   if (process.env.REACT_APP_SET_AUTH === 'firebase') {

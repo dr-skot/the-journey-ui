@@ -10,6 +10,8 @@ export default function AudioTrack({ track }: AudioTrackProps) {
   const { activeSinkId } = useAppState();
   const audioEl = useRef<HTMLAudioElement>();
 
+  console.log('AudioTrack render');
+
   useEffect(() => {
     audioEl.current = track.attach();
     audioEl.current.setAttribute('data-cy-audio-track-name', track.name);
