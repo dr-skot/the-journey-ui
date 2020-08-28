@@ -26,14 +26,6 @@ SUBSCRIBE_RULES = {
 app.use(express.static(path.join(__dirname, 'build')));
 const port = process.env.PORT || 8081;
 
-app.use (function (req, res, next) {
-  if (req.secure) { // request was via https, so do no special handling
-    next();
-  } else { // request was via http, so redirect to https
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-
 app.get('/token', (req, res) => {
   console.log('token requested');
   const { identity, roomName } = req.query;
@@ -46,6 +38,16 @@ app.get('/token', (req, res) => {
   res.send(token.toJwt());
   console.log(`issued token for ${identity} in room ${roomName}`);
 });
+
+/*
+app.use (function (req, res, next) {
+  if (req.secure) { // request was via https, so do no special handling
+    next();
+  } else { // request was via http, so redirect to https
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+});
+*/
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
