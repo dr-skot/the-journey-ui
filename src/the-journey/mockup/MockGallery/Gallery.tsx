@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { range } from 'lodash';
 import { styled } from '@material-ui/core/styles';
-import Nobody from '../../mockups/Nobody/Nobody';
+import Nobody from '../Nobody/Nobody';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { not, propsEqual } from '../../utils/functional';
 

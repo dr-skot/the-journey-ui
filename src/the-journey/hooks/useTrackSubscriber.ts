@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
-export default function useSubscriber() {
+const TIMEOUT_DELAY = 5000;
+
+export default function useTrackSubscriber() {
   const { room: currentRoom } = useVideoContext();
 
   const subscribe = useCallback(
@@ -14,13 +16,17 @@ export default function useSubscriber() {
 
       const params = `${uri(room)}/${uri(participantId)}/${uri(policy)}?focus=${focus.map(uri).join(',')}`;
       const url = `${endpoint}/${params}`
-      console.log(url);
-      const delay = 5000;
-      const timeoutId = setTimeout(() => console.log(`fetch ${url} no answer after ${delay}ms`), delay);
+
+      console.log(`fetching ${url}`);
+
+      const timeoutId = setTimeout(
+        () => console.log(`fetch ${url} no answer after ${TIMEOUT_DELAY}ms`)
+        , TIMEOUT_DELAY
+      );
 
       return fetch(url, { headers })
-        .then(res => console.log('fetch successful', res))
-        .catch(error => console.log('error fetching', error))
+        .then(res => console.log(`${policy} subscribe successful, result`, res))
+        .catch(error => console.log(`error subscribing to ${policy}:`, error))
         .finally(() => clearTimeout(timeoutId));
     }, []);
 

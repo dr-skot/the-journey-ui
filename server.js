@@ -20,11 +20,11 @@ function noop() {}
 SUBSCRIBE_RULES = {
   basic: () => [
     { type: 'exclude', all: true },
-    { type: 'include', publisher: 'admin-user', kind: 'data' },
+    { type: 'include', kind: 'data' },
   ],
   listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
   gallery: () => [{ type: 'include', kind: 'video' }],
-  enlarger: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
+  focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
   audio: () => [{ type: 'include', kind: 'audio' }],
 }
 
@@ -44,6 +44,7 @@ app.get('/token', (req, res) => {
   console.log(`issued token for ${identity} in room ${roomName}`);
 });
 
+// TODO implement this
 /*
 app.use (function (req, res, next) {
   if (req.secure) { // request was via https, so do no special handling
@@ -64,9 +65,10 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
   const rules = basicRules.concat(moreRules);
 
+  // TODO tidy up all this log output
+
   console.log('subscribe', req.params.room, req.params.user, req.params.policy);
   // console.log(JSON.stringify(rules));
-
 
   const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}/SubscribeRules`;
   const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
@@ -79,13 +81,33 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   params.append('Rules', rulesJson);
 
   fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
-    .then(res2 => { console.log(res2); res.send('success'); })
-    .then(json => { console.log(json); res.send('error', json); });
+    .then(response => {
+      console.log('success');
+      res.end(response.body.read());
+    })
+  // TODO find out what's the right way to handle this
+  // .catch(error => { console.log(json); res.end(error.body.read()); });
 });
 
 app.get('/subscribe/*', (req, res) => {
   console.log('uncaught subscribe request!');
   res.send('Error: bad subscribe request');
+})
+
+app.get('/participants/:room', (req, res) => {
+  const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants`;
+  const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
+
+  const curl = `curl -X GET ${url} -u '${auth}'`;
+  console.log(curl);
+
+  fetch(url, { method: 'get', headers: { 'Authorization': `Basic ${base64(auth)}` } })
+    .then(response => {
+      console.log('success');
+      res.end(response.body.read());
+    })
+  // TODO find out what's the right way to handle this
+    // .catch(error => { console.log(json); res.end(error.body.read()); });
 })
 
 app.get('*', (_, res) => {

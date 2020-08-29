@@ -1,3 +1,5 @@
+IMPLEMENT THIS?
+
 /*
 import useDataTrackListener from './useDataTrackListener';
 import { useEffect } from 'react';
@@ -19,7 +21,7 @@ const getTracks = (participant: RemoteParticipant) => (
 );
 
 export default function useFocusGroupSubscriber() {
-  const { focusGroup } = useDataTrackListener();
+  const { focusGroup } = useAppState();
   const participantTracks = useParticipantTracks();
 
   console.log('useFocusGroupSubscriber');

@@ -1,27 +1,28 @@
 import React, { useCallback, useEffect } from 'react';
-import Slider from '@material-ui/core/Slider';
-import { useAppState } from '../../../state';
 import IconButton from '@material-ui/core/IconButton';
 import MinusIcon from '@material-ui/icons/RemoveCircle';
 import PlusIcon from '@material-ui/icons/AddCircle';
-import { renderIntoDocument } from 'react-dom/test-utils';
-import useLocalDataTrack from './useLocalDataTrack';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useLocalDataTrack from '../../../hooks/useLocalDataTrack';
+import useJourneyAppState from '../../../hooks/useJourneyAppState';
+
+const valence = (x: number) => (x < 0 ? -1 : 1);
 
 export default function DelayControl() {
-  const { audioDelay, setAudioDelay } = useAppState()
+  const { audioDelay, setAudioDelay } = useJourneyAppState();
   const localDataTrack = useLocalDataTrack();
 
   const bumpDelay = useCallback((n: number) => {
-      setAudioDelay(Math.max(0, audioDelay + n))
+      setAudioDelay(Math.max(0, audioDelay + n)) // TODO switch to useState and do this with callback
       console.log('sending delay', audioDelay + n);
       localDataTrack.send(JSON.stringify({ audioDelay: audioDelay + n }));
     }, [audioDelay, setAudioDelay, localDataTrack]);
 
   useEffect(() => {
     const handleKeys = (e: KeyboardEvent) => {
-      if (['+', '='].includes(e.key)) bumpDelay(1);
-      if (['-', '_'].includes(e.key)) bumpDelay(-1);
+      const bumpIndex = ['_-|=+'].indexOf(e.key) - 2 || -100;
+      if (bumpIndex < -2) return;
+      const bumpAmount = 1 / (10 ^ Math.abs(bumpIndex)) * valence(bumpIndex);
+      bumpDelay(bumpAmount);
     }
     document.addEventListener('keydown', handleKeys);
     return () => document.removeEventListener('keydown', handleKeys);

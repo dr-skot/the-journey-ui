@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { omit } from 'lodash';
 import { RemoteAudioTrack } from 'twilio-video';
-import { useAppState } from '../../state';
+import useJourneyAppState from '../../useJourneyAppState';
 
 function applyDelay(audioContext: AudioContext, streamSource: MediaStreamAudioSourceNode, delayTime: number) {
   streamSource.disconnect(); // TODO is this necessary?
@@ -12,7 +12,7 @@ function applyDelay(audioContext: AudioContext, streamSource: MediaStreamAudioSo
 }
 
 export default function useDelayedStreamSources() {
-  const { audioContext, audioDelay } = useAppState();
+  const { audioContext, audioDelay } = useJourneyAppState();
   const [streamSources, setStreamSources] = useState<Record<string, MediaStreamAudioSourceNode>>({});
 
   const addTrack = useCallback((track: RemoteAudioTrack) => {

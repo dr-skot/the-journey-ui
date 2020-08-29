@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Participant } from '../../mockup/MockGallery/Gallery';
+import { Participant } from '../MockGallery/Gallery';
 import KeyIcon from './KeyIcon/KeyIcon';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
 

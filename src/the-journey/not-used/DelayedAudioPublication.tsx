@@ -1,16 +1,16 @@
 import React from 'react';
-import { useAppState } from '../../state';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import useTrack from '../../hooks/useTrack/useTrack';
-import AudioTrack from '../AudioTrack/AudioTrack';
-import DelayedAudioTrack from '../../the-journey/old/AudioTrack/DelayedAudioTrack';
+import AudioTrack from '../../components/AudioTrack/AudioTrack';
+import DelayedAudioTrack from './AudioTrack/DelayedAudioTrack';
+import useJourneyAppState from '../hooks/useJourneyAppState';
 
 interface DelayedAudioPublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
 }
 
 export default function DelayedAudioPublication({ publication }: DelayedAudioPublicationProps) {
-  const { audioContext } = useAppState();
+  const { audioContext } = useJourneyAppState();
   // TODO figure out why useTrack is returning null
   const track = useTrack(publication);
 

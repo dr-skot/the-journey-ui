@@ -1,12 +1,13 @@
-import useDataTrackListener from './useDataTrackListener';
 import { useEffect } from 'react';
-import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
+import useTrackSubscriber from '../useTrackSubscriber';
+import useJourneyAppState from '../useJourneyAppState';
 
+// TODO have focus group send better video
 // updates track subscriptions when focus group changes
 
-export default function useFocusGroupSubscriber() {
-  const { focusGroup } = useDataTrackListener();
-  const subscribe = useSubscriber();
+export default function useFocusGroupAudioSubscriber() {
+  const { focusGroup } = useJourneyAppState();
+  const subscribe = useTrackSubscriber();
 
   useEffect(() => {
     console.log('focus group changed: updating subscriptions');

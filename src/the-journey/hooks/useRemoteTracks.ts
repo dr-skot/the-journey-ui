@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { RemoteParticipant, RemoteTrack, RemoteTrackPublication } from 'twilio-video';
-import useParticipants from './useParticipants/useParticipants';
-import useVideoContext from './useVideoContext/useVideoContext';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 interface ParticipantTracks {
   participant: RemoteParticipant,
@@ -13,7 +13,11 @@ const getTracks = (participants: RemoteParticipant[]) => participants.map((p) =>
   tracks: Array.from(p.tracks.values()).map(p => p.track) as RemoteTrack[],
 }));
 
-export default function useParticipantTracks() {
+export function justTracks(kind: string, participantTracks: ParticipantTracks[]) {
+  return participantTracks.flatMap(pt => pt.tracks).filter(track => track.kind === kind);
+};
+
+export default function useRemoteTracks() {
   const { room } = useVideoContext();
   const participants = useParticipants();
   const [tracks, setTracks] = useState<ParticipantTracks[]>([]);

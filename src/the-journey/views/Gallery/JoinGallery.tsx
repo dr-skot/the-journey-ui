@@ -11,8 +11,8 @@ import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreen
 import Menu from '../../../components/MenuBar/Menu/Menu';
 import { v4 as uuidv4 } from 'uuid';
 import { isDev } from '../../utils/react-help';
-import useSubscriber from '../../../hooks/useSubscriber/useSubscriber';
-import DelayControl from './DelayControl';
+import useTrackSubscriber from '../../hooks/useTrackSubscriber';
+import DelayControl from './Controls/DelayControl';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -69,7 +69,7 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
   const roomState = useRoomState();
   const [tryingToJoin, setTryingToJoin] = useState(false);
   const classes = useStyles();
-  const subscribe = useSubscriber();
+  const subscribe = useTrackSubscriber();
 
   const roomName = isDev() ? 'dev-room' : 'room';
 

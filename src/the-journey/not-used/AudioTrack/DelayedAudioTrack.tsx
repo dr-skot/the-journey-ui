@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
-import { useAppState } from '../../../state';
+import useJourneyAppState from '../../hooks/useJourneyAppState';
 
 // TODO support activeSinkId
 
@@ -9,7 +9,7 @@ interface DelayedAudioTrackProps {
 }
 
 export default function DelayedAudioTrack({ track }: DelayedAudioTrackProps) {
-  const { audioDelay, audioContext } = useAppState();
+  const { audioDelay, audioContext } = useJourneyAppState();
 
   console.log('Delayed AudioTrack baseLatency', audioContext.baseLatency);
 

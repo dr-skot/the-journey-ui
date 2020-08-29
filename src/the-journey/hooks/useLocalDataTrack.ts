@@ -1,6 +1,6 @@
 import { LocalDataTrack } from 'twilio-video';
 import { useEffect, useState } from 'react';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 const { values } = Object;
 

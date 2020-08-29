@@ -16,7 +16,7 @@ import { Typography } from '@material-ui/core';
 import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
 import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
 import { isDev } from '../../utils/react-help';
-import useSubscriber from '../../../hooks/useSubscriber/useSubscriber';
+import useTrackSubscriber from '../../hooks/useTrackSubscriber';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,7 +66,7 @@ export default function MenuBar() {
   const { user, getToken, isFetching } = useAppState();
   const { isConnecting, connect, isAcquiringLocalTracks } = useVideoContext();
   const roomState = useRoomState();
-  const subscribe = useSubscriber();
+  const subscribe = useTrackSubscriber();
 
   const [name, setName] = useState<string>(user?.displayName || '');
   const roomName = isDev() ? 'dev-room' : 'room';

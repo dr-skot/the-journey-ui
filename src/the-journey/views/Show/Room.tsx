@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './SidebarSelfie';
 import { isDev } from '../../utils/react-help';
-import useAudioSubscribeWatcher from '../../hooks/useAudioSubscriber/useAudioElementSubscribeWatcher';
-import useDataTrackListener from '../../hooks/useDataTrackListener';
-import useFocusGroupSubscriber from '../../hooks/useFocusGroupSubscriber';
+import useAudioElementSubscribeListener from '../../hooks/useAudioSubscribeListener/useAudioElementSubscribeListener';
+import useFocusGroupAudioSubscriber from '../../hooks/useFocusGroupSubscriber/useFocusGroupAudioSubscriber';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -25,8 +24,8 @@ const Floater = styled('div')(({ theme }) => ({
 
 export default function Room() {
   console.log('render undelayed Room')
-  useFocusGroupSubscriber();
-  useAudioSubscribeWatcher();
+  useFocusGroupAudioSubscriber();
+  useAudioElementSubscribeListener();
 
   return (
     <Container>

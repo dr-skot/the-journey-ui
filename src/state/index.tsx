@@ -4,6 +4,7 @@ import { settingsReducer, initialSettings, Settings, SettingsAction } from './se
 import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
 import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
 import { User } from 'firebase';
+import useJourneyAppState from '../the-journey/hooks/useJourneyAppState';
 
 export interface StateContextType {
   error: TwilioError | null;
@@ -18,9 +19,6 @@ export interface StateContextType {
   setActiveSinkId(sinkId: string): void;
   settings: Settings;
   dispatchSetting: React.Dispatch<SettingsAction>;
-  audioDelay: number;
-  setAudioDelay(delay: number): void;
-  audioContext: AudioContext;
 }
 
 export const StateContext = createContext<StateContextType>(null!);
@@ -39,20 +37,12 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [isFetching, setIsFetching] = useState(false);
   const [activeSinkId, setActiveSinkId] = useState('default');
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
-  const [audioDelay, setAudioDelay] = useReducer((_: number, delay: number) => delay, 0);
-  const [audioContext] = useState(AudioContext && new AudioContext());
 
   let contextValue = {
-    error,
-    setError,
+    error, setError,
     isFetching,
-    activeSinkId,
-    setActiveSinkId,
-    settings,
-    dispatchSetting,
-    audioDelay,
-    setAudioDelay,
-    audioContext,
+    activeSinkId, setActiveSinkId,
+    settings, dispatchSetting,
   } as StateContextType;
 
   if (process.env.REACT_APP_SET_AUTH === 'firebase') {

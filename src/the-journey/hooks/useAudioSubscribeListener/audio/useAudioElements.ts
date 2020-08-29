@@ -1,16 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { omit } from 'lodash';
 import { RemoteAudioTrack } from 'twilio-video';
-import { useAppState } from '../../state';
-
-function applyDelay(audioContext: AudioContext, streamSource: MediaStreamAudioSourceNode, delayTime: number) {
-  streamSource.disconnect(); // TODO is this necessary?
-  streamSource.connect(new DelayNode(audioContext, { delayTime })).connect(audioContext.destination);
-  return streamSource
-}
 
 export default function useAudioElements() {
-  const { audioContext, audioDelay } = useAppState();
   const [audioElements, setAudioElements] = useState<Record<string, RemoteAudioTrack>>({});
 
   const addTrack = useCallback((track: RemoteAudioTrack) => {
