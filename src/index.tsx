@@ -16,7 +16,7 @@ import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 import UnsupportedBrowserWarning from './components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
-import MockGallery from './components/MockGallery/Gallery';
+import MockGallery from './the-journey/mockup/MockGallery/Gallery';
 
 const VideoApp = () => {
   const { setError, settings } = useAppState();

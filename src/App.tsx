@@ -4,15 +4,15 @@ import { styled } from '@material-ui/core/styles';
 
 import Controls from './components/Controls/Controls';
 import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
-import MenuBar from './components/MenuBar/NamelessMenuBar';
+import MenuBar from './the-journey/views/Show/NamelessMenuBar';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-import Gallery from './components/Gallery/Gallery';
-import GalleryMenuBar from './components/Gallery/JoinGallery';
+import Gallery from './the-journey/views/Gallery/Gallery';
+import GalleryMenuBar from './the-journey/views/Gallery/JoinGallery';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
-import Room from './components/Show/Room';
-import DelayedRoom from './components/Show/DelayedRoom';
+import Room from './the-journey/views/Show/Room';
+import DelayedRoom from './the-journey/views/Show/DelayedRoom';
 
 const Container = styled('div')({
   display: 'grid',

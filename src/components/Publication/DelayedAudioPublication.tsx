@@ -3,7 +3,7 @@ import { useAppState } from '../../state';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import useTrack from '../../hooks/useTrack/useTrack';
 import AudioTrack from '../AudioTrack/AudioTrack';
-import DelayedAudioTrack from '../AudioTrack/DelayedAudioTrack';
+import DelayedAudioTrack from '../../the-journey/old/AudioTrack/DelayedAudioTrack';
 
 interface DelayedAudioPublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
