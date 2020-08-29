@@ -80,8 +80,8 @@ export default function MenuBar() {
     console.log('joining');
     getToken(name, roomName).then(token => connect(token))
       .then(newRoom => subscribe(roomName, name,'data-only'))
-      .then((result) => console.log(result))
-      .catch((error) => console.log(error));
+      .then((result) => console.log('dato-only succeeded', result))
+      .catch((error) => console.log('data-only failed', error));
   };
 
   return (

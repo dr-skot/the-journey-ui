@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './SidebarSelfie';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
-import { RemoteDataTrack } from 'twilio-video';
-import PartcipantTracks from '../ParticipantTracks/ParticipantTracks';
 import { isDev } from '../../utils/react-help';
-import useAudioSubscriber from '../../hooks/useAudioSubscriber/useAudioSubscriber';
+import useAudioSubscribeWatcher from '../../hooks/useAudioSubscriber/useAudioElementSubscribeWatcher';
+import useDataTrackListener from '../../state/useDataTrackListener';
+import useFocusGroupSubscriber from '../../state/useFocusGroupSubscriber';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -28,44 +25,13 @@ const Floater = styled('div')(({ theme }) => ({
 
 export default function Room() {
   console.log('render undelayed Room')
-  const { room } = useVideoContext();
-  const participants = useParticipants();
-  const [focusGroup, setFocusGroup] = useState<string[]>([]);
-  const subscribe = useSubscriber();
-  useAudioSubscriber();
-
-  // TODO move all this logic out of a rendering component
-  console.log('participants', participants.length);
-  console.log('focus group', focusGroup);
-
-  useEffect(() => {
-    const tracks: RemoteDataTrack[] =  [];
-    const trackListener = (data: string) => {
-      const newFocus = JSON.parse(data);
-      setFocusGroup(newFocus);
-      subscribe(room.name, room.localParticipant.identity, 'listen', newFocus);
-    }
-    const roomListener = (track: RemoteDataTrack) => {
-      if (track.kind === 'data') {
-        console.log('subscribed to data track!');
-        tracks.push(track);
-        track.on('message', trackListener);
-      }
-    };
-    room.on('trackSubscribed', roomListener);
-    return () => {
-      room.removeListener('trackSubscribed', roomListener);
-      tracks.forEach((track) => track.removeListener('message', trackListener));
-    }
-  }, [room, subscribe]);
-
-  const audios = participants.filter(p => focusGroup.includes(p.sid));
+  useFocusGroupSubscriber();
+  useAudioSubscribeWatcher();
 
   return (
     <Container>
       <Floater>
         <SidebarSelfie />
-        { audios.map(p => <PartcipantTracks participant={p} />) }
       </Floater>
       <Main>
         {!isDev() && (

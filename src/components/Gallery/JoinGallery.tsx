@@ -12,6 +12,7 @@ import Menu from '../MenuBar/Menu/Menu';
 import { v4 as uuidv4 } from 'uuid';
 import { isDev } from '../../utils/react-help';
 import useSubscriber from '../../hooks/useSubscriber/useSubscriber';
+import DelayControl from './DelayControl';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -91,6 +92,7 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
         <Toolbar className={classes.toolbar}>
           {(isConnecting || isFetching) && <CircularProgress className={classes.loadingSpinner} />}
           <div className={classes.rightButtonContainer}>
+            { isOperator && roomState === 'connected' && <DelayControl /> }
             <ToggleFullscreenButton />
             <Menu />
           </div>

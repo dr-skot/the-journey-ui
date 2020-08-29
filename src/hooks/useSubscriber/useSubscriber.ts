@@ -1,8 +1,12 @@
 import { useCallback } from 'react';
+import useVideoContext from '../useVideoContext/useVideoContext';
 
 export default function useSubscriber() {
+  const { room: currentRoom } = useVideoContext();
+
   const subscribe = useCallback(
-    (room: string, participantId: string, policy: string = 'data_only', focus: string[] = []) => {
+    (room: string = currentRoom.name, participantId: string = currentRoom.localParticipant.identity,
+     policy: string = 'data_only', focus: string[] = []) => {
       const headers = new window.Headers();
       const endpoint = process.env.REACT_APP_SUBSCRIBE_ENDPOINT || '/subscribe';
 

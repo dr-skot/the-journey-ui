@@ -34,7 +34,7 @@ export default function App() {
     if (view === 'gallery' || view === 'operator') return roomState === 'disconnected'
       ? <div /> : <Gallery isOperator={view === 'operator'} />;
     if (roomState === 'disconnected') return <LocalVideoPreview />;
-    return view === 'delayed' ? <DelayedRoom /> :<Room />;
+    return view === 'delayed' ? <DelayedRoom /> : <Room />;
   }
 
   // Here we would like the height of the main container to be the height of the viewport.

@@ -1,15 +1,19 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const fetch = require('node-fetch');
 const Twilio = require('twilio');
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+const URLSearchParams = require('url').URLSearchParams;
 require('dotenv').config();
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
+
+const base64 = (string) => Buffer.from(string, 'utf-8').toString('base64');
 
 function noop() {}
 
@@ -21,6 +25,7 @@ SUBSCRIBE_RULES = {
   listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
   gallery: () => [{ type: 'include', kind: 'video' }],
   enlarger: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
+  audio: () => [{ type: 'include', kind: 'audio' }],
 }
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -60,22 +65,22 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const rules = basicRules.concat(moreRules);
 
   console.log('subscribe', req.params.room, req.params.user, req.params.policy);
-  console.log(JSON.stringify(rules, null, 1));
+  // console.log(JSON.stringify(rules));
 
-  try {
-    client.video.rooms(req.params.room).participants.get(req.params.user).subscribeRules.update({
-      rules: rules
-    }).then(result => {
-        console.log('Subscribe Rules updated successfully', room, user, policy, focus );
-        res.send('Subscribe Rules updated successfully');
-      }).catch(error => {
-        console.log('Error updating rules', error, room, user, policy, focus);
-        res.send('Error updating rules ' + error);
-      });
-  } catch (error) {
-    console.log('Error updating rules', error, room, user, policy, focus);
-    res.send('Error updating rules ' + error);
-  }
+
+  const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}/SubscribeRules`;
+  const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
+  const rulesJson = JSON.stringify(rules);
+
+  const curl = `curl -X POST ${url} -u '${auth}' --data Rules='${rulesJson}' -H 'Content-Type: application/x-www-form-urlencoded'`;
+  console.log(curl);
+
+  const params = new URLSearchParams();
+  params.append('Rules', rulesJson);
+
+  fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
+    .then(res2 => { console.log(res2); res.send('success'); })
+    .then(json => { console.log(json); res.send('error', json); });
 });
 
 app.get('/subscribe/*', (req, res) => {

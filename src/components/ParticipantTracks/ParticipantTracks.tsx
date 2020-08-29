@@ -39,7 +39,7 @@ export default function ParticipantTracks({
     filteredPublications = publications.filter(p => !p.trackName.includes('screen'));
   }
 
-  if (disableVideo) filteredPublications = publications.filter(p => p.track?.kind !== 'video');
+  if (disableVideo) filteredPublications = publications.filter(p => p.kind !== 'video');
 
   return (
     <>

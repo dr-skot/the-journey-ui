@@ -76,7 +76,7 @@ export default function Gallery({ isOperator }: GalleryProps) {
   // send the focusGroup sids when they change
   useEffect(() => {
     // TODO have focus group send better video
-    if (isOperator) localDataTrack.send(JSON.stringify(focusGroup.map((p) => p.sid)));
+    if (isOperator) localDataTrack.send(JSON.stringify({ focus: focusGroup.map((p) => p.sid) }));
     // TODO don't subscribe to audio streams if not operator
     subscribe(room.name, room.localParticipant.identity, focusGroup.length ? 'enlarger' : 'gallery',
       focusGroup.map((p) => p.identity));
