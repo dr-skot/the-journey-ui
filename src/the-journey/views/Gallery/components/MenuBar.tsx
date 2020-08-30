@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { useAppState } from '../../../state';
-import useRoomState from '../../../hooks/useRoomState/useRoomState';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useRoomState from '../../../../hooks/useRoomState/useRoomState';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
-import Menu from '../../../components/MenuBar/Menu/Menu';
+import ToggleFullscreenButton from '../../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import Menu from '../../../../components/MenuBar/Menu/Menu';
 import { v4 as uuidv4 } from 'uuid';
-import { isDev } from '../../utils/react-help';
-import useTrackSubscriber from '../../hooks/useTrackSubscriber';
-import DelayControl from './Controls/DelayControl';
+import { isDev } from '../../../utils/react-help';
+import DelayControl from './DelayControl';
+import useRoomJoiner from '../../../hooks/useRoomJoiner';
+import { useAppState } from '../../../../state';
+import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,33 +64,43 @@ interface MenuBarProps {
 }
 
 export default function MenuBar({ isOperator }: MenuBarProps) {
-  const { user, getToken, isFetching } = useAppState();
-  const { isConnecting, connect, isAcquiringLocalTracks } = useVideoContext();
   const roomState = useRoomState();
+  const [identity, setIdentity] = useState('');
   const [tryingToJoin, setTryingToJoin] = useState(false);
   const classes = useStyles();
-  const subscribe = useTrackSubscriber();
+  const join = useRoomJoiner();
 
-  const roomName = isDev() ? 'dev-room' : 'room';
+  const { isFetching } = useAppState();
+  const { isConnecting, isAcquiringLocalTracks } = useVideoContext();
+
+  // TODO roomJoiner should know when it's okay to join
+  const okayToJoin = (
+    identity
+    && roomState === 'disconnected'
+    && !tryingToJoin
+    && !isFetching
+    && !isConnecting
+    && !isAcquiringLocalTracks
+  )
+
+  const roomName = isDev() ? 'dev-room2' : 'room2';
+  const subscribeProfile = 'gallery'
+
+  // TODO use admin and joiner adds uniqId to all names
+  useEffect(() => { setIdentity(`admin-${uuidv4()}`) }, []);
 
   useEffect(() => {
-    if (roomState === 'disconnected' && !isConnecting && !isFetching && !isAcquiringLocalTracks && !tryingToJoin) {
+    if (okayToJoin) {
       setTryingToJoin(true);
-      const name = isOperator ? 'admin-user' : `admin-${uuidv4()}`
-      getToken(name, roomName)
-        .then(token => connect(token))
-        // TODO maybe this subscribe happens later on Gallery page
-        .then(newRoom => subscribe(roomName, name,'gallery'))
-        .then((result) => console.log(result))
-        .then(() => setTryingToJoin(false))
-        .catch((error) => console.log(error));
+      join(roomName, identity, subscribeProfile)
+        .finally(() => setTryingToJoin(false))
     }
-  }, [roomState, isConnecting, isFetching, isAcquiringLocalTracks, user, tryingToJoin, connect, getToken, isOperator, roomName, subscribe]);
+  }, [okayToJoin, join, setTryingToJoin, roomName, identity, subscribeProfile]);
 
   return (
       <AppBar className={classes.container} position="static">
         <Toolbar className={classes.toolbar}>
-          {(isConnecting || isFetching) && <CircularProgress className={classes.loadingSpinner} />}
+          {(tryingToJoin) && <CircularProgress className={classes.loadingSpinner} />}
           <div className={classes.rightButtonContainer}>
             { isOperator && roomState === 'connected' && <DelayControl /> }
             <ToggleFullscreenButton />

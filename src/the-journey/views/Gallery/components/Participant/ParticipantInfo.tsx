@@ -1,5 +1,5 @@
 import { Participant as IParticipant } from 'twilio-video';
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
 import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ParticipantInfoProps {
   participant: IParticipant;
   children: React.ReactNode;
-  onClick: () => void;
+  onClick: MouseEventHandler;
   selectedIndex: number;
   width: number;
   height: number;

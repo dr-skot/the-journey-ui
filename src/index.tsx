@@ -1,3 +1,5 @@
+import './wdyr';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useParams } from 'react-router-dom';
@@ -8,7 +10,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import App from './App';
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import ErrorDialog from './components/ErrorDialog/ErrorDialog';
+import ErrorDialog from './components/ErrorDialog/ErrorDialog';
 import generateConnectionOptions from './utils/generateConnectionOptions/generateConnectionOptions';
 import LoginPage from './components/LoginPage/LoginPage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
@@ -19,15 +21,16 @@ import UnsupportedBrowserWarning from './components/UnsupportedBrowserWarning/Un
 import MockGallery from './the-journey/mockup/MockGallery/Gallery';
 
 const VideoApp = () => {
-  const { setError, settings } = useAppState();
+  const { error, setError, settings } = useAppState();
   const connectionOptions = generateConnectionOptions(settings);
   const { view } = useParams()
+
+  console.log('render VideoApp', { setError, settings, connectionOptions, view });
 
   return (
     <UnsupportedBrowserWarning>
       <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery' || view === 'operator'}>
-        { /* TODO reinstate error reporting */ }
-        { /* <ErrorDialog dismissError={() => setError(null)} error={error} /> */ }
+        <ErrorDialog dismissError={() => setError(null)} error={error} />
         <App />
       </VideoProvider>
     </UnsupportedBrowserWarning>

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React from 'react';
-import Gallery from './Gallery';
+import FixedGallery from './Gallery';
 import { shallow } from 'enzyme';
 import useSelectedParticipant from '../../../components/VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
@@ -18,7 +18,7 @@ describe('the Gallery component', () => {
     mockRoom.participants = new Map([[0, { sid: 0 }], [1, { sid: 1 }]]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
-    const wrapper = shallow(<Gallery />);
+    const wrapper = shallow(<FixedGallery />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -28,7 +28,7 @@ describe('the Gallery component', () => {
     mockRoom.participants = new Map([[0, { sid: 0 }], [1, { sid: 1 }]]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
-    const wrapper = shallow(<Gallery />);
+    const wrapper = shallow(<FixedGallery />);
     expect(
       wrapper
         .find('Participant')
@@ -44,7 +44,7 @@ describe('the Gallery component', () => {
     mockRoom.participants = new Map([[0, mockParticipant], [1, { sid: 1 }]]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
-    const wrapper = shallow(<Gallery />);
+    const wrapper = shallow(<FixedGallery />);
     expect(
       wrapper
         .find('Participant')

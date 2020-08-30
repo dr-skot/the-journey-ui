@@ -53,6 +53,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
     onError(error);
   };
 
+
   const {
     localTracks,
     getLocalVideoTrack,

@@ -1,20 +1,17 @@
 import { useEffect } from 'react';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
-import { RemoteAudioTrack, RemoteTrackPublication } from 'twilio-video';
 import useDelayedStreamSources from './audio/useDelayedStreamSources';
-import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import useRemoteTracks, { justTracks } from '../useRemoteTracks';
-import useAudioElements from './audio/useAudioElements';
 import useArrayDiffer from '../../utils/useArrayDiffer';
 
 export default function useDelayedSourceSubscribeListener() {
   const tracks = justTracks('audio', useRemoteTracks());
   const { addTrack, removeTrack } = useDelayedStreamSources();
-  const diff = useArrayDiffer([])
+  // const diff = useArrayDiffer()
+  const diff = (tracks: any[]) => ({ added: [], removed: [] });
 
   useEffect(() => {
     const { added, removed } = diff(tracks);
-    added.forEach(track => addTrack);
-    removed.forEach(track => removeTrack);
-  }, tracks);
+    added.forEach(addTrack);
+    removed.forEach(removeTrack);
+  }, [tracks, diff, addTrack, removeTrack]);
 }

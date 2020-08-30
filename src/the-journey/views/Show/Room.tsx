@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { styled } from '@material-ui/core/styles';
-import SidebarSelfie from './SidebarSelfie';
+import SidebarSelfie from './components/SidebarSelfie';
 import { isDev } from '../../utils/react-help';
 import useAudioElementSubscribeListener from '../../hooks/useAudioSubscribeListener/useAudioElementSubscribeListener';
 import useFocusGroupAudioSubscriber from '../../hooks/useFocusGroupSubscriber/useFocusGroupAudioSubscriber';
+import useDelayedSourceSubscribeListener from '../../hooks/useAudioSubscribeListener/useDelayedSourceSubscribeListener';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -22,11 +23,33 @@ const Floater = styled('div')(({ theme }) => ({
   width: theme.sidebarWidth,
 }));
 
-export default function Room() {
-  console.log('render undelayed Room')
+// TODO implement this
+export function NoSwitchRoom() {
+  console.log('render noswitch Room')
   useFocusGroupAudioSubscriber();
   useAudioElementSubscribeListener();
 
+  return <BaseRoom />
+}
+
+export function UndelayedRoom() {
+  console.log('render undelayed Room')
+  //useFocusGroupAudioSubscriber();
+  //useAudioElementSubscribeListener();
+
+  return <BaseRoom />
+}
+
+export default function Room() {
+  console.log('render delayed Room')
+  useFocusGroupAudioSubscriber();
+  useDelayedSourceSubscribeListener();
+
+  return <BaseRoom />
+}
+Room.whyDidYouRender = true;
+
+function BaseRoom() {
   return (
     <Container>
       <Floater>

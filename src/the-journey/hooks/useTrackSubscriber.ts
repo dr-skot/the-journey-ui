@@ -3,6 +3,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 const TIMEOUT_DELAY = 5000;
 
+export type SubscribeProfile = 'data-only' | 'listen' | 'audio' | 'focus' | 'gallery' | 'listen' | 'none'
+
 export default function useTrackSubscriber() {
   const { room: currentRoom } = useVideoContext();
 
@@ -28,7 +30,7 @@ export default function useTrackSubscriber() {
         .then(res => console.log(`${policy} subscribe successful, result`, res))
         .catch(error => console.log(`error subscribing to ${policy}:`, error))
         .finally(() => clearTimeout(timeoutId));
-    }, []);
+    }, [currentRoom]);
 
   return subscribe;
 }

@@ -9,12 +9,14 @@ export default function useFocusGroupAudioSubscriber() {
   const { focusGroup } = useJourneyAppState();
   const subscribe = useTrackSubscriber();
 
+  console.log('useFocusGroupAudioSubscriber');
+
   useEffect(() => {
     console.log('focus group changed: updating subscriptions');
     // TODO reorder these params
     subscribe(undefined, undefined, 'listen', focusGroup)
       .then((result) => console.log('listen subscription succeeded', result))
       .catch((error) => console.log('listen subscription failed', error));
-  }, [focusGroup]);
+  }, [focusGroup, subscribe]);
 
 }

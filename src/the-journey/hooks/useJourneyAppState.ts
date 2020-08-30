@@ -26,7 +26,8 @@ export default function useJourneyAppState() {
   }, [localDataTrack, focusGroup, audioDelay]);
 
   // send updates when values change
-  useEffect(() => sendUpdate({ focusGroup, audioDelay }), [focusGroup, audioDelay]);
+  useEffect(() => sendUpdate({ focusGroup, audioDelay }),
+    [focusGroup, audioDelay, sendUpdate]);
 
   // send updates when new participants join
   useEffect(() => {

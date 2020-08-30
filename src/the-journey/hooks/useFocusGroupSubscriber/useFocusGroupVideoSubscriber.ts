@@ -7,14 +7,11 @@ import useJourneyAppState from '../useJourneyAppState';
 export default function useFocusGroupVideoSubscriber() {
   const { focusGroup } = useJourneyAppState();
   const subscribe = useTrackSubscriber();
+  const subscribeProfile = focusGroup.length ? 'focus' : 'gallery';
 
   useEffect(() => {
     console.log('focus group changed: updating subscriptions');
     // TODO reorder these params
-    // TODO have subscribe do its own logging
-    subscribe(undefined, undefined, 'focus', focusGroup)
-      .then((result) => console.log('focus subscription succeeded', result))
-      .catch((error) => console.log('focus subscription failed', error));
-  }, [focusGroup]);
-
+    subscribe(undefined, undefined, subscribeProfile, focusGroup);
+  }, [focusGroup, subscribe, subscribeProfile]);
 }

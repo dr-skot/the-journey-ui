@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { Participant as IParticipant } from 'twilio-video';
-import ParticipantTracks from '../../../../components/ParticipantTracks/ParticipantTracks';
+import ParticipantTracks from '../../../../../components/ParticipantTracks/ParticipantTracks';
 import ParticipantInfo from './ParticipantInfo';
 
 interface ParticipantProps {
   participant: IParticipant,
-  onClick: () => void;
+  onClick: MouseEventHandler;
   selectedIndex: number;
   width: number,
   height: number,

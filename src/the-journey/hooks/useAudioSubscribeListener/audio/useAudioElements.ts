@@ -20,7 +20,7 @@ export default function useAudioElements() {
     console.log('removing audioElement for track');
     track.detach().forEach(el => el.remove());
     setAudioElements(prevAudioElements => omit(prevAudioElements, [track.sid]));
-  }, [audioElements]);
+  }, []);
 
   return { addTrack, removeTrack };
 }

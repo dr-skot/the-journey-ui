@@ -1,7 +1,7 @@
 import React from 'react';
-import Participant from '../../../components/Participant/Participant';
+import Participant from '../../../../components/Participant/Participant';
 import { styled } from '@material-ui/core/styles';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 
 const Container = styled('aside')(({ theme }) => ({
   padding: '0.5em',

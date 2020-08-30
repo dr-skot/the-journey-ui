@@ -3,6 +3,7 @@ import { Participant, Track } from 'twilio-video';
 import Publication from '../Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { listKey } from '../../the-journey/utils/react-help';
 
 interface ParticipantTracksProps {
   participant: Participant;
@@ -43,9 +44,9 @@ export default function ParticipantTracks({
 
   return (
     <>
-      {filteredPublications.map(publication => (
+      {filteredPublications.map((publication, i) => (
         <Publication
-          key={publication.kind}
+          key={listKey(publication.kind, i)}
           publication={publication}
           participant={participant}
           isLocal={isLocal}

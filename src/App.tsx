@@ -4,15 +4,16 @@ import { styled } from '@material-ui/core/styles';
 
 import Controls from './components/Controls/Controls';
 import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
-import MenuBar from './the-journey/views/Show/NamelessMenuBar';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-import Gallery from './the-journey/views/Gallery/Gallery';
-import GalleryMenuBar from './the-journey/views/Gallery/JoinGallery';
+
+import AudienceMenuBar from './the-journey/views/Show/components/MenuBar';
+import GalleryMenuBar from './the-journey/views/Gallery/components/MenuBar';
+import { FixedGallery, Operator } from './the-journey/views/Gallery/Gallery';
+import Room from './the-journey/views/Show/Room';
+import NonDelayedRoom from './the-journey/views/Show/Room';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
-import Room from './the-journey/views/Show/Room';
-import DelayedRoom from './the-journey/views/Show/DelayedRoom';
 
 const Container = styled('div')({
   display: 'grid',
@@ -23,18 +24,38 @@ const Main = styled('main')({
   overflow: 'hidden',
 });
 
+interface ViewProps {
+  view: string,
+  roomState: string,
+}
+
+function View({ view, roomState }: ViewProps) {
+  if (roomState === 'disconnected') {
+    return ['gallery', 'operator'].includes(view) ? <div/> : <LocalVideoPreview/>;
+  }
+  switch (view) {
+    case 'operator':
+      return <Operator/>;
+    case 'gallery':
+      return <FixedGallery/>;
+    case 'nodelay':
+      return <><NonDelayedRoom/><Controls/></>
+    default:
+      return <><Room/><Controls/></>
+  }
+}
+
+
 export default function App() {
   const roomState = useRoomState();
   const params = useParams();
   // @ts-ignore
   const { view } = params;
 
-  function getView() {
-    // @ts-ignore
-    if (view === 'gallery' || view === 'operator') return roomState === 'disconnected'
-      ? <div /> : <Gallery isOperator={view === 'operator'} />;
-    if (roomState === 'disconnected') return <LocalVideoPreview />;
-    return view === 'delayed' ? <DelayedRoom /> : <Room />;
+  console.log('render App', { roomState, params, view });
+
+  function MenuBar() {
+    return ['gallery', 'operator'].includes(view) ? <GalleryMenuBar/> : <AudienceMenuBar/>;
   }
 
   // Here we would like the height of the main container to be the height of the viewport.
@@ -47,10 +68,9 @@ export default function App() {
   // TODO too many conditionals here; make different components for show and gallery
   return (
     <Container style={{ height }}>
-      { view === 'gallery' || view === 'operator' ? <GalleryMenuBar isOperator={view === 'operator'} /> : <MenuBar /> }
+      <MenuBar />
       <Main>
-        {getView()}
-        { view !== 'gallery' && <Controls /> }
+        <View view={view} roomState={roomState} />
       </Main>
       <ReconnectingNotification />
     </Container>

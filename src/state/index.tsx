@@ -4,7 +4,6 @@ import { settingsReducer, initialSettings, Settings, SettingsAction } from './se
 import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
 import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
 import { User } from 'firebase';
-import useJourneyAppState from '../the-journey/hooks/useJourneyAppState';
 
 export interface StateContextType {
   error: TwilioError | null;

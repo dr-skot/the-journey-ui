@@ -6,12 +6,12 @@ import useArrayDiffer from '../../utils/useArrayDiffer';
 export default function useAudioElementSubscribeListener() {
   const tracks = justTracks('audio', useRemoteTracks());
   const { addTrack, removeTrack } = useAudioElements();
-  const diff = useArrayDiffer([])
+  const diff = useArrayDiffer()
 
   useEffect(() => {
     const { added, removed } = diff(tracks);
-    added.forEach(track => addTrack);
-    removed.forEach(track => removeTrack);
-  }, tracks);
+    added.forEach(addTrack);
+    removed.forEach(removeTrack);
+  }, [tracks, diff, addTrack, removeTrack]);
 
 }

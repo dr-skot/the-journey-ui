@@ -23,7 +23,7 @@ export default function useDelayedStreamSources() {
     const streamSource = audioContext.createMediaStreamSource(new MediaStream([track.mediaStreamTrack]));
     applyDelay(audioContext, streamSource, audioDelay);
     setStreamSources(prevStreamSources => ({ ...prevStreamSources, [track.sid]: streamSource }));
-  }, [streamSources]);
+  }, [streamSources, audioDelay, audioContext]);
 
   const removeTrack = useCallback((track: RemoteAudioTrack) => {
     console.log('delayed stream source remove track')
@@ -40,7 +40,7 @@ export default function useDelayedStreamSources() {
     Object.values(streamSources).forEach((streamSource) => {
       if (streamSource) applyDelay(audioContext, streamSource, audioDelay);
     });
-  }, [streamSources, audioDelay]);
+  }, [streamSources, audioDelay, audioContext]);
 
   return { addTrack, removeTrack };
 }

@@ -56,6 +56,7 @@ app.use (function (req, res, next) {
 */
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
+  if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
   console.log('subscribe');
   const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
   const focus = req.query.focus || '';
