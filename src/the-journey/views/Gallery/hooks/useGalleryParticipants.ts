@@ -12,7 +12,7 @@ export default function useGalleryParticipants() {
   // TODO stabilize order somehow
   useEffect(() => {
     setGallery(sortBy(
-      Array.from(participants.values()).filter((p) => !p.identity.match(/^admin-/)),
+      Array.from(participants.values()).filter((p) => !p.identity.match(/^(admin|gallery|operator)/)),
       'sid',
     ))
   }, [participants]);

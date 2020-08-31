@@ -121,6 +121,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       break;
 
     case 'roomJoined':
+      console.log('localParticipants tracks', payload.room.localParticipant.tracks);
       document.addEventListener('beforeunload', payload.room.disconnect);
       payload.room.on('disconnected', (room: Room, error: TwilioError) =>
         dispatch('roomDisconnected', { room, error }));

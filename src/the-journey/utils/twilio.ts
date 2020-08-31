@@ -5,14 +5,14 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  CreateLocalTrackOptions,
+  CreateLocalTrackOptions, LocalVideoTrack, LocalAudioTrack,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
 import { useCallback } from 'react';
 
 const DEFAULT_OPTIONS = {
-  // tracks: [],
+  tracks: [],
   // automaticSubscription: false,
 }
 
@@ -36,7 +36,10 @@ export function connect(token: string, roomName: string, options: Video.ConnectO
 }
 
 function publishTracks(room: Room, tracks: LocalTrack[]) {
-  tracks.forEach(track => {
+  const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+  const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+
+  [videoTrack, audioTrack].forEach(track => {
     // Tracks can be supplied as arguments to the Video.connect() function and they will automatically be published.
     // However, tracks must be published manually in order to set the priority on them.
     // All video tracks are published with 'low' priority. This works because the video
