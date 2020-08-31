@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { TwilioError } from 'twilio-video';
-import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
+import { settingsReducer, initialSettings, Settings, SettingsAction } from '../../the-journey/contexts/settings/settingsReducer';
 import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
 import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
 import { User } from 'firebase';

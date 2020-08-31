@@ -4,7 +4,6 @@ import LocalAudioLevelIndicator from '../LocalAudioLevelIndicator/LocalAudioLeve
 import { makeStyles } from '@material-ui/core/styles';
 import { useAudioInputDevices } from '../deviceHooks/deviceHooks';
 import useMediaStreamTrack from '../../../../../twilio/hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../../../hooks/useVideoContext';
 import { LocalAudioTrack } from 'twilio-video';
 import { AppContext } from '../../../../contexts/AppContext';
 

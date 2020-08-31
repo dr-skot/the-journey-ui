@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
+import { v4 as uuidv4 } from 'uuid';
+import { isDev } from '../../../utils/react-help';
+
+import { AppContext } from '../../../contexts/AppContext';
+import DelayControl from './DelayControl';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import Menu from '../../../components/MenuBar/Menu/Menu';
-import { v4 as uuidv4 } from 'uuid';
-import { isDev } from '../../../utils/react-help';
-import DelayControl from './DelayControl';
-import useRoomJoiner from '../../../hooks/useRoomJoiner';
-import { AppContext } from '../../../contexts/AppContext';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,15 +59,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface MenuBarProps {
-  view: string;
+  isOperator?: boolean;
 }
 
 // TODO don't use a prop for this it causes rerenders; maybe use userType in AppContext instead
-export default function MenuBar({ view }: MenuBarProps) {
+export default function MenuBar({ isOperator }: MenuBarProps) {
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [identity, setIdentity] = useState('');
-  const isOperator = view === 'operator';
 
   console.log('MenuBar! render', { isOperator, roomStatus  });
 
@@ -74,12 +74,12 @@ export default function MenuBar({ view }: MenuBarProps) {
   const roomName = isDev() ? 'dev-room2' : 'room2';
   const subscribeProfile = 'gallery'
 
-  // TODO use admin and joiner adds uniqId to all names
-  useEffect(() => { setIdentity(`admin-${uuidv4()}`) }, []);
+  // TODO joiner adds uniqId to all names (could be timestamp instead of uuid)
+  useEffect(() => { setIdentity(isOperator ? 'operator' : `gallery-${uuidv4()}`) }, []);
 
   useEffect(() => {
     if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });
-  }, [identity]);
+  }, [roomName, identity, subscribeProfile, dispatch]);
 
   return (
       <AppBar className={classes.container} position="static">

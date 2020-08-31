@@ -8,7 +8,7 @@ export function useLocalVideoTrack() {
 
   useEffect(() => {
     if (!videoTrack) dispatch('getLocalTracks');
-  }, [videoTrack]);
+  }, [videoTrack, dispatch]);
 
   return videoTrack;
 }

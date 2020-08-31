@@ -10,9 +10,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { inputLabels, Settings } from '../../../../twilio/state/settings/settingsReducer';
-import { RenderDimensions } from '../../../../twilio/state/settings/renderDimensions';
-import { useAppState } from '../../../../twilio/state';
+import { inputLabels, Settings } from '../../../contexts/settings/settingsReducer';
+import { RenderDimensions } from '../../../contexts/settings/renderDimensions';
 import { AppContext } from '../../../contexts/AppContext';
 
 const useStyles = makeStyles({
@@ -38,15 +37,14 @@ const RenderDimensionItems = RenderDimensions.map(({ label, value }) => (
 
 export default function ConnectionOptions({ className, hidden }: { className?: string; hidden?: boolean }) {
   const classes = useStyles();
-  const { settings, dispatchSetting } = useAppState();
-  const [{ roomStatus }] = useContext(AppContext);
+  const [{ roomStatus, settings }, dispatch] = useContext(AppContext);
   const isDisabled = roomStatus !== 'disconnected';
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<{ value: unknown; name?: string }>) => {
-      dispatchSetting({ name: e.target.name as keyof Settings, value: e.target.value as string });
+      dispatch('changeSetting', { name: e.target.name as keyof Settings, value: e.target.value as string });
     },
-    [dispatchSetting]
+    [dispatch]
   );
 
   const handleNumberChange = useCallback(

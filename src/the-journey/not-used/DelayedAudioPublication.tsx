@@ -1,7 +1,7 @@
 import React from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import useTrack from '../../twilio/hooks/useTrack/useTrack';
-import AudioTrack from '../../twilio/components/AudioTrack/AudioTrack';
+import AudioElement from '../components/audio/AudioElement';
 import DelayedAudioTrack from './AudioTrack/DelayedAudioTrack';
 import useJourneyAppState from '../hooks/useJourneyAppState';
 
@@ -18,5 +18,5 @@ export default function DelayedAudioPublication({ publication }: DelayedAudioPub
   if (!track) return null;
 
   // @ts-ignore
-  return audioContext ? <DelayedAudioTrack track={track} /> : <AudioTrack track={track} />;
+  return audioContext ? <DelayedAudioTrack track={track} /> : <AudioElement track={track} />;
 }

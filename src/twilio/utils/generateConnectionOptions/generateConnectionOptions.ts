@@ -1,7 +1,7 @@
 import { ConnectOptions } from 'twilio-video';
 import { isMobile, removeUndefineds } from '../index';
-import { Settings } from '../../state/settings/settingsReducer';
-import { getResolution } from '../../state/settings/renderDimensions';
+import { Settings } from '../../../the-journey/contexts/settings/settingsReducer';
+import { getResolution } from '../../../the-journey/contexts/settings/renderDimensions';
 
 export default function generateConnectionOptions(settings: Settings) {
   // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions

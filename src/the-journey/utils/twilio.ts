@@ -1,20 +1,19 @@
 import Video, {
-  CreateLocalTrackOptions,
-  LocalAudioTrack, LocalTrackPublication,
-  LocalVideoTrack,
-  Participant, RemoteAudioTrackPublication, RemoteTrackPublication,
   Room,
-  VideoCodec,
+  Participant,
+  RemoteAudioTrackPublication,
+  RemoteTrackPublication,
+  LocalTrackPublication,
+  LocalTrack,
+  CreateLocalTrackOptions,
 } from 'twilio-video';
-import { IVideoContext } from '../../twilio/components/VideoProvider';
-import { useCallback } from 'react';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
-import { LocalOrRemotePublication } from '../types/types';
 import { Sid } from 'twilio/lib/interfaces';
+import { useCallback } from 'react';
 
 const DEFAULT_OPTIONS = {
   // tracks: [],
-  automaticSubscription: false,
+  // automaticSubscription: false,
 }
 
 export function getToken(roomName: string, identity: string) {
@@ -24,16 +23,32 @@ export function getToken(roomName: string, identity: string) {
   return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
 }
 
-export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}) {
+export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}, tracks: LocalTrack[]) {
   return Video.connect(token, {
     ...DEFAULT_OPTIONS,
-    ...options,
+    // ...options,
     name: roomName
+  }).then(room => {
+    console.log('tracks', tracks);
+    publishTracks(room, tracks);
+    return room
   });
 }
 
-export function joinRoom(roomName: string, identity: string, options:  Video.ConnectOptions = {}) {
-  return getToken(roomName, identity).then(token => connect(token, roomName, options));
+function publishTracks(room: Room, tracks: LocalTrack[]) {
+  tracks.forEach(track => {
+    // Tracks can be supplied as arguments to the Video.connect() function and they will automatically be published.
+    // However, tracks must be published manually in order to set the priority on them.
+    // All video tracks are published with 'low' priority. This works because the video
+    // track that is displayed in the 'MainParticipant' component will have it's priority
+    // set to 'high' via track.setPriority()
+    if (track)
+      room.localParticipant.publishTrack(track, { priority: track.kind === 'video' ? 'low' : 'standard' })
+  });
+}
+
+export function joinRoom(roomName: string, identity: string, options:  Video.ConnectOptions = {}, tracks: LocalTrack[] = []) {
+  return getToken(roomName, identity).then(token => connect(token, roomName, options, tracks));
 }
 
 
@@ -41,8 +56,8 @@ export type TrackFilter = 'audio' | 'video' | 'data' | undefined
 
 export function getTracks(room: Room, kind: TrackFilter = undefined) {
   const tracks = new Map();
-  room.participants.forEach((p, id) => {
-    tracks.set(id,
+  room.participants.forEach((p) => {
+    tracks.set(p.identity,
       kind === 'audio' ? p.audioTracks
     : kind === 'video' ? p.videoTracks
     : kind === 'data' ? p.dataTracks

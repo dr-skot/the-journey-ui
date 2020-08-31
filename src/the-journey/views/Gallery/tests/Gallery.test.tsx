@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
 import React from 'react';
-import FixedGallery from './Gallery';
+import FixedGallery from '../FixedGallery';
 import { shallow } from 'enzyme';
-import useSelectedParticipant from '../../../twilio/components/VideoProvider/useSelectedParticipant/useSelectedParticipant';
-import useVideoContext from '../../hooks/useVideoContext';
+import useSelectedParticipant from '../../../../twilio/components/VideoProvider/useSelectedParticipant/useSelectedParticipant';
+import useVideoContext from '../../../hooks/useVideoContext';
 
 jest.mock('../../hooks/useVideoContext/useVideoContext');
 jest.mock('../VideoProvider/useSelectedParticipant/useSelectedParticipant');

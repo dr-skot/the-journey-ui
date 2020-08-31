@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
-import { useAppState } from '../../../../../twilio/state';
 import { useAudioOutputDevices } from '../deviceHooks/deviceHooks';
+import { AppContext } from '../../../../contexts/AppContext';
 
 export default function AudioOutputList() {
+  const [{ activeSinkId }, dispatch] = useContext(AppContext);
   const audioOutputDevices = useAudioOutputDevices();
-  const { activeSinkId, setActiveSinkId } = useAppState();
   const activeOutputLabel = audioOutputDevices.find(device => device.deviceId === activeSinkId)?.label;
 
   return (
@@ -13,7 +13,9 @@ export default function AudioOutputList() {
       {audioOutputDevices.length > 1 ? (
         <FormControl fullWidth>
           <Typography variant="h6">Audio Output:</Typography>
-          <Select onChange={e => setActiveSinkId(e.target.value as string)} value={activeSinkId}>
+          <Select
+            onChange={e => dispatch('setSinkId', { sinkId: (e.target.value as string) })}
+            value={activeSinkId}>
             {audioOutputDevices.map(device => (
               <MenuItem value={device.deviceId} key={device.deviceId}>
                 {device.label}

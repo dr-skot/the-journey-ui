@@ -7,13 +7,15 @@ import {
   RemoteDataTrackPublication,
   RemoteTrackPublication,
   RemoteVideoTrackPublication,
-  TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack,
+  TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, Participant,
 } from 'twilio-video';
 import { Sid } from 'twilio/lib/interfaces';
 import { toggleMembership } from '../utils/functional';
+import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
+import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
+import useLocalTracks from '../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 
-class LocalAUdioTrack {
-}
+type Identity = Participant.Identity;
 
 interface AppState {
   error?: TwilioError,
@@ -23,13 +25,16 @@ interface AppState {
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
   participants: Map<Sid, RemoteParticipant>,
-  tracks: Map<Sid, Map<Sid, RemoteTrackPublication>>
-  audioTracks: Map<Sid, Map<Sid, RemoteAudioTrackPublication>>,
-  videoTracks: Map<Sid, Map<Sid, RemoteVideoTrackPublication>>,
-  dataTracks: Map<Sid, Map<Sid, RemoteDataTrackPublication>>,
-  focusGroup: Sid[];
+  tracks: Map<Sid, Map<Identity, RemoteTrackPublication>>
+  audioTracks: Map<Identity, Map<Sid, RemoteAudioTrackPublication>>,
+  videoTracks: Map<Identity, Map<Sid, RemoteVideoTrackPublication>>,
+  dataTracks: Map<Identity, Map<Sid, RemoteDataTrackPublication>>,
+  focusGroup: Identity[];
   audioContext: AudioContext,
   audioDelay: number,
+  activeSinkId: string,
+  settings: Settings,
+  localTrackStuff?: any,
 }
 
 const initialState: AppState = {
@@ -47,6 +52,9 @@ const initialState: AppState = {
   focusGroup: [],
   audioContext: new AudioContext(),
   audioDelay: 0,
+  activeSinkId: 'default',
+  settings: initialSettings,
+  localTrackStuff: undefined,
 };
 
 type EasyDispatch = (action: string, payload?: any) => void;
@@ -70,7 +78,8 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
   switch (action) {
 
     case 'getAudioContext':
-      newState = state.audioContext ? state : { ...state, audioContext: new AudioContext() };
+      newState = state.audioContext?.state === 'running'
+        ? state : { ...state, audioContext: new AudioContext() };
       break;
 
     case 'getLocalTracks':
@@ -88,7 +97,9 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
     case 'joinRoom':
       if (state.room) state.room.disconnect();
       console.log("joining with identity", payload.identity);
-      joinRoom(payload.roomName, payload.identity, payload.options)
+      joinRoom(payload.roomName, payload.identity,
+        {...generateConnectionOptions(state.settings), ...payload.options },
+        payload.localTracks.localTracks)
         .then((room) => {
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
@@ -190,12 +201,25 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       newState = { ...state, localDataTrack: payload.track };
       break;
 
+    case 'broadcast':
+      newState = { ...state, ...broadcast(payload) };
+      break;
+
     case 'messageReceived':
+      console.log('message recieved!', payload);
       newState = { ...state, ...payload } // TODO validate & sanitize message first
       break;
 
     case 'bumpAudioDelay':
       newState = { ...state, ...broadcast({ audioDelay: state.audioDelay + payload.bump }) }
+      break;
+
+    case 'setSinkId':
+      newState = { ...state, activeSinkId: payload.sinkId };
+      break;
+
+    case 'changeSetting':
+      newState = { ...state, settings: settingsReducer(state.settings, payload) };
       break;
   }
 
@@ -217,22 +241,25 @@ export default function AppContextProvider({ children }: ChildrenProps) {
   // get an AudioContext on first user interaction
   useEffect(() => {
     console.log('audiocontext', state.audioContext);
-    if (state.audioContext) return;
 
     function getAudioContext() {
       console.log('trying for an audiocontext');
       dispatch('getAudioContext');
     }
 
-    document.addEventListener('click', getAudioContext);
-    document.addEventListener('keydown', getAudioContext);
+    if (state.audioContext?.state != 'running' ) {
+      getAudioContext();
+      document.addEventListener('click', getAudioContext);
+      document.addEventListener('keydown', getAudioContext);
+    }
+
     return () => {
       document.removeEventListener('click', getAudioContext);
       document.removeEventListener('keydown', getAudioContext);
     }
-  }, [state.audioContext]);
+  }, [state.audioContext?.state, dispatch]);
 
-  return <AppContext.Provider value={[state, dispatch]}>
+  return <AppContext.Provider value={[{ ...state, localTrackStuff: useLocalTracks() }, dispatch]}>
     {children}
   </AppContext.Provider>
 }

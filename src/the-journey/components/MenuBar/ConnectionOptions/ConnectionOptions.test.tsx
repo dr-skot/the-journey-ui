@@ -1,6 +1,6 @@
 import React from 'react';
 import ConnectionOptions from './ConnectionOptions';
-import { initialSettings } from '../../../../twilio/state/settings/settingsReducer';
+import { initialSettings } from '../../../contexts/settings/settingsReducer';
 import { Select, TextField } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import { useAppState } from '../../../../twilio/state';

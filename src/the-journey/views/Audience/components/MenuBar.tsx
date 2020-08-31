@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import AppBar from '@material-ui/core/AppBar';
-import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Menu from '../../../components/MenuBar/Menu/Menu';
-import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
-import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
-import RoomJoinForm from './RoomJoinForm';
-
 import { isDev } from '../../../utils/react-help';
 import { AppContext } from '../../../contexts/AppContext';
+
+import RoomJoinForm from './RoomJoinForm';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Menu from '../../../components/MenuBar/Menu/Menu';
+// import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
+// import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
+// import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

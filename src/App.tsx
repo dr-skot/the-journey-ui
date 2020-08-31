@@ -1,61 +1,31 @@
-import React, { useContext } from 'react';
-import { styled } from '@material-ui/core/styles';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 
-import Controls from './twilio/components/Controls/Controls';
-import LocalVideoPreview from './the-journey/views/Audience/components/LocalVideoPreview';
-import ReconnectingNotification from './twilio/components/ReconnectingNotification/ReconnectingNotification';
+import AppContextProvider from './the-journey/contexts/AppContext';
+import Audience from './the-journey/views/Audience/Audience';
+import FixedGallery from './the-journey/views/Gallery/FixedGallery';
+import Operator from './the-journey/views/Operator/Operator';
 
-import AudienceMenuBar from './the-journey/views/Audience/components/MenuBar';
-import GalleryMenuBar from './the-journey/views/Gallery/components/MenuBar';
-import { FixedGallery, Operator } from './the-journey/views/Gallery/Gallery';
-import Room from './the-journey/views/Audience/Room';
-import NonDelayedRoom from './the-journey/views/Show/Room';
+import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
+// import Controls from './twilio/components/Controls/Controls';
+// import ReconnectingNotification from './twilio/components/ReconnectingNotification/ReconnectingNotification';
+
+// import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
+// import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
+// import UnsupportedBrowserWarning from './twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
+
 
 import useHeight from './twilio/hooks/useHeight/useHeight';
-import useRoomState from './twilio/hooks/useRoomState/useRoomState';
-import Experiment from './the-journey/sandbox/Experiment';
-import { AppContext } from './the-journey/contexts/AppContext';
+import theme from './theme';
+import { CssBaseline } from '@material-ui/core';
 
 const Container = styled('div')({
   display: 'grid',
   gridTemplateRows: 'auto 1fr',
 });
 
-const Main = styled('main')({
-  overflow: 'hidden',
-});
-
-interface ViewProps {
-  view: string,
-}
-
-function View({ view }: ViewProps) {
-  const [{ roomStatus }] = useContext(AppContext);
-
-  if (roomStatus === 'disconnected') {
-    return ['gallery', 'operator'].includes(view) ? <div/> : <LocalVideoPreview/>;
-  }
-  switch (view) {
-    case 'operator':
-      return <Operator/>;
-    case 'gallery':
-      return <FixedGallery/>;
-    case 'nodelay':
-      return <><NonDelayedRoom/><Controls/></>
-    default:
-      return <><Room/></> // TODO reinstate controls
-  }
-}
-
-function MenuBar({ view }: ViewProps) {
-  return ['gallery', 'operator'].includes(view) ? <GalleryMenuBar view={view}/> : <AudienceMenuBar/>;
-}
-
-
-const App = React.memo(({ view }: ViewProps) => {
-
-  console.log('render App', { view });
-
+export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
   // not the viewport. This looks bad when the mobile browsers location bar is open.
@@ -64,17 +34,42 @@ const App = React.memo(({ view }: ViewProps) => {
   const height = useHeight();
 
   // TODO reinstate reconnecting notification
+  // TODO reinstate controls
 
   return (
-    <Container style={{ height }}>
-      <MenuBar view={view} />
-      <Main>
-        <View view={view} />
-      </Main>
-      { /* <ReconnectingNotification /> */ }
-    </Container>
+    <MuiThemeProvider theme={theme}>
+    <CssBaseline />
+      <AppContextProvider>
+       <Container style={{ height }}>
+        <Router>
+          <Switch>
+            <Route path="/operator" component={Operator} />
+            <Route path="/gallery" component={FixedGallery} />
+            <Route component={Audience}/>
+          </Switch>
+        </Router>
+         { /* <ReconnectingNotification /> */ }
+         <FocusGroupStreamSources />
+       </Container>
+      </AppContextProvider>
+  </MuiThemeProvider>
+  );
+}
+
+
+/*
+const VideoAppFull = React.memo(({ view }: VideoAppProps) => {
+  const { error, setError, settings } = useAppState();
+  const connectionOptions = generateConnectionOptions(settings);
+
+  return (
+    <UnsupportedBrowserWarning>
+      <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery' || view === 'operator'}>
+        <ErrorDialog dismissError={() => setError(null)} error={error} />
+        <App />
+      </VideoProvider>
+    </UnsupportedBrowserWarning>
   );
 });
-App.whyDidYouRender = true;
+ */
 
-export default App;

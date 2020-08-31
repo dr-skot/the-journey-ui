@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import AudioTrack from './AudioTrack';
+import AudioElement from '../../../the-journey/components/audio/AudioElement';
 import { useAppState } from '../../state';
 
 const audioEl = document.createElement('audio');
@@ -17,7 +17,7 @@ describe('the AudioTrack component', () => {
   beforeEach(jest.clearAllMocks);
 
   it('should add an audio element to the DOM when the component mounts', () => {
-    render(<AudioTrack track={mockTrack} />);
+    render(<AudioElement track={mockTrack} />);
     expect(mockTrack.attach).toHaveBeenCalled();
     expect(mockTrack.detach).not.toHaveBeenCalled();
     expect(document.querySelector('audio')).toBe(audioEl);
@@ -25,7 +25,7 @@ describe('the AudioTrack component', () => {
   });
 
   it('should remove the audio element from the DOM when the component unmounts', () => {
-    const { unmount } = render(<AudioTrack track={mockTrack} />);
+    const { unmount } = render(<AudioElement track={mockTrack} />);
     unmount();
     expect(mockTrack.detach).toHaveBeenCalled();
     expect(document.querySelector('audio')).toBe(null);
@@ -34,7 +34,7 @@ describe('the AudioTrack component', () => {
   describe('with an activeSinkId', () => {
     it('should set the sinkId when the component mounts', () => {
       mockUseAppState.mockImplementationOnce(() => ({ activeSinkId: 'mock-sink-id' }));
-      render(<AudioTrack track={mockTrack} />);
+      render(<AudioElement track={mockTrack} />);
       expect(audioEl.setSinkId).toHaveBeenCalledWith('mock-sink-id');
     });
   });

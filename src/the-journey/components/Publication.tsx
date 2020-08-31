@@ -1,5 +1,5 @@
 import React from 'react';
-import AudioTrack from '../../twilio/components/AudioTrack/AudioTrack';
+import AudioElement from './audio/AudioElement';
 import VideoTrack from '../../twilio/components/VideoTrack/VideoTrack';
 
 import { IVideoTrack } from '../../types';
@@ -36,7 +36,7 @@ export default function Publication({ publication, isLocal, disableAudio, videoP
         />
       );
     case 'audio':
-      return disableAudio ? null : <AudioTrack track={track as IAudioTrack} />;
+      return disableAudio ? null : <AudioElement track={track as IAudioTrack} />;
     default:
       return null;
   }

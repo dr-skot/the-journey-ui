@@ -1,5 +1,5 @@
 import generateConnectionOptions from './generateConnectionOptions';
-import { Settings } from '../../state/settings/settingsReducer';
+import { Settings } from '../../../the-journey/contexts/settings/settingsReducer';
 
 describe('the generateConnectionOptions function', () => {
   it('should remove any undefined values from settings', () => {

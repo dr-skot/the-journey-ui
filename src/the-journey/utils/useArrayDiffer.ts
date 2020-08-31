@@ -3,7 +3,7 @@ import { difference } from 'lodash';
 
 export default function useArrayDiffer() {
   const [, setPreviousValue] = useState([]);
-
+  /*
   const diff = useCallback((newValue) => {
     let result = { added: [], removed: [] };
     setPreviousValue((previousValue) => {
@@ -16,4 +16,5 @@ export default function useArrayDiffer() {
   }, [setPreviousValue]);
 
   return diff;
+   */
 }
