@@ -19,7 +19,7 @@ export default function FixedGallery() {
   return (
     <>
       <MenuBar/>
-      <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE}/>
+      <FlexibleGallery participants={participants} fixedLength={undefined}/>
     </>
   );
 }

@@ -4,6 +4,7 @@ import { AppContext } from '../../contexts/AppContext';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';
+import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 
 export default function Operator() {
   const { forceGallery, hotKeys, toggleFocus } = useOperatorControls();
@@ -22,16 +23,15 @@ export default function Operator() {
 
   const focusing = focusGroup.length && !forceGallery;
   // TODO look for video tracks instead
-  const participantsArray = Array.from(participants.values()).filter(p => !p.identity.match(/^admin/));
 
   return (
     <>
       <MenuBar isOperator/>
       <div>
     <FlexibleGallery
-      participants={participantsArray.filter(focusing ? p => focusGroup.includes(p.identity) : p => true)}
+      participants={useGalleryParticipants().filter(focusing ? p => focusGroup.includes(p.identity) : p => true)}
       selection={focusing ? [] :focusGroup}
-      fixedLength={focusing ? undefined : GALLERY_SIZE}
+      fixedLength={undefined}
       hotKeys={hotKeys}
       mute={focusGroup.length > 0}
       onClick={toggleFocus}
