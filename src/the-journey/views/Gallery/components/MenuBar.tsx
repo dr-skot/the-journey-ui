@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import useRoomState from '../../../../hooks/useRoomState/useRoomState';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ToggleFullscreenButton from '../../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
-import Menu from '../../../../components/MenuBar/Menu/Menu';
+import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import Menu from '../../../components/MenuBar/Menu/Menu';
 import { v4 as uuidv4 } from 'uuid';
 import { isDev } from '../../../utils/react-help';
 import DelayControl from './DelayControl';
 import useRoomJoiner from '../../../hooks/useRoomJoiner';
-import { useAppState } from '../../../../state';
-import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
+import { AppContext } from '../../../contexts/AppContext';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -60,29 +58,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface MenuBarProps {
-  isOperator?: boolean;
+  view: string;
 }
 
-export default function MenuBar({ isOperator }: MenuBarProps) {
-  const roomState = useRoomState();
-  const [identity, setIdentity] = useState('');
-  const [tryingToJoin, setTryingToJoin] = useState(false);
+// TODO don't use a prop for this it causes rerenders; maybe use userType in AppContext instead
+export default function MenuBar({ view }: MenuBarProps) {
   const classes = useStyles();
-  const join = useRoomJoiner();
+  const [{ roomStatus }, dispatch] = useContext(AppContext);
+  const [identity, setIdentity] = useState('');
+  const isOperator = view === 'operator';
 
-  const { isFetching } = useAppState();
-  const { isConnecting, isAcquiringLocalTracks } = useVideoContext();
+  console.log('MenuBar! render', { isOperator, roomStatus  });
 
-  // TODO roomJoiner should know when it's okay to join
-  const okayToJoin = (
-    identity
-    && roomState === 'disconnected'
-    && !tryingToJoin
-    && !isFetching
-    && !isConnecting
-    && !isAcquiringLocalTracks
-  )
-
+  // TODO where should these live?
   const roomName = isDev() ? 'dev-room2' : 'room2';
   const subscribeProfile = 'gallery'
 
@@ -90,19 +78,15 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
   useEffect(() => { setIdentity(`admin-${uuidv4()}`) }, []);
 
   useEffect(() => {
-    if (okayToJoin) {
-      setTryingToJoin(true);
-      join(roomName, identity, subscribeProfile)
-        .finally(() => setTryingToJoin(false))
-    }
-  }, [okayToJoin, join, setTryingToJoin, roomName, identity, subscribeProfile]);
+    if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });
+  }, [identity]);
 
   return (
       <AppBar className={classes.container} position="static">
         <Toolbar className={classes.toolbar}>
-          {(tryingToJoin) && <CircularProgress className={classes.loadingSpinner} />}
+          {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner} />}
           <div className={classes.rightButtonContainer}>
-            { isOperator && roomState === 'connected' && <DelayControl /> }
+            { isOperator && roomStatus === 'connected' && <DelayControl /> }
             <ToggleFullscreenButton />
             <Menu />
           </div>
@@ -110,3 +94,4 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
       </AppBar>
     );
 }
+MenuBar.whyDidYouRender = true;

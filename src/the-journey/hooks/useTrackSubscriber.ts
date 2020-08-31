@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useVideoContext from './useVideoContext';
 
 const TIMEOUT_DELAY = 5000;
 

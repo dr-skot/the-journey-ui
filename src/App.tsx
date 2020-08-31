@@ -1,19 +1,20 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
 
-import Controls from './components/Controls/Controls';
-import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
-import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
+import Controls from './twilio/components/Controls/Controls';
+import LocalVideoPreview from './the-journey/views/Audience/components/LocalVideoPreview';
+import ReconnectingNotification from './twilio/components/ReconnectingNotification/ReconnectingNotification';
 
-import AudienceMenuBar from './the-journey/views/Show/components/MenuBar';
+import AudienceMenuBar from './the-journey/views/Audience/components/MenuBar';
 import GalleryMenuBar from './the-journey/views/Gallery/components/MenuBar';
 import { FixedGallery, Operator } from './the-journey/views/Gallery/Gallery';
-import Room from './the-journey/views/Show/Room';
+import Room from './the-journey/views/Audience/Room';
 import NonDelayedRoom from './the-journey/views/Show/Room';
 
-import useHeight from './hooks/useHeight/useHeight';
-import useRoomState from './hooks/useRoomState/useRoomState';
+import useHeight from './twilio/hooks/useHeight/useHeight';
+import useRoomState from './twilio/hooks/useRoomState/useRoomState';
+import Experiment from './the-journey/sandbox/Experiment';
+import { AppContext } from './the-journey/contexts/AppContext';
 
 const Container = styled('div')({
   display: 'grid',
@@ -26,11 +27,12 @@ const Main = styled('main')({
 
 interface ViewProps {
   view: string,
-  roomState: string,
 }
 
-function View({ view, roomState }: ViewProps) {
-  if (roomState === 'disconnected') {
+function View({ view }: ViewProps) {
+  const [{ roomStatus }] = useContext(AppContext);
+
+  if (roomStatus === 'disconnected') {
     return ['gallery', 'operator'].includes(view) ? <div/> : <LocalVideoPreview/>;
   }
   switch (view) {
@@ -41,22 +43,18 @@ function View({ view, roomState }: ViewProps) {
     case 'nodelay':
       return <><NonDelayedRoom/><Controls/></>
     default:
-      return <><Room/><Controls/></>
+      return <><Room/></> // TODO reinstate controls
   }
 }
 
+function MenuBar({ view }: ViewProps) {
+  return ['gallery', 'operator'].includes(view) ? <GalleryMenuBar view={view}/> : <AudienceMenuBar/>;
+}
 
-export default function App() {
-  const roomState = useRoomState();
-  const params = useParams();
-  // @ts-ignore
-  const { view } = params;
 
-  console.log('render App', { roomState, params, view });
+const App = React.memo(({ view }: ViewProps) => {
 
-  function MenuBar() {
-    return ['gallery', 'operator'].includes(view) ? <GalleryMenuBar/> : <AudienceMenuBar/>;
-  }
+  console.log('render App', { view });
 
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -65,14 +63,18 @@ export default function App() {
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
 
-  // TODO too many conditionals here; make different components for show and gallery
+  // TODO reinstate reconnecting notification
+
   return (
     <Container style={{ height }}>
-      <MenuBar />
+      <MenuBar view={view} />
       <Main>
-        <View view={view} roomState={roomState} />
+        <View view={view} />
       </Main>
-      <ReconnectingNotification />
+      { /* <ReconnectingNotification /> */ }
     </Container>
   );
-}
+});
+App.whyDidYouRender = true;
+
+export default App;

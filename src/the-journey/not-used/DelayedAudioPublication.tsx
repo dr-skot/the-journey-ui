@@ -1,7 +1,7 @@
 import React from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import useTrack from '../../hooks/useTrack/useTrack';
-import AudioTrack from '../../components/AudioTrack/AudioTrack';
+import useTrack from '../../twilio/hooks/useTrack/useTrack';
+import AudioTrack from '../../twilio/components/AudioTrack/AudioTrack';
 import DelayedAudioTrack from './AudioTrack/DelayedAudioTrack';
 import useJourneyAppState from '../hooks/useJourneyAppState';
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Participant from './components/Participant/Participant';
 import { Participant as IParticipant } from 'twilio-video';
@@ -11,6 +11,11 @@ import useGalleryParticipants from './hooks/useGalleryParticipants';
 import useFocusGroupVideoSubscriber from '../../hooks/useFocusGroupSubscriber/useFocusGroupVideoSubscriber';
 import useTrackSubscriber from '../../hooks/useTrackSubscriber';
 import { arrayFixedLength } from '../../utils/functional';
+import { AppContext } from '../../contexts/AppContext';
+import useDelayedStreamSources from '../../hooks/useAudioSubscribeListener/audio/useDelayedStreamSources';
+import useDelayedSourceSubscribeListener from '../../hooks/useAudioSubscribeListener/useDelayedSourceSubscribeListener';
+import useDataTrackSubscriber from '../../hooks/useDataTrackSubscriber';
+import useAudioElementSubscribeListener from '../../hooks/useAudioSubscribeListener/useAudioElementSubscribeListener';
 
 const GALLERY_SIZE = 30;
 const ASPECT_RATIO = 16/9;
@@ -26,14 +31,22 @@ const Container = styled('div')(() => ({
 
 export function Operator() {
   const { participants, focusGroup, focusing, hotKeys, toggleFocus } = useOperatorControls();
+  const [{ room, localDataTrack }, dispatch] = useContext(AppContext);
+
+  console.log('Operator render, focusGroup, participants', focusGroup);
+
+  // TODO where should this live?
+  useEffect(() => { if (room) dispatch('publishDataTrack') }, [room]);
 
   // TODO move this elsewhere and provide fallback alternatives
+  useDataTrackSubscriber();
   useFocusGroupVideoSubscriber();
+  useAudioElementSubscribeListener();
 
   return (
     <FlexibleGallery
       participants={participants}
-      selection={focusGroup}
+      selection={focusing ? [] :focusGroup}
       fixedLength={focusing ? undefined : GALLERY_SIZE}
       hotKeys={hotKeys}
       mute={focusGroup.length > 0}
@@ -43,11 +56,13 @@ export function Operator() {
 }
 
 export function FixedGallery() {
+  const [, dispatch] = useContext(AppContext);
   const participants = useGalleryParticipants();
 
   // TODO move this elsewhere and provide fallback alternatives
-  const subscribe = useTrackSubscriber();
-  subscribe(undefined, undefined, 'gallery');
+  useEffect(() => {
+    dispatch('subscribe', { policy: 'gallery' });
+  }, []);
 
   return <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE}/>
 }
@@ -91,7 +106,7 @@ function FlexibleGallery({
                 width={boxSize.width}
                 height={boxSize.height}
                 mute={mute}
-                onClick={() => onClick(participant)}
+                onClick={() => { console.log('click'); onClick(participant) }}
               />
             )
             : <Nobody key={listKey('nobody', i)} index={i} width={boxSize.width} height={boxSize.height} />

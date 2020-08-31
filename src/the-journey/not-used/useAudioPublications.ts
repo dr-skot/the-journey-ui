@@ -1,7 +1,7 @@
-import useParticipants from '../../hooks/useParticipants/useParticipants';
+import useParticipants from '../../twilio/hooks/useParticipants/useParticipants';
 import { RemoteAudioTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import { useEffect, useState } from 'react';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useVideoContext from '../hooks/useVideoContext';
 
 export default function useAudioPublications() {
   const { room } = useVideoContext();

@@ -2,14 +2,14 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import AppBar from '@material-ui/core/AppBar';
-import ToggleFullscreenButton from '../../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import Toolbar from '@material-ui/core/Toolbar';
-import Menu from '../../../../components/MenuBar/Menu/Menu';
-import FlipCameraButton from '../../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
-import LocalAudioLevelIndicator from '../../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
+import Menu from '../../../components/MenuBar/Menu/Menu';
+import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
+import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
 import RoomJoinForm from './RoomJoinForm';
 
-import useRoomState from '../../../../hooks/useRoomState/useRoomState';
+import useRoomState from '../../../../twilio/hooks/useRoomState/useRoomState';
 import { isDev } from '../../../utils/react-help';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -23,10 +23,12 @@ const Floater = styled('div')(({ theme }) => ({
   width: theme.sidebarWidth,
 }));
 
+// TODO do we also need no switch with delay?
+
 // TODO implement this
 export function NoSwitchRoom() {
   console.log('render noswitch Room')
-  useFocusGroupAudioSubscriber();
+  // useFocusGroupAudioUnmuter();
   useAudioElementSubscribeListener();
 
   return <BaseRoom />
@@ -34,8 +36,8 @@ export function NoSwitchRoom() {
 
 export function UndelayedRoom() {
   console.log('render undelayed Room')
-  //useFocusGroupAudioSubscriber();
-  //useAudioElementSubscribeListener();
+  useFocusGroupAudioSubscriber();
+  useAudioElementSubscribeListener();
 
   return <BaseRoom />
 }
@@ -43,11 +45,10 @@ export function UndelayedRoom() {
 export default function Room() {
   console.log('render delayed Room')
   useFocusGroupAudioSubscriber();
-  useDelayedSourceSubscribeListener();
+  useAudioElementSubscribeListener();
 
   return <BaseRoom />
 }
-Room.whyDidYouRender = true;
 
 function BaseRoom() {
   return (

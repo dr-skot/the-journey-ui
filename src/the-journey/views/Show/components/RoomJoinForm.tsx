@@ -3,8 +3,8 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useAppState } from '../../../../state';
-import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
+import { useAppState } from '../../../../twilio/state';
+import useVideoContext from '../../../hooks/useVideoContext';
 import useRoomJoiner from '../../../hooks/useRoomJoiner';
 import { SubscribeProfile } from '../../../hooks/useTrackSubscriber';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -48,7 +48,7 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
   const { user, isFetching } = useAppState();
   const { isConnecting, isAcquiringLocalTracks } = useVideoContext();
   const [identity, setIdentity] = useState<string>(user?.displayName || '');
-  const join = useRoomJoiner();
+  const { join, joinStatus } = useRoomJoiner();
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setIdentity(event.target.value);

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { RemoteParticipant, RemoteTrack } from 'twilio-video';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useParticipants from '../../twilio/hooks/useParticipants/useParticipants';
+import useVideoContext from './useVideoContext';
 
 interface ParticipantTracks {
   participant: RemoteParticipant,
@@ -29,11 +29,11 @@ export default function useRemoteTracks() {
   useEffect(resetTracks, [participants]);
 
   useEffect(() => {
-    room.on('trackSubscribed', resetTracks);
-    room.on('trackUnsubscribed', resetTracks);
+    room?.on('trackSubscribed', resetTracks);
+    room?.on('trackUnsubscribed', resetTracks);
     return () => {
-      room.off('trackSubscribed', resetTracks);
-      room.off('trackUnsubscribed', resetTracks);
+      room?.off('trackSubscribed', resetTracks);
+      room?.off('trackUnsubscribed', resetTracks);
     }
   });
 

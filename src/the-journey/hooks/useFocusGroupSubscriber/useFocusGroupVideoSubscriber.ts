@@ -1,17 +1,18 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import useTrackSubscriber from '../useTrackSubscriber';
 import useJourneyAppState from '../useJourneyAppState';
+import { AppContext } from '../../contexts/AppContext';
 
 // updates track subscriptions when focus group changes
 
 export default function useFocusGroupVideoSubscriber() {
-  const { focusGroup } = useJourneyAppState();
-  const subscribe = useTrackSubscriber();
-  const subscribeProfile = focusGroup.length ? 'focus' : 'gallery';
+  const [{ focusGroup }, dispatch] = useContext(AppContext);
 
   useEffect(() => {
     console.log('focus group changed: updating subscriptions');
-    // TODO reorder these params
-    subscribe(undefined, undefined, subscribeProfile, focusGroup);
-  }, [focusGroup, subscribe, subscribeProfile]);
+    dispatch('subscribe', {
+      profile: focusGroup.length ? 'focus' : 'gallery',
+      focus: focusGroup
+    });
+  }, [focusGroup, dispatch]);
 }

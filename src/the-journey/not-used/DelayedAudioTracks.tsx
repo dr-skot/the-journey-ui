@@ -1,6 +1,6 @@
 import React from 'react';
 import { Participant } from 'twilio-video';
-import usePublications from '../../hooks/usePublications/usePublications';
+import usePublications from '../../twilio/hooks/usePublications/usePublications';
 import DelayedAudioPublication from './DelayedAudioPublication';
 
 interface DelayedAudioTracksProps {

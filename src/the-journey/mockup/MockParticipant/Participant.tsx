@@ -1,6 +1,6 @@
 import React from 'react';
-import ParticipantInfo from '../../../components/ParticipantInfo/ParticipantInfo';
-import ParticipantTracks from '../../../components/ParticipantTracks/ParticipantTracks';
+import ParticipantInfo from '../../components/ParticipantInfo/ParticipantInfo';
+import ParticipantTracks from '../../components/ParticipantTracks';
 import { Participant as IParticipant } from 'twilio-video';
 
 interface ParticipantProps {

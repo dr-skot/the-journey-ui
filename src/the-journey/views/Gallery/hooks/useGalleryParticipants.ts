@@ -1,11 +1,21 @@
 import { sortBy } from 'lodash';
-import useParticipants from '../../../../hooks/useParticipants/useParticipants';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../contexts/AppContext';
+import { Participant } from 'twilio-video';
 
 // TODO sort by entry time
 
 export default function useGalleryParticipants() {
-  return sortBy(
-    useParticipants().filter((p) => !p.identity.match(/^admin-/)),
-    'sid',
-  );
+  const [{ participants }] = useContext(AppContext);
+  const [gallery, setGallery] = useState<Participant[]>([]);
+
+  // TODO stabilize order somehow
+  useEffect(() => {
+    setGallery(sortBy(
+      Array.from(participants.values()).filter((p) => !p.identity.match(/^admin-/)),
+      'sid',
+    ))
+  }, [participants]);
+
+  return gallery;
 }
