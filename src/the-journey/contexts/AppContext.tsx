@@ -10,13 +10,16 @@ import {
   TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, Participant,
 } from 'twilio-video';
 import { Sid } from 'twilio/lib/interfaces';
-import { toggleMembership } from '../utils/functional';
+import { constrain, toggleMembership } from '../utils/functional';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import useLocalTracks from '../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 import { useLocalVideoTrack } from '../hooks/useLocalVideoTrack';
+import { AudioOut, getAudioOut, setDelay, setGain } from '../utils/audio';
 
 type Identity = Participant.Identity;
+
+const DEFAULT_GAIN = 0.8;
 
 interface AppState {
   error?: TwilioError,
@@ -31,11 +34,11 @@ interface AppState {
   videoTracks: Map<Identity, Map<Sid, RemoteVideoTrackPublication>>,
   dataTracks: Map<Identity, Map<Sid, RemoteDataTrackPublication>>,
   focusGroup: Identity[];
-  audioContext: AudioContext,
+  audioOut?: AudioOut,
   audioDelay: number,
+  audioGain: number,
   activeSinkId: string,
   settings: Settings,
-  localTrackStuff?: any,
 }
 
 const initialState: AppState = {
@@ -51,23 +54,29 @@ const initialState: AppState = {
   videoTracks: new Map(),
   dataTracks: new Map(),
   focusGroup: [],
-  audioContext: new AudioContext(),
+  audioOut: undefined,
   audioDelay: 0,
+  audioGain: 1,
   activeSinkId: 'default',
   settings: initialSettings,
-  localTrackStuff: undefined,
 };
-
-type EasyDispatch = (action: string, payload?: any) => void;
 
 type AppContextValue = [AppState, EasyDispatch];
 export const AppContext = createContext([initialState, () => {}] as AppContextValue);
 
+type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
+  'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
+  'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
+  'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
+  'changeSetting'
+
 interface ReducerRequest {
-  action: string,
+  action: ReducerAction,
   payload: any,
   dispatch: EasyDispatch,
 }
+
+type EasyDispatch = (action: ReducerAction, payload?: any) => void;
 
 const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, request: ReducerRequest) => {
   const { action, payload, dispatch } = request;
@@ -78,17 +87,9 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
   switch (action) {
 
-    case 'setLocalTracks':
-      // newState = { ...state, localTracks: payload.tracks };
-      break;
-
-    case 'setLocalTrackStuff':
-      newState = { ...state, localTrackStuff: payload };
-      break;
-
-    case 'getAudioContext':
-      newState = state.audioContext?.state === 'running'
-        ? state : { ...state, audioContext: new AudioContext() };
+    case 'setAudioOut':
+      console.log('audio output set!', payload);
+      newState = { ...state, audioOut: payload.audioOut };
       break;
 
     case 'getLocalTracks':
@@ -125,9 +126,9 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       document.addEventListener('beforeunload', payload.room.disconnect);
       payload.room.on('disconnected', (room: Room, error: TwilioError) =>
         dispatch('roomDisconnected', { room, error }));
-      payload.room.on('reconnecting', (room: Room) =>
+      payload.room.on('reconnecting', () =>
         dispatch('setRoomStatus', { status: 'connecting' }));
-      payload.room.on('reconnected', (room: Room) =>
+      payload.room.on('reconnected', () =>
         dispatch('setRoomStatus', { status: 'connected' }));
       payload.room.on('participantConnected', (participant: RemoteParticipant) =>
         dispatch('participantConnected', { participant }));
@@ -217,11 +218,21 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'messageReceived':
       console.log('message recieved!', payload);
-      newState = { ...state, ...payload } // TODO validate & sanitize message first
+      if (payload.audioDelay) newState = { ...newState, audioDelay: setDelay(payload.audioDelay, newState.audioOut) };
+      if (payload.audioGain) newState = { ...newState, audioGain: setGain(payload.audioGain, newState.audioOut) };
+      if (payload.focusGroup) newState = { ...newState, focusGroup: payload.focusGroup };
       break;
 
     case 'bumpAudioDelay':
-      newState = { ...state, ...broadcast({ audioDelay: state.audioDelay + payload.bump }) }
+      newState = { ...state, ...broadcast({
+          audioDelay: setDelay(state.audioDelay + payload.bump, state.audioOut)
+      }) }
+      break;
+
+    case 'bumpAudioGain':
+      newState = { ...state, ...broadcast({
+          audioGain: setGain(state.audioGain + payload.bump, state.audioOut)
+        }) };
       break;
 
     case 'setSinkId':
@@ -243,37 +254,22 @@ interface ChildrenProps {
 export default function AppContextProvider({ children }: ChildrenProps) {
   const [state, _dispatch] = useReducer(reducer, initialState, undefined);
 
-  const { getLocalAudioTrack } = useLocalTracks();
-  const localVideoTrack = useLocalVideoTrack();
-
-  useEffect(() => dispatch('setLocalTracks', { tracks: [localVideoTrack, getLocalAudioTrack()] }),
-    [localVideoTrack]);
-
-  // pass dispatch to _dispatch
-  const dispatch = useCallback((action, payload = {}) => {
+  // pass dispatch to _dispatch, for promise resolving
+  const dispatch = useCallback((action: ReducerAction, payload = {}) => {
     _dispatch({ action, payload, dispatch });
   }, [_dispatch]);
 
-  // get an AudioContext on first user interaction
+  // set the audio output when AudioContext becomes available
   useEffect(() => {
-    console.log('audiocontext', state.audioContext);
+    const { audioDelay, audioGain } = state;
+    getAudioOut(32, audioDelay, audioGain)
+      .then(audioOut => dispatch('setAudioOut', { audioOut }));
+  }, []);
 
-    function getAudioContext() {
-      console.log('trying for an audiocontext');
-      dispatch('getAudioContext');
-    }
-
-    if (state.audioContext?.state != 'running' ) {
-      getAudioContext();
-      document.addEventListener('click', getAudioContext);
-      document.addEventListener('keydown', getAudioContext);
-    }
-
-    return () => {
-      document.removeEventListener('click', getAudioContext);
-      document.removeEventListener('keydown', getAudioContext);
-    }
-  }, [state.audioContext?.state, dispatch]);
+  // once we have an audio out, set the gain to DEFAULT_GAIN
+  useEffect(() => {
+    if (state.audioOut) dispatch('bumpAudioGain', { bump: DEFAULT_GAIN - state.audioGain });
+  }, [!state.audioOut]);
 
   return <AppContext.Provider value={[state, dispatch]}>
     {children}

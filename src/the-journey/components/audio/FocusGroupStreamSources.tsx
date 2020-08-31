@@ -6,6 +6,8 @@ import { uniqKey } from '../../utils/react-help';
 export default function FocusGroupStreamSources() {
   const [{ focusGroup, audioTracks }] = useContext(AppContext);
 
+  console.log('FocusGroup stream sources renderage');
+
   return (
     <>
       { Array.from(audioTracks.entries())

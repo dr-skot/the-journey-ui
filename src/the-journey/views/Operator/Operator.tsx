@@ -1,13 +1,13 @@
-import useOperatorControls from '../Gallery/hooks/useOperatorControls';
+import useOperatorControls, { KEYS } from '../Gallery/hooks/useOperatorControls';
 import React, { useContext, useEffect } from 'react';
 import { AppContext } from '../../contexts/AppContext';
-import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
+import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 
 export default function Operator() {
-  const { forceGallery, hotKeys, toggleFocus } = useOperatorControls();
+  const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls();
   const [{ room, audioDelay, participants, focusGroup }, dispatch] = useContext(AppContext);
 
   // TODO where should this live?
@@ -29,10 +29,10 @@ export default function Operator() {
       <MenuBar isOperator/>
       <div>
     <FlexibleGallery
-      participants={useGalleryParticipants().filter(focusing ? p => focusGroup.includes(p.identity) : p => true)}
-      selection={focusing ? [] :focusGroup}
-      fixedLength={undefined}
-      hotKeys={hotKeys}
+      participants={useGalleryParticipants().filter(p => focusing ? focusGroup.includes(p.identity) : true)}
+      selection={focusing ? [] : focusGroup}
+      fixedLength={focusing ? undefined : GALLERY_SIZE}
+      hotKeys={!focusing || forceHotKeys ? KEYS : ''}
       mute={focusGroup.length > 0}
       onClick={toggleFocus}
     />

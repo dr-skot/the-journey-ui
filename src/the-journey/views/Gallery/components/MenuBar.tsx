@@ -6,6 +6,7 @@ import { isDev } from '../../../utils/react-help';
 
 import { AppContext } from '../../../contexts/AppContext';
 import DelayControl from './DelayControl';
+import GainControl from './GainControl';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -84,9 +85,9 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
   return (
       <AppBar className={classes.container} position="static">
         <Toolbar className={classes.toolbar}>
-          {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner} />}
+          {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { isOperator && roomStatus === 'connected' && <DelayControl /> }
+            { isOperator && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
             <ToggleFullscreenButton />
             <Menu />
           </div>
@@ -94,4 +95,3 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
       </AppBar>
     );
 }
-MenuBar.whyDidYouRender = true;

@@ -14,3 +14,4 @@ export const arrayFixedLength = (n: number) => (xs: any[]) =>
 export const toggleMembership = (xs: any[]) => (x: any) =>
   xs.includes(x) ? xs.filter(xx => xx !== x) : [...xs, x];
 
+export const constrain = (a: number, b: number) => (n: number) => Math.max(a, Math.min(b, n));

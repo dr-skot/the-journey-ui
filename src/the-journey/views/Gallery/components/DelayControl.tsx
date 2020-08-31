@@ -22,6 +22,7 @@ export default function DelayControl() {
 
   return (
   <>
+    delay
     <IconButton aria-label="decrease delay" onClick={() => dispatch('bumpAudioDelay', { bump: -0.1 })}>
       <MinusIcon />
     </IconButton>

@@ -5,7 +5,7 @@ import { isDev } from '../../utils/react-help';
 import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
 import MenuBar from './components/MenuBar';
-import Controls from '../../../twilio/components/Controls/Controls';
+// import Controls from '../../../twilio/components/Controls/Controls';
 
 const Container = styled('div')(() => ({
   position: 'relative',
