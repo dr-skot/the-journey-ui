@@ -14,6 +14,7 @@ import { toggleMembership } from '../utils/functional';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import useLocalTracks from '../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
+import { useLocalVideoTrack } from '../hooks/useLocalVideoTrack';
 
 type Identity = Participant.Identity;
 
@@ -77,6 +78,14 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
   switch (action) {
 
+    case 'setLocalTracks':
+      // newState = { ...state, localTracks: payload.tracks };
+      break;
+
+    case 'setLocalTrackStuff':
+      newState = { ...state, localTrackStuff: payload };
+      break;
+
     case 'getAudioContext':
       newState = state.audioContext?.state === 'running'
         ? state : { ...state, audioContext: new AudioContext() };
@@ -97,9 +106,9 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
     case 'joinRoom':
       if (state.room) state.room.disconnect();
       console.log("joining with identity", payload.identity);
+      console.log('joining with tracks', state.localTracks);
       joinRoom(payload.roomName, payload.identity,
-        {...generateConnectionOptions(state.settings), ...payload.options },
-        payload.localTracks.localTracks)
+        {...generateConnectionOptions(state.settings), ...payload.options }, state.localTracks)
         .then((room) => {
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
@@ -233,6 +242,12 @@ interface ChildrenProps {
 export default function AppContextProvider({ children }: ChildrenProps) {
   const [state, _dispatch] = useReducer(reducer, initialState, undefined);
 
+  const { getLocalAudioTrack } = useLocalTracks();
+  const localVideoTrack = useLocalVideoTrack();
+
+  useEffect(() => dispatch('setLocalTracks', { tracks: [localVideoTrack, getLocalAudioTrack()] }),
+    [localVideoTrack]);
+
   // pass dispatch to _dispatch
   const dispatch = useCallback((action, payload = {}) => {
     _dispatch({ action, payload, dispatch });
@@ -259,7 +274,7 @@ export default function AppContextProvider({ children }: ChildrenProps) {
     }
   }, [state.audioContext?.state, dispatch]);
 
-  return <AppContext.Provider value={[{ ...state, localTrackStuff: useLocalTracks() }, dispatch]}>
+  return <AppContext.Provider value={[state, dispatch]}>
     {children}
   </AppContext.Provider>
 }

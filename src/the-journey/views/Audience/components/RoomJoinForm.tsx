@@ -6,6 +6,7 @@ import { SubscribeProfile } from '../../../hooks/useTrackSubscriber';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppContext } from '../../../contexts/AppContext';
 import useLocalTracks from '../../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
+import { useLocalVideoTrack } from '../../../hooks/useLocalVideoTrack';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +47,8 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [identity, setIdentity] = useState<string>('');
   const localTracks = useLocalTracks();
+  const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
+  console.log('track in join room', tracks[0]);
 
   // TODO autofill remembered identity
 
@@ -56,7 +59,7 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log('button pushed! joining');
-    dispatch('joinRoom', { roomName, identity, subscribeProfile, localTracks });
+    dispatch('joinRoom', { roomName, identity, subscribeProfile });
   };
 
   return (

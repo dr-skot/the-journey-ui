@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
@@ -8,7 +8,7 @@ import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from './ToogleScreenShareButton/ToggleScreenShareButton';
 
 import useIsUserActive from './useIsUserActive/useIsUserActive';
-import useRoomState from '../../hooks/useRoomState/useRoomState';
+import { AppContext } from '../../../the-journey/contexts/AppContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,21 +38,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Controls() {
   const classes = useStyles();
-  const roomState = useRoomState();
-  const isReconnecting = roomState === 'reconnecting';
+  const [{ roomStatus }] = useContext(AppContext);
+  const isReconnecting = roomStatus === 'connecting';
   const isUserActive = useIsUserActive();
-  const showControls = isUserActive || roomState === 'disconnected';
+  const showControls = isUserActive || roomStatus === 'disconnected';
 
   return (
     <div className={clsx(classes.container, { showControls })}>
-      <ToggleAudioButton disabled={isReconnecting} />
+      {/*<ToggleAudioButton disabled={isReconnecting} /> */}
       <ToggleVideoButton disabled={isReconnecting} />
-      {roomState !== 'disconnected' && (
+      { /*
+      {roomStatus !== 'disconnected' && (
         <>
           <ToggleScreenShareButton disabled={isReconnecting} />
           <EndCallButton />
         </>
       )}
+       */}
     </div>
   );
 }

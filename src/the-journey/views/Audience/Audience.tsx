@@ -5,6 +5,7 @@ import { isDev } from '../../utils/react-help';
 import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
 import MenuBar from './components/MenuBar';
+import Controls from '../../../twilio/components/Controls/Controls';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -12,7 +13,7 @@ const Container = styled('div')(() => ({
 }));
 
 const Main = styled('div')(() => ({
-  height: '100%',
+  height: '100vh',
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
