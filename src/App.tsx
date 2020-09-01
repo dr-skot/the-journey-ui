@@ -41,7 +41,7 @@ export default function App() {
        <div style={{ height }}>
         <Router>
           <Switch>
-            <!--Route path="/mockup" component={MockupGallery} /-->
+            { /*<Route path="/mockup" component={MockupGallery} />*/}
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
             <Route path="/hybrid">
