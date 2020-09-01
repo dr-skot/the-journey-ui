@@ -6,7 +6,7 @@ import AppContextProvider from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
-import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
+//import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
 
 import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
 // import Controls from './twilio/components/Controls/Controls';
@@ -41,7 +41,7 @@ export default function App() {
        <div style={{ height }}>
         <Router>
           <Switch>
-            <Route path="/mockup" component={MockupGallery} />
+            <!--Route path="/mockup" component={MockupGallery} /-->
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
             <Route path="/hybrid">
