@@ -6,6 +6,10 @@ import { uniqKey } from '../../utils/react-help';
 export default function FocusGroupAudioElements() {
   const [{ focusGroup, audioTracks }] = useContext(AppContext);
 
+  console.log('FocusGroup audio element renderage');
+  console.log('Looks like a new focus group of', focusGroup.length, 'people!');
+  console.log('Lets load up some audio elements to play them in!');
+
   return (
     <>
       { Array.from(audioTracks.entries())

@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useReducer } from 'react';
-import useGalleryParticipants from './useGalleryParticipants';
+import useGalleryParticipants from '../../Gallery/hooks/useGalleryParticipants';
 import { Participant } from 'twilio-video';
 import { AppContext } from '../../../contexts/AppContext';
 import { isEqual } from 'lodash';

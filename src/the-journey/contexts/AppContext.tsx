@@ -29,11 +29,12 @@ interface AppState {
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
   participants: Map<Sid, RemoteParticipant>,
+  starParticipant: undefined,
+  focusGroup: Identity[];
   tracks: Map<Sid, Map<Identity, RemoteTrackPublication>>
   audioTracks: Map<Identity, Map<Sid, RemoteAudioTrackPublication>>,
   videoTracks: Map<Identity, Map<Sid, RemoteVideoTrackPublication>>,
   dataTracks: Map<Identity, Map<Sid, RemoteDataTrackPublication>>,
-  focusGroup: Identity[];
   audioOut?: AudioOut,
   audioDelay: number,
   audioGain: number,
@@ -49,11 +50,12 @@ const initialState: AppState = {
   room: undefined,
   roomStatus: 'disconnected',
   participants: new Map(),
+  focusGroup: [],
+  starParticipant: undefined,
   tracks: new Map(),
   audioTracks: new Map(),
   videoTracks: new Map(),
   dataTracks: new Map(),
-  focusGroup: [],
   audioOut: undefined,
   audioDelay: 0,
   audioGain: 1,
@@ -68,7 +70,7 @@ type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'join
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
   'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
   'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
-  'changeSetting'
+  'changeSetting' | 'toggleStar'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -241,6 +243,11 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'changeSetting':
       newState = { ...state, settings: settingsReducer(state.settings, payload) };
+      break;
+
+    case 'toggleStar':
+      newState = { ...state,
+        starParticipant: state.starParticipant === payload.star ? undefined : payload.star };
       break;
   }
 

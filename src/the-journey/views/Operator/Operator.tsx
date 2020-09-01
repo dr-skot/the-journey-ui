@@ -1,28 +1,26 @@
-import useOperatorControls, { KEYS } from '../Gallery/hooks/useOperatorControls';
+import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
 import React, { useContext, useEffect } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
+import { Participant } from 'twilio-video';
+import useOperatorMessaging from './hooks/useOperatorMessaging';
 
 export default function Operator() {
   const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls();
-  const [{ room, audioDelay, participants, focusGroup }, dispatch] = useContext(AppContext);
+  const [{ room, audioDelay, participants, focusGroup, starParticipant }, dispatch] = useContext(AppContext);
 
-  // TODO where should this live?
-  useEffect(() => { if (room) dispatch('publishDataTrack') }, [room, dispatch]);
-
-  // TODO where should this live?
-  // sync data (that's not presently at default values) when new participants arrive
-  // give them a couple of seconds to subscribe to the data channel
-  useEffect(() => {
-    if (focusGroup.length) setTimeout(() => dispatch('broadcast', { focusGroup }), 2000);
-    if (audioDelay) setTimeout(() => dispatch('broadcast', { audioDelay }), 2000);
-  }, [participants, dispatch]);
+  useOperatorMessaging();
 
   const focusing = focusGroup.length && !forceGallery;
-  // TODO look for video tracks instead
+
+  const handleClick = (e: MouseEvent, participant: Participant) => {
+    // TODO star's video priority should be high -- look at dominant speaker code
+    if (e.altKey) dispatch('toggleStar', { star: participant });
+    else toggleFocus?.(participant);
+  }
 
   return (
     <>
@@ -31,10 +29,11 @@ export default function Operator() {
     <FlexibleGallery
       participants={useGalleryParticipants().filter(p => focusing ? focusGroup.includes(p.identity) : true)}
       selection={focusing ? [] : focusGroup}
+      star={starParticipant}
       fixedLength={focusing ? undefined : GALLERY_SIZE}
       hotKeys={!focusing || forceHotKeys ? KEYS : ''}
-      mute={focusGroup.length > 0}
-      onClick={toggleFocus}
+      mute={true}
+      onClick={handleClick}
     />
       </div>
     </>

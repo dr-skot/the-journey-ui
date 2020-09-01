@@ -20,15 +20,17 @@ const Container = styled('div')(() => ({
 
 interface FlexibleGalleryProps {
   participants: IParticipant[];
+  star?: IParticipant;
   selection?: string[];
   fixedLength?: number;
   hotKeys?: string;
   mute?: boolean;
-  onClick?: (participant: IParticipant) => void;
+  // TODO figure out what to put for e that will satisfy TypeScript
+  onClick?: (e: any, participant: IParticipant) => void;
 }
 
-export default function FlexibleGallery({
-                           participants, fixedLength, selection = [], hotKeys, mute = true, onClick = () => {}
+export default function FlexibleGallery({ participants, fixedLength, star, selection = [], hotKeys,
+                                        mute = true, onClick = () => {}
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [windowWidth, windowHeight] = useWindowSize();
@@ -57,7 +59,8 @@ export default function FlexibleGallery({
                 width={boxSize.width}
                 height={boxSize.height}
                 mute={mute}
-                onClick={() => onClick(participant)}
+                onClick={(e) => onClick(e, participant)}
+                star={participant.sid === star?.sid}
               />
             )
             : <Nobody key={listKey('nobody', i)} index={i} width={boxSize.width} height={boxSize.height} />

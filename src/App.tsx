@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 
 import AppContextProvider from './the-journey/contexts/AppContext';
-import Audience from './the-journey/views/Audience/Audience';
+import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
 
@@ -19,6 +19,8 @@ import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupSt
 import useHeight from './twilio/hooks/useHeight/useHeight';
 import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
+import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
+import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
 
 const Container = styled('div')({
   display: 'grid',
@@ -45,7 +47,13 @@ export default function App() {
           <Switch>
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
-            <Route component={Audience}/>
+            <Route path="/hybrid">
+              <Broadcast style={'hybrid'}/>
+            </Route>
+            <Route path="/pure">
+              <Broadcast style={'pure'}/>
+            </Route>
+            <Route component={Broadcast}/>
           </Switch>
         </Router>
          { /* <ReconnectingNotification /> */ }

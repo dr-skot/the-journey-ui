@@ -5,6 +5,9 @@ import { isDev } from '../../utils/react-help';
 import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
 import MenuBar from './components/MenuBar';
+import Millicast from './Millicast';
+import FocusGroup from './FocusGroup';
+import Stage from './Stage';
 // import Controls from '../../../twilio/components/Controls/Controls';
 
 const Container = styled('div')(() => ({
@@ -24,31 +27,33 @@ const Floater = styled('div')(({ theme }) => ({
   width: theme.sidebarWidth,
 }));
 
-function AudienceMain() {
+interface BroadcastProps {
+  style?: 'millicast' | 'hybrid' | 'pure'
+}
+
+const AudienceMain = React.memo(({ style }: BroadcastProps) => {
+  const [{ focusGroup }] = useContext(AppContext);
+
   return (
     <Container>
       <Floater>
         <SidebarSelfie />
       </Floater>
       <Main>
-        {!isDev() && (
-            <iframe title="broadcast"
-                src="https://viewer.millicast.com/v2?streamId=wbfwt8/ke434gcy"
-                allowFullScreen width="100%" height="100%"
-          />
-        )}
+        { style !== 'millicast' && focusGroup.length && <FocusGroup/> }
+        { style === 'millicast' ? <Millicast/> : <Stage/> }
       </Main>
     </Container>
   );
-}
+});
 
-export default function Audience() {
+export default function Broadcast({ style }: BroadcastProps) {
   const [{ roomStatus }] = useContext(AppContext);
 
   return (
     <>
       <MenuBar/>
-      { roomStatus === 'disconnected' ? <LocalVideoPreview/> : <AudienceMain/>}
+      { roomStatus === 'disconnected' ? <LocalVideoPreview/> : <AudienceMain style={style} />}
     </>
   )
 }

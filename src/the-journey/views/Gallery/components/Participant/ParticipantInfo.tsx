@@ -3,6 +3,7 @@ import React, { MouseEventHandler } from 'react';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
 import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import StarIcon from '@material-ui/icons/Star';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,10 +61,11 @@ interface ParticipantInfoProps {
   width: number;
   height: number;
   hotKey?: string;
+  star?: boolean;
 }
 
 export default function ParticipantInfo({
-    participant, onClick, selectedIndex, children, width, height, hotKey,
+    participant, onClick, selectedIndex, children, width, height, hotKey, star,
   }: ParticipantInfoProps) {
   const classes = useStyles();
 
@@ -81,6 +83,7 @@ export default function ParticipantInfo({
           </h4>
         </div>
         <div>
+          {star && <StarIcon style={{ fontSize: 50, color: 'gold', float: 'right', marginBottom: '-0.1em' }} />}
           {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
           {hotKey && <KeyIcon keyName={hotKey} />}
         </div>

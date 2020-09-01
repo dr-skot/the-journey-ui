@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { isDev } from '../../../utils/react-help';
 
 import { AppContext } from '../../../contexts/AppContext';
-import DelayControl from './DelayControl';
-import GainControl from './GainControl';
+import DelayControl from '../../Operator/components/DelayControl';
+import GainControl from '../../Operator/components/GainControl';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';

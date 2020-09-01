@@ -5,6 +5,7 @@ import ParticipantInfo from './ParticipantInfo';
 
 interface ParticipantProps {
   participant: IParticipant,
+  star: boolean,
   onClick: MouseEventHandler;
   selectedIndex: number;
   width: number,
@@ -15,6 +16,7 @@ interface ParticipantProps {
 
 export default function Participant({
   participant,
+  star,
   onClick,
   selectedIndex,
   width,
@@ -23,7 +25,7 @@ export default function Participant({
   mute,
 }: ParticipantProps) {
   return (
-    <ParticipantInfo {...{ participant, onClick, selectedIndex, width, height, hotKey }}>
+    <ParticipantInfo {...{ participant, onClick, selectedIndex, width, height, hotKey, star }}>
       <ParticipantTracks participant={participant} disableAudio={mute} />
     </ParticipantInfo>
   );
