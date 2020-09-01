@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { MuiThemeProvider, styled } from '@material-ui/core/styles';
+import { createMuiTheme, MuiThemeProvider, styled } from '@material-ui/core/styles';
 
 import AppContextProvider from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
+import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
 
 import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
 // import Controls from './twilio/components/Controls/Controls';
@@ -22,11 +23,6 @@ import { CssBaseline } from '@material-ui/core';
 import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
 import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
 
-const Container = styled('div')({
-  display: 'grid',
-  gridTemplateRows: 'auto 1fr',
-});
-
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -42,9 +38,10 @@ export default function App() {
     <MuiThemeProvider theme={theme}>
     <CssBaseline />
       <AppContextProvider>
-       <Container style={{ height }}>
+       <div style={{ height }}>
         <Router>
           <Switch>
+            <Route path="/mockup" component={MockupGallery} />
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
             <Route path="/hybrid">
@@ -58,7 +55,7 @@ export default function App() {
         </Router>
          { /* <ReconnectingNotification /> */ }
          <FocusGroupStreamSources />
-       </Container>
+       </div>
       </AppContextProvider>
   </MuiThemeProvider>
   );

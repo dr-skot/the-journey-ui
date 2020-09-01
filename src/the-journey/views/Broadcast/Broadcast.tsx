@@ -34,14 +34,16 @@ interface BroadcastProps {
 const AudienceMain = React.memo(({ style }: BroadcastProps) => {
   const [{ focusGroup }] = useContext(AppContext);
 
+  console.log('style', style);
+
   return (
     <Container>
       <Floater>
         <SidebarSelfie />
       </Floater>
       <Main>
-        { style !== 'millicast' && focusGroup.length && <FocusGroup/> }
-        { style === 'millicast' ? <Millicast/> : <Stage/> }
+        { !!style && !!focusGroup.length && <FocusGroup/> }
+        { style ? <Stage/> : <Millicast/> }
       </Main>
     </Container>
   );
