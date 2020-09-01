@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './components/SidebarSelfie';
 import { isDev } from '../../utils/react-help';
@@ -35,10 +35,24 @@ interface BroadcastProps {
   style?: 'millicast' | 'hybrid' | 'pure'
 }
 
+let count = 0;
+
 const AudienceMain = React.memo(({ style }: BroadcastProps) => {
   const [{ focusGroup }] = useContext(AppContext);
+  const [split, setSplit] = useState(false);
 
-  console.log('style', style);
+  const newSplit = (style === 'pure' || style === 'hybrid') && focusGroup.length > 0;
+  const width = newSplit ? '50%' : '100%';
+
+  if (newSplit !== split) setSplit(newSplit);
+
+  // trigger onResize listeners when split changes
+  useEffect(() => {
+    var ev = new CustomEvent('resize'); //instantiate the resize event
+    ev.initEvent('resize');
+    window.dispatchEvent(ev); // fire 'resize' event!
+  }, [split]);
+
 
   return (
     <Container>
@@ -46,8 +60,9 @@ const AudienceMain = React.memo(({ style }: BroadcastProps) => {
         <SidebarSelfie />
       </Floater>
       <Main>
-        { !!style && !!focusGroup.length && <Column><FocusGroup/></Column> }
-        <Column>
+        { split && <Column style={{ width }}><FocusGroup/></Column> }
+        <Column style={{ width }}>
+          { /* TODO find an elegant alternative to these forced rerenders */}
           { style === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useWindowSize from '../../utils/useWindowSize';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
 import Participant from './components/Participant/Participant';
 import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
-import { padWithMuppets } from '../../mockup/Muppet';
 import Nobody from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 
@@ -33,15 +32,16 @@ export default function FlexibleGallery({ participants, fixedLength = 0, star, s
                                           hotKeys = '', mute = true, onClick = () => {}
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
-  const [windowWidth, windowHeight] = useWindowSize();
-
   const containerRef = (node: HTMLElement | null) => setContainer(node);
 
-  // TODO this conditional is just to force rerender on resize; is there a better way?
-  const containerSize = (windowWidth && windowHeight)
-    ? { width: container?.clientWidth || 0, height: container?.clientHeight || 0 }
-    : { width: 0, height: 0 };
+  // rerender on resize
+  useEffect(() => {
+    const forceRender = () => setContainer(null);
+    window.addEventListener('resize', forceRender);
+    return () => window.removeEventListener('resize', forceRender);
+  })
 
+  const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
   console.log('Thats right, Im a FlexibleGallery with', { participants, fixedLength });
 
   const boxes = fixedLength ? arrayFixedLength(fixedLength)(participants) : participants;
