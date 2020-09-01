@@ -4,6 +4,39 @@ import { styled } from '@material-ui/core/styles';
 import Nobody from '../Nobody/Nobody';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { not, propsEqual } from '../../utils/functional';
+import MenuBar from './components/MenuBar';
+
+const Container = styled('div')({
+  display: 'flex',
+  flexFlow: 'column',
+  height: '100%',
+});
+
+const Menu = styled('div')({
+  flex: '0 1 auto',
+  height: '3em',
+});
+
+const Main = styled('div')({
+  flex: '1 1 0',
+  display: 'flex',
+  height: '100%',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  alignContent: 'center',
+});
+
+const PossiblyTwo = styled('div')({
+  flex: '1 1 auto',
+  display: 'flex',
+  height: '100%',
+  justifyContent: 'center',
+  alignContent: 'center',
+})
+
+const Star = styled('div')({
+  flex: '1 1 0',
+});
 
 export interface Participant {
   sid: number,
@@ -36,15 +69,6 @@ const participants: Participant[] = range(0, 30).map((idx) => ({
 }));
 const KEYS = 'QWERTYUIOPASDFGHJKL:ZXCVBNM<>?qwertyuiopasdfghjkl;zxcvbnm,./';
 
-const Container = styled('div')(({ theme }) => ({
-  position: 'relative',
-  height: '100vh',
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'center',
-  alignContent: 'center',
-}));
-
 export default function Gallery() {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
   const [forceGallery, setForceGallery] = useState<boolean>(false);
@@ -56,6 +80,8 @@ export default function Gallery() {
       ? selectedParticipants.filter(not(propsEqual('sid')(participant)))
       : [...selectedParticipants, participant]);
   }, [selectedParticipants, setSelectedParticipants])
+
+  console.log('its a mockup gallery');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -85,7 +111,10 @@ export default function Gallery() {
   const boxSize = getBoxSize(containerSize, 16/9, boxes.length);
 
   return (
-    <Container ref={containerRef}>
+    <Container>
+      <MenuBar/>
+      <PossiblyTwo>
+    <Main ref={containerRef}>
         { boxes.map((participant) => (
           <Nobody
             key={participant.sid}
@@ -98,6 +127,19 @@ export default function Gallery() {
             img={twoDigit(participant.sid + 1)}
           />
         )) }
+      </Main>
+        <Star>
+          <Nobody
+            participant={boxes[0]}
+            onClick={() => toggleSelectedParticipant(boxes[0])}
+            selectedIndex={forceGallery ? selectedParticipants.findIndex(propsEqual('sid')(boxes[0])) + 1: 0}
+            showHotKey={showingGallery || showHotKeys}
+            width={boxSize.width}
+            height={boxSize.height}
+            img={twoDigit(boxes[0].sid + 1)}
+          />
+        </Star>
+      </PossiblyTwo>
       </Container>
     );
 }

@@ -14,6 +14,14 @@ declare module '@material-ui/core/styles/createMuiTheme' {
 }
 
 export default createMuiTheme({
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        html: { height: '100%' },
+        body: { height: '100%' },
+      },
+    },
+  },
   palette: {
     type: 'dark',
     primary: {

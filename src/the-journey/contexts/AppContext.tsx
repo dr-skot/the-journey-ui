@@ -29,7 +29,7 @@ interface AppState {
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
   participants: Map<Sid, RemoteParticipant>,
-  starParticipant: undefined,
+  starIdentity?: Identity,
   focusGroup: Identity[];
   tracks: Map<Sid, Map<Identity, RemoteTrackPublication>>
   audioTracks: Map<Identity, Map<Sid, RemoteAudioTrackPublication>>,
@@ -51,7 +51,7 @@ const initialState: AppState = {
   roomStatus: 'disconnected',
   participants: new Map(),
   focusGroup: [],
-  starParticipant: undefined,
+  starIdentity: undefined,
   tracks: new Map(),
   audioTracks: new Map(),
   videoTracks: new Map(),
@@ -218,11 +218,13 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       newState = { ...state, ...broadcast(payload) };
       break;
 
+      // TODO consolidate message send and receive so this isn't so hart to crosscheck
     case 'messageReceived':
       console.log('message recieved!', payload);
       if (payload.audioDelay) newState = { ...newState, audioDelay: setDelay(payload.audioDelay, newState.audioOut) };
       if (payload.audioGain) newState = { ...newState, audioGain: setGain(payload.audioGain, newState.audioOut) };
       if (payload.focusGroup) newState = { ...newState, focusGroup: payload.focusGroup };
+      if (payload.starIdentity) newState = { ...newState, starIdentity: payload.starIdentity };
       break;
 
     case 'bumpAudioDelay':
@@ -247,7 +249,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'toggleStar':
       newState = { ...state,
-        starParticipant: state.starParticipant === payload.star ? undefined : payload.star };
+        starIdentity: state.starIdentity === payload.starIdentity ? undefined : payload.starIdentity };
       break;
   }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { muppetImageForIdx } from '../../../mockup/Muppet';
 
 const useStyles = makeStyles(() => createStyles({
   nobody: {
@@ -20,7 +21,13 @@ interface NobodyProps {
 
 export default function Nobody({ width, height, index }: NobodyProps) {
   const classes = useStyles();
+  const image = `url(${muppetImageForIdx(index)})`;
   return (
-    <div className={classes.nobody} style={{ width, height, backgroundColor: paletteColor(index) }} />
+    <div className={classes.nobody} style={{ width, height, backgroundColor: paletteColor(index) }}>
+      <div style={{ width, height, backgroundImage: image, opacity: '25%', backgroundSize: 'cover',
+      }}>
+
+      </div>
+    </div>
   )
 }

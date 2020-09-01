@@ -1,8 +1,12 @@
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import React, { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
+import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 
 export default function Stage() {
-  const [{ starParticipant }] = useContext(AppContext);
-  return starParticipant ? <FlexibleGallery participants={[starParticipant!]}/> : null;
+  const [{ starIdentity }] = useContext(AppContext);
+  const participants = useGalleryParticipants({ withMuppets: true });
+  console.log('Stage render', starIdentity);
+  const star = participants.find(p => p.identity === starIdentity);
+  return star ? <FlexibleGallery participants={[star]}/> : null;
 }

@@ -6,7 +6,8 @@ import AppContextProvider from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
-//import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
+import PaddingOperator from './the-journey/views/Operator/PaddingOperator';
+import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
 
 import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
 // import Controls from './twilio/components/Controls/Controls';
@@ -22,6 +23,8 @@ import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
 import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
 import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
+import FocusGroup from './the-journey/views/Gallery/FocusGroup';
+import AutoJoin from './the-journey/components/AutoJoin';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -41,14 +44,18 @@ export default function App() {
        <div style={{ height }}>
         <Router>
           <Switch>
-            { /*<Route path="/mockup" component={MockupGallery} />*/}
+            <Route path="/focus">
+              <AutoJoin/><FocusGroup/>
+            </Route>
+            <Route path="/muppets" component={PaddingOperator} />
+            <Route path="/mockup" component={MockupGallery} />
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
             <Route path="/hybrid">
-              <Broadcast style={'hybrid'}/>
+              <AutoJoin/><Broadcast style={'hybrid'}/>
             </Route>
             <Route path="/pure">
-              <Broadcast style={'pure'}/>
+              <AutoJoin/><Broadcast style={'pure'}/>
             </Route>
             <Route component={Broadcast}/>
           </Switch>

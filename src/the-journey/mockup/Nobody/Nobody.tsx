@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Participant } from '../MockGallery/Gallery';
+import { Participant } from '../MockupGallery/Gallery';
 import KeyIcon from './KeyIcon/KeyIcon';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
 
@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: '3px',
         fontSize: '10px',
       },
+    },
+    borderer: {
+      width: '100%',
+      height: '100%',
+      border: '0.5px solid black',
     },
     infoContainer: {
       position: 'absolute',
@@ -77,10 +82,11 @@ function ParticipantInfo({
   return (
     <div
       className={classes.container}
-      style={{backgroundColor: participant.color, opacity: '50%', width, height, backgroundImage: src }}
+      style={{backgroundColor: participant.color, width, height, backgroundImage: src }}
       onClick={onClick}
       data-cy-participant={participant.sid}
     >
+      <div className={classes.borderer}>
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
@@ -93,6 +99,7 @@ function ParticipantInfo({
         </div>
       </div>
       {children}
+      </div>
     </div>
   );
 }

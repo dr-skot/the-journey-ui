@@ -24,6 +24,7 @@ export default function Participant({
   hotKey,
   mute,
 }: ParticipantProps) {
+  console.log('Participant', participant.identity, { width, height, hotKey });
   return (
     <ParticipantInfo {...{ participant, onClick, selectedIndex, width, height, hotKey, star }}>
       <ParticipantTracks participant={participant} disableAudio={mute} />

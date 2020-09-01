@@ -1,8 +1,10 @@
 import { useCallback, useContext, useEffect, useReducer } from 'react';
-import useGalleryParticipants from '../../Gallery/hooks/useGalleryParticipants';
+import useGalleryParticipants, { MuppetOption } from '../../Gallery/hooks/useGalleryParticipants';
 import { Participant } from 'twilio-video';
 import { AppContext } from '../../../contexts/AppContext';
 import { isEqual } from 'lodash';
+import { padWithMuppets } from '../../../mockup/Muppet';
+import { GALLERY_SIZE } from '../../Gallery/FixedGallery';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -12,20 +14,23 @@ interface OperatorData {
   forceGallery?: boolean,
   forceHotKeys?: boolean,
   toggleFocus?: (p: Participant) => void,
+  participants?: Participant[],
 }
 
-export default function useOperatorControls() {
-  const participants = useGalleryParticipants();
+export default function useOperatorControls({ withMuppets }: MuppetOption = {}) {
+  let participants = useGalleryParticipants();
+  if (withMuppets) participants = padWithMuppets(GALLERY_SIZE)(participants);
   const [, dispatch] = useContext(AppContext);
 
   const toggleFocus = useCallback((participant: Participant) =>
       dispatch('toggleFocus', { identity: participant.identity }),
     [dispatch]);
 
+  // TODO am I working too hard here to avoid a rerender, and is it even succeeding?
   const [data, setData] = useReducer((state: OperatorData, payload: OperatorData) => {
     const newState = { ...state, ...payload };
     return isEqual(newState, state) ? state : newState;
-  }, { forceGallery: false, forceHotKeys: false, toggleFocus });
+  }, { forceGallery: false, forceHotKeys: false, toggleFocus, participants });
 
   // hotkeys
   useEffect(() => {

@@ -4,6 +4,7 @@ import SelectionNumber from './SelectionNumber/SelectionNumber';
 import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import StarIcon from '@material-ui/icons/Star';
+import { muppetImage } from '../../../../mockup/Muppet';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +73,7 @@ export default function ParticipantInfo({
   return (
     <div
       className={classes.container}
-      style={{ width, height }}
+      style={{ width, height, backgroundImage: `url(${muppetImage(participant)})` }}
       onClick={onClick}
       data-cy-participant={participant.sid}
     >

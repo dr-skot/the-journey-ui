@@ -6,7 +6,7 @@ import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
 import MenuBar from './components/MenuBar';
 import Millicast from './Millicast';
-import FocusGroup from './FocusGroup';
+import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 // import Controls from '../../../twilio/components/Controls/Controls';
 
@@ -27,6 +27,10 @@ const Floater = styled('div')(({ theme }) => ({
   width: theme.sidebarWidth,
 }));
 
+const Column = styled('div')(() => ({
+  flex: '1 1 0',
+}));
+
 interface BroadcastProps {
   style?: 'millicast' | 'hybrid' | 'pure'
 }
@@ -42,8 +46,10 @@ const AudienceMain = React.memo(({ style }: BroadcastProps) => {
         <SidebarSelfie />
       </Floater>
       <Main>
-        { !!style && !!focusGroup.length && <FocusGroup/> }
-        { style ? <Stage/> : <Millicast/> }
+        { !!style && !!focusGroup.length && <Column><FocusGroup/></Column> }
+        <Column>
+          { style === 'pure' ? <Stage/> : <Millicast/> }
+        </Column>
       </Main>
     </Container>
   );

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       backgroundColor: theme.palette.background.default,
-      opacity: '75%',
+      flex: '0 1 auto',
     },
     toolbar: {
       [theme.breakpoints.down('xs')]: {

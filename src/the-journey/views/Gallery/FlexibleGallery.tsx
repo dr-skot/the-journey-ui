@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import useWindowSize from '../../utils/useWindowSize';
-import { arrayFixedLength } from '../../utils/functional';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
 import Participant from './components/Participant/Participant';
-import Nobody from './components/Nobody';
-import { listKey } from '../../utils/react-help';
 import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
+import { padWithMuppets } from '../../mockup/Muppet';
+import Nobody from './components/Nobody';
+import { arrayFixedLength } from '../../utils/functional';
 
 const Container = styled('div')(() => ({
-  position: 'relative', /* TODO why? */
-  height: '100vh', /* TODO use useHeight */
+  flex: '1 1 0',
   display: 'flex',
+  height: '100%',
   flexWrap: 'wrap',
   justifyContent: 'center',
   alignContent: 'center',
@@ -20,7 +20,7 @@ const Container = styled('div')(() => ({
 
 interface FlexibleGalleryProps {
   participants: IParticipant[];
-  star?: IParticipant;
+  star?: string;
   selection?: string[];
   fixedLength?: number;
   hotKeys?: string;
@@ -29,8 +29,8 @@ interface FlexibleGalleryProps {
   onClick?: (e: any, participant: IParticipant) => void;
 }
 
-export default function FlexibleGallery({ participants, fixedLength, star, selection = [], hotKeys,
-                                        mute = true, onClick = () => {}
+export default function FlexibleGallery({ participants, fixedLength = 0, star, selection = [],
+                                          hotKeys = '', mute = true, onClick = () => {}
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [windowWidth, windowHeight] = useWindowSize();
@@ -42,30 +42,31 @@ export default function FlexibleGallery({ participants, fixedLength, star, selec
     ? { width: container?.clientWidth || 0, height: container?.clientHeight || 0 }
     : { width: 0, height: 0 };
 
+  console.log('Thats right, Im a FlexibleGallery with', { participants, fixedLength });
+
   const boxes = fixedLength ? arrayFixedLength(fixedLength)(participants) : participants;
   const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
   const selectedIndex = (p: IParticipant) => selection ? selection.indexOf(p.identity) + 1 : 0;
 
+  console.log('FlexibleGallery', { boxes });
+
   return (
     <Container ref={containerRef}>
       { boxes.map((participant, i) => (
-          participant
-            ? (
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                selectedIndex={selectedIndex(participant)}
-                hotKey={hotKeys && hotKeys[i]}
-                width={boxSize.width}
-                height={boxSize.height}
-                mute={mute}
-                onClick={(e) => onClick(e, participant)}
-                star={participant.sid === star?.sid}
-              />
-            )
-            : <Nobody key={listKey('nobody', i)} index={i} width={boxSize.width} height={boxSize.height} />
-        )
-      ) }
+        participant ? (
+        <Participant
+          key={participant.sid}
+          participant={participant}
+          selectedIndex={selectedIndex(participant)}
+          hotKey={hotKeys && hotKeys[i]}
+          width={boxSize.width}
+          height={boxSize.height}
+          mute={mute}
+          onClick={(e) => onClick(e, participant)}
+          star={participant.identity === star}
+        />
+        ) : <Nobody width={boxSize.width} height={boxSize.height} index={i}/>
+      )) }
     </Container>
   );
 }
