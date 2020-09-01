@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '10px',
       },
     },
+    borderer: {
+      width: '100%',
+      height: '100%',
+      border: '0.5px solid black',
+    },
     isVideoSwitchedOff: {
       '& video': {
         filter: 'blur(4px) grayscale(1) brightness(0.5)',
@@ -96,6 +101,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
 
   const classes = useStyles();
 
+
   return (
     <div
       className={clsx(classes.container, {
@@ -104,6 +110,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
       onClick={onClick}
       data-cy-participant={participant.identity}
     >
+      <div className={classes.borderer}>
       <div className={clsx(classes.infoContainer, { [classes.hideVideo]: !isVideoEnabled })}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
@@ -121,6 +128,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
       </div>
       {isVideoSwitchedOff && <BandwidthWarning />}
       {children}
+      </div>
     </div>
   );
 }

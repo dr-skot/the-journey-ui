@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '10px',
       },
     },
+    borderer: {
+      width: '100%',
+      height: '100%',
+      border: '0.5px solid black',
+    },
     infoContainer: {
       position: 'absolute',
       zIndex: 1,
@@ -77,6 +82,7 @@ export default function ParticipantInfo({
       onClick={onClick}
       data-cy-participant={participant.sid}
     >
+      <div className={classes.borderer}>
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
@@ -90,6 +96,7 @@ export default function ParticipantInfo({
         </div>
       </div>
       {children}
+        </div>
     </div>
   );
 }
