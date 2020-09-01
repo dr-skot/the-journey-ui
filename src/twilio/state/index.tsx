@@ -37,8 +37,6 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [activeSinkId, setActiveSinkId] = useState('default');
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
 
-  console.log('AppStateProvider');
-
   let contextValue = {
     error, setError,
     isFetching,

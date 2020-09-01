@@ -6,10 +6,6 @@ import { uniqKey } from '../../utils/react-help';
 export default function FocusGroupStreamSources() {
   const [{ focusGroup, audioTracks }] = useContext(AppContext);
 
-  console.log('FocusGroup stream sources renderage');
-  console.log('Looks like a new focus group of', focusGroup.length, 'people!');
-  console.log('Lets load up their streams and play!');
-
   return (
     <>
       { Array.from(audioTracks.entries())

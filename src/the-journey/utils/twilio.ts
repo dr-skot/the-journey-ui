@@ -29,7 +29,6 @@ export function connect(token: string, roomName: string, options: Video.ConnectO
     // ...options,
     name: roomName
   }).then(room => {
-    console.log('publishing tracks', tracks);
     publishTracks(room, tracks);
     return room
   });
@@ -46,14 +45,12 @@ function publishTracks(room: Room, tracks: LocalTrack[]) {
     // track that is displayed in the 'MainParticipant' component will have it's priority
     // set to 'high' via track.setPriority()
     if (track) {
-      console.log('really publishing track', track);
       room.localParticipant.publishTrack(track, { priority: track.kind === 'video' ? 'low' : 'standard' })
     }
   });
 }
 
 export function joinRoom(roomName: string, identity: string, options:  Video.ConnectOptions = {}, tracks: LocalTrack[] = []) {
-  console.log('joinRoom got tracks', tracks);
   return getToken(roomName, identity).then(token => connect(token, roomName, options, tracks));
 }
 

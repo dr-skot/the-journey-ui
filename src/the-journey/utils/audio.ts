@@ -37,19 +37,15 @@ export function getAudioOut(inputs = 10, gain = 1, delay = 0): Promise<AudioOut>
 }
 
 export function setGain(gain: number, audioOut?: AudioOut) {
-  console.log('I want to set gain to', gain, 'good thing theres an audioout:', audioOut);
   if (!audioOut) return 1; // didn't work, so gain is 1
   const { gainNode, audioContext } = audioOut;
-  console.log('setting gain to', gain);
   gainNode.gain.setValueAtTime(gain, audioContext.currentTime);
   return gain;
 }
 
 export function setDelay(delay: number, audioOut?: AudioOut) {
-  console.log('I want to set delay to', delay, 'good thing theres an audioout:', audioOut);
   if (!audioOut) return 0; // didn't work, so delay is 0
   const { delayNode, audioContext } = audioOut;
-  console.log('setting delay to', delay);
   delayNode.delayTime.setValueAtTime(delay, audioContext.currentTime);
   return delay;
 }

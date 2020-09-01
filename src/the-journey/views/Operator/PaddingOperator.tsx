@@ -7,6 +7,7 @@ import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import { Participant } from 'twilio-video';
 import useOperatorMessaging from './hooks/useOperatorMessaging';
 import { styled } from '@material-ui/core/styles';
+import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 
 const Container = styled('div')({
   display: 'flex',
@@ -26,9 +27,12 @@ const Main = styled('div')({
 export const inGroup = (group: string[]) => (p: Participant) => group.includes(p.identity);
 
 export default function Operator() {
-  const { forceGallery, forceHotKeys, toggleFocus, participants } = useOperatorControls({ withMuppets: true });
+  const participants = useGalleryParticipants({ withMuppets: true });
+  const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls({ withMuppets: true });
   const [{ focusGroup, starIdentity }, dispatch] = useContext(AppContext);
   useOperatorMessaging();
+
+  console.log("FUUUUUUUUUUUUUUUUUUCGH", participants);
 
   const focusing = focusGroup.length && !forceGallery;
 

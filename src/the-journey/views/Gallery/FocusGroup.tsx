@@ -8,6 +8,5 @@ export default function FocusGroup() {
   const [{ focusGroup }] = useContext(AppContext);
   const group = useGalleryParticipants({ withMuppets: true }).filter(inGroup(focusGroup));
 
-  console.log('FocusGroup render', { focusGroup, group });
   return <FlexibleGallery participants={group} />
 }

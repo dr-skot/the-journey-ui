@@ -42,13 +42,10 @@ export default function FlexibleGallery({ participants, fixedLength = 0, star, s
   })
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
-  console.log('Thats right, Im a FlexibleGallery with', { participants, fixedLength });
 
   const boxes = fixedLength ? arrayFixedLength(fixedLength)(participants) : participants;
   const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
   const selectedIndex = (p: IParticipant) => selection ? selection.indexOf(p.identity) + 1 : 0;
-
-  console.log('FlexibleGallery', { boxes });
 
   return (
     <Container ref={containerRef}>

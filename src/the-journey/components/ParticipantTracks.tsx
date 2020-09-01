@@ -40,8 +40,6 @@ export default function ParticipantTracks({
 
   if (disableVideo) publications = publications.filter(p => p.kind !== 'video');
 
-  console.log('publications', publications);
-
   return (
     <>
       {publications.map((publication, i) => (

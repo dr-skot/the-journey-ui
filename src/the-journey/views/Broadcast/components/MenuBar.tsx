@@ -36,8 +36,6 @@ export default function MenuBar() {
   const classes = useStyles();
   const [{ roomStatus }] = useContext(AppContext)
 
-  console.log('MenuBar: room status', roomStatus);
-
   // TODO make these props
   // TODO reinstate buttons & menu
 

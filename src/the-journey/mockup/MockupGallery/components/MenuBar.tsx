@@ -65,7 +65,6 @@ interface MenuBarProps {
 // TODO don't use a prop for this it causes rerenders; maybe use userType in AppContext instead
 export default function MenuBar({ isOperator }: MenuBarProps) {
   const classes = useStyles();
-  console.log('Mockup MenuBar! render', { isOperator });
 
   return (
       <AppBar className={classes.container} position="static">

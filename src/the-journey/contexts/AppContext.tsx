@@ -90,7 +90,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
   switch (action) {
 
     case 'setAudioOut':
-      console.log('audio output set!', payload);
       newState = { ...state, audioOut: payload.audioOut };
       break;
 
@@ -249,7 +248,8 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'toggleStar':
       newState = { ...state,
-        starIdentity: state.starIdentity === payload.starIdentity ? undefined : payload.starIdentity };
+        starIdentity: broadcast(state.starIdentity === payload.starIdentity
+          ? undefined : payload.starIdentity) };
       break;
   }
 

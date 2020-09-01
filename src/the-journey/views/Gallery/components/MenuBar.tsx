@@ -70,8 +70,6 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [identity, setIdentity] = useState('');
 
-  console.log('MenuBar! render', { isOperator, roomStatus  });
-
   // TODO where should these live?
   const roomName = isDev() ? 'dev-room2' : 'room2';
   const subscribeProfile = 'gallery'

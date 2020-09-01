@@ -11,17 +11,13 @@ export default function AudioElement({ track }: AudioElementProps) {
   // const { activeSinkId } = useAppState();
   const audioEl = useRef<HTMLAudioElement>();
 
-  console.log('hey! Its an AudioElement component');
   const n = ++counter;
 
   useEffect(() => {
-    console.log('attaching element', n);
     audioEl.current = track.attach();
     audioEl.current.setAttribute('data-cy-audio-track-name', track.name);
-    console.log('appending element', n, 'to document.body', audioEl.current);
     document.body.appendChild(audioEl.current);
     return () => {
-      console.log('detaching element', n);
       track.detach().forEach(el => el.remove());
     }
   }, [track]);

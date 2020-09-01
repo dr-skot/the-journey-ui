@@ -48,7 +48,6 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
   const [identity, setIdentity] = useState<string>('');
   const localTracks = useLocalTracks();
   const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
-  console.log('track in join room', tracks[0]);
 
   // TODO autofill remembered identity
 
@@ -58,7 +57,6 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('button pushed! joining');
     dispatch('joinRoom', { roomName, identity, subscribeProfile });
   };
 

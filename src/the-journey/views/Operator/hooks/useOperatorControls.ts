@@ -14,12 +14,10 @@ interface OperatorData {
   forceGallery?: boolean,
   forceHotKeys?: boolean,
   toggleFocus?: (p: Participant) => void,
-  participants?: Participant[],
 }
 
 export default function useOperatorControls({ withMuppets }: MuppetOption = {}) {
-  let participants = useGalleryParticipants();
-  if (withMuppets) participants = padWithMuppets(GALLERY_SIZE)(participants);
+  let participants = useGalleryParticipants({ withMuppets });
   const [, dispatch] = useContext(AppContext);
 
   const toggleFocus = useCallback((participant: Participant) =>
@@ -30,7 +28,7 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
   const [data, setData] = useReducer((state: OperatorData, payload: OperatorData) => {
     const newState = { ...state, ...payload };
     return isEqual(newState, state) ? state : newState;
-  }, { forceGallery: false, forceHotKeys: false, toggleFocus, participants });
+  }, { forceGallery: false, forceHotKeys: false, toggleFocus });
 
   // hotkeys
   useEffect(() => {

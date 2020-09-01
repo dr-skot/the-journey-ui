@@ -81,8 +81,6 @@ export default function Gallery() {
       : [...selectedParticipants, participant]);
   }, [selectedParticipants, setSelectedParticipants])
 
-  console.log('its a mockup gallery');
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Shift') setForceGallery(true);

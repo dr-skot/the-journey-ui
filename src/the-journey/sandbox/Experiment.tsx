@@ -10,8 +10,6 @@ function doIt() {
 function Tester() {
   // @ts-ignore
   const [state, dispatch] = useContext(AppContext)
-  console.log('TESTER');
-  console.log('state', state);
   return (
     <>
     <h3>Test</h3>

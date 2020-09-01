@@ -57,19 +57,13 @@ app.use (function (req, res, next) {
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
-  console.log('subscribe');
   const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
   const focus = req.query.focus || '';
-  console.log('focus', focus);
-  console.log('policy', req.params.policy);
   const basicRules = SUBSCRIBE_RULES.basic();
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
   const rules = basicRules.concat(moreRules);
 
-  // TODO tidy up all this log output
-
   console.log('subscribe', req.params.room, req.params.user, req.params.policy);
-  // console.log(JSON.stringify(rules));
 
   const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}/SubscribeRules`;
   const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
