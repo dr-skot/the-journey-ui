@@ -1,5 +1,5 @@
 // @ts-ignore
-AudioContext = window.AudioContext || window.webkitAudioContext || undefined;
+window.AudioContext = window.AudioContext || window.webkitAudioContext || undefined;
 
 export const AUDIO_CONTEXT_SUPPORTED = !!AudioContext;
 
