@@ -1,5 +1,29 @@
+import moment, { Moment } from 'moment';
+
+export interface DoorPolicy { open: number, close: number };
+export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
+
+type Time = Date | Moment
+
+const DEFAULT_DOOR_POLICY = { open: 30, close: 10 }
+
+export const diff = (curtain: Time, arrival: Time) =>
+  moment.duration(moment(curtain).diff(moment(arrival))).as('minutes');
+
+export const punctuality = (curtain: Time, time: Time, doorPolicy: DoorPolicy = DEFAULT_DOOR_POLICY) => {
+  const minutes = diff(curtain, time);
+  return minutes > doorPolicy.open ? 'early'
+    : minutes < -doorPolicy.close ? 'too late'
+    : minutes < 0 ? 'late' : 'on time';
+}
+
+export const format = (time: Time) => ({
+  day: moment(time).format('dddd, MMMM D'),
+  time: moment(time).format('h:mma'),
+});
+
 // this isn't meant to be cryptography, it just encodes a to-the-minute timestamp
-// in a 6-letter string, not obvious in its predictability, for use as a url parameter
+// in a 6-letter string, not easily guessable, for use as a url parameter
 
 const BASE_TIME = new Date('2020').getTime();
 const CLIP_SECONDS = 10000;
@@ -25,3 +49,4 @@ export const timeToCode = (time: Date) =>
 
 export const codeToTime = (code: string) =>
   numberToTime(parseInt(lettersToBase26(unshiftByOne(code)), 26));
+
