@@ -23,6 +23,7 @@ import { CssBaseline } from '@material-ui/core';
 // import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
 import FocusGroup from './the-journey/views/Gallery/FocusGroup';
 import AutoJoin from './the-journey/components/AutoJoin';
+import GetCode from './the-journey/views/FOH/GetCode';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -42,6 +43,7 @@ export default function App() {
        <div style={{ height }}>
         <Router>
           <Switch>
+            <Route path="/foh/code" component={GetCode}/>
             <Route path="/focus">
               <AutoJoin/><FocusGroup/>
             </Route>
