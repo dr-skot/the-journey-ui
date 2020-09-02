@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import useWindowSize from '../../utils/useWindowSize';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
 import Participant from './components/Participant/Participant';

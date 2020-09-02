@@ -1,6 +1,6 @@
 import React from 'react';
 import AttachVisibilityHandler from './AttachVisibilityHandler';
-import useLocalVideoToggle from '../../../hooks/useLocalVideoToggle/useLocalVideoToggle';
+import useLocalVideoToggle from '../../../../the-journey/hooks/useLocalVideoToggle/useLocalVideoToggle';
 import { render } from '@testing-library/react';
 import * as utils from '../../../utils';
 

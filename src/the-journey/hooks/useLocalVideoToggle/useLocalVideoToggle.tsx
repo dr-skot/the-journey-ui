@@ -1,18 +1,17 @@
 import { LocalVideoTrack } from 'twilio-video';
-import { useCallback, useRef, useState } from 'react';
-import useVideoContext from '../../../the-journey/hooks/useVideoContext';
+import { useCallback, useContext, useRef, useState } from 'react';
+import { AppContext } from '../../contexts/AppContext';
+import useLocalTracks from '../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 
 export default function useLocalVideoToggle() {
-  const {
-    room: { localParticipant },
-    localTracks,
-    getLocalVideoTrack,
-    removeLocalVideoTrack,
-    onError,
-  } = useVideoContext();
+  const [{ room, localTracks }] = useContext(AppContext);
+  const { getLocalVideoTrack, removeLocalVideoTrack } = useLocalTracks();
+  const onError = () => {}; // TODO implement
   const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
-  const [isPublishing, setIspublishing] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const previousDeviceIdRef = useRef<string>();
+
+  const { localParticipant } = room || {};
 
   const toggleVideoEnabled = useCallback(() => {
     if (!isPublishing) {
@@ -23,11 +22,11 @@ export default function useLocalVideoToggle() {
         localParticipant?.emit('trackUnpublished', localTrackPublication);
         removeLocalVideoTrack();
       } else {
-        setIspublishing(true);
+        setIsPublishing(true);
         getLocalVideoTrack({ deviceId: { exact: previousDeviceIdRef.current } })
           .then((track: LocalVideoTrack) => localParticipant?.publishTrack(track, { priority: 'low' }))
           .catch(onError)
-          .finally(() => setIspublishing(false));
+          .finally(() => setIsPublishing(false));
       }
     }
   }, [videoTrack, localParticipant, getLocalVideoTrack, isPublishing, onError, removeLocalVideoTrack]);

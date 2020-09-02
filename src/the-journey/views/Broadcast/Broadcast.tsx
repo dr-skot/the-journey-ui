@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SidebarSelfie from './components/SidebarSelfie';
-import { isDev } from '../../utils/react-help';
 import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
-import MenuBar from './components/MenuBar';
 import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
-// import Controls from '../../../twilio/components/Controls/Controls';
+import Controls from '../../components/Controls/Controls';
+import MenuBar from './components/MenuBar';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -66,17 +65,14 @@ const AudienceMain = React.memo(({ style }: BroadcastProps) => {
           { style === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
+      <Controls />
     </Container>
   );
 });
 
 export default function Broadcast({ style }: BroadcastProps) {
   const [{ roomStatus }] = useContext(AppContext);
-
-  return (
-    <>
-      <MenuBar/>
-      { roomStatus === 'disconnected' ? <LocalVideoPreview/> : <AudienceMain style={style} />}
-    </>
-  )
+  return roomStatus === 'disconnected'
+    ? <><MenuBar /><LocalVideoPreview /></>
+    : <AudienceMain style={style} />;
 }

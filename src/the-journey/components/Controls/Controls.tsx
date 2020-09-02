@@ -2,13 +2,12 @@ import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import EndCallButton from './EndCallButton/EndCallButton';
 import ToggleAudioButton from './ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
-import ToggleScreenShareButton from './ToogleScreenShareButton/ToggleScreenShareButton';
 
 import useIsUserActive from './useIsUserActive/useIsUserActive';
-import { AppContext } from '../../../the-journey/contexts/AppContext';
+import { AppContext } from '../../contexts/AppContext';
+import SettingsButton from './SettingsButton/SettingsButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,16 +44,9 @@ export default function Controls() {
 
   return (
     <div className={clsx(classes.container, { showControls })}>
-      {/*<ToggleAudioButton disabled={isReconnecting} /> */}
+      <ToggleAudioButton disabled={isReconnecting} />
       <ToggleVideoButton disabled={isReconnecting} />
-      { /*
-      {roomStatus !== 'disconnected' && (
-        <>
-          <ToggleScreenShareButton disabled={isReconnecting} />
-          <EndCallButton />
-        </>
-      )}
-       */}
+      <SettingsButton />
     </div>
   );
 }

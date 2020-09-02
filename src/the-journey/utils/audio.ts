@@ -1,7 +1,11 @@
+import { constrain } from './functional';
+
 // @ts-ignore
 window.AudioContext = window.AudioContext || window.webkitAudioContext || undefined;
 
 export const AUDIO_CONTEXT_SUPPORTED = !!AudioContext;
+export const GAIN_MAX = 4;
+export const DELAY_MAX = 20;
 
 export function getAudioContext() : Promise<AudioContext> {
   if (!AUDIO_CONTEXT_SUPPORTED) return Promise.reject(new Error('AudioContext not supported'));
@@ -26,7 +30,7 @@ export function getAudioOut(inputs = 10, gain = 1, delay = 0): Promise<AudioOut>
   return getAudioContext().then((context: AudioContext) => {
     const gainNode = context.createGain();
     gainNode.gain.setValueAtTime(gain, context.currentTime);
-    const delayNode = context.createDelay(20);
+    const delayNode = context.createDelay(DELAY_MAX);
     delayNode.delayTime.setValueAtTime(delay, context.currentTime);
     const mergerNode = context.createChannelMerger(inputs);
     mergerNode.connect(delayNode);
@@ -39,13 +43,17 @@ export function getAudioOut(inputs = 10, gain = 1, delay = 0): Promise<AudioOut>
 export function setGain(gain: number, audioOut?: AudioOut) {
   if (!audioOut) return 1; // didn't work, so gain is 1
   const { gainNode, audioContext } = audioOut;
-  gainNode.gain.setValueAtTime(gain, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(
+    constrain(0, GAIN_MAX)(gain), audioContext.currentTime
+  );
   return gain;
 }
 
 export function setDelay(delay: number, audioOut?: AudioOut) {
   if (!audioOut) return 0; // didn't work, so delay is 0
   const { delayNode, audioContext } = audioOut;
-  delayNode.delayTime.setValueAtTime(delay, audioContext.currentTime);
+  delayNode.delayTime.setValueAtTime(
+    constrain(0, DELAY_MAX)(delay), audioContext.currentTime
+  );
   return delay;
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AudioTrack, LocalAudioTrack, RemoteAudioTrack } from 'twilio-video';
 import { interval } from 'd3-timer';
 import MicOff from '@material-ui/icons/MicOff';
-import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
+import useIsTrackEnabled from '../../../the-journey/hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
 
 // @ts-ignore
