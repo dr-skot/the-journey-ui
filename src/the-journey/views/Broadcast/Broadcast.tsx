@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
-import SidebarSelfie from './components/SidebarSelfie';
+import SelfView from '../../components/Controls/SelfView';
 import { AppContext } from '../../contexts/AppContext';
 import LocalVideoPreview from './components/LocalVideoPreview';
 import Millicast from './Millicast';
@@ -9,7 +9,7 @@ import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
 import MenuBar from './components/MenuBar';
 
-const Container = styled('div')(() => ({
+const Container = styled('div')(({ theme }) => ({
   position: 'relative',
   height: '100%',
 }));
@@ -53,9 +53,6 @@ const AudienceMain = React.memo(({ type }: BroadcastProps) => {
 
   return (
     <Container>
-      <Floater>
-        <SidebarSelfie />
-      </Floater>
       <Main>
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>
@@ -63,6 +60,7 @@ const AudienceMain = React.memo(({ type }: BroadcastProps) => {
           { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
+      <SelfView />
       <Controls />
     </Container>
   );

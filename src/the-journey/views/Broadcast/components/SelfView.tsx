@@ -20,7 +20,7 @@ const ScrollContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-export default function SidebarSelfie() {
+export default function SelfView() {
   const [{ room }] = useContext(AppContext);
   if (!room?.localParticipant) return null;
 
