@@ -3,8 +3,6 @@ import useGalleryParticipants, { MuppetOption } from '../../Gallery/hooks/useGal
 import { Participant } from 'twilio-video';
 import { AppContext } from '../../../contexts/AppContext';
 import { isEqual } from 'lodash';
-import { padWithMuppets } from '../../../mockup/Muppet';
-import { GALLERY_SIZE } from '../../Gallery/FixedGallery';
 
 // both with and without shift key
 // first half of this string will be used for the labels

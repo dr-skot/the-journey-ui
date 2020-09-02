@@ -1,28 +1,26 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { createMuiTheme, MuiThemeProvider, styled } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppContextProvider from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
-import PaddingOperator from './the-journey/views/Operator/PaddingOperator';
+import MuppetOperator from './the-journey/views/Operator/MuppetOperator';
 import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
 
 import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
-// import Controls from './twilio/components/Controls/Controls';
 // import ReconnectingNotification from './twilio/components/ReconnectingNotification/ReconnectingNotification';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 // import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
 // import UnsupportedBrowserWarning from './twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 
-
 import useHeight from './twilio/hooks/useHeight/useHeight';
 import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
-import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
-import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
+// import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
+// import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
 import FocusGroup from './the-journey/views/Gallery/FocusGroup';
 import AutoJoin from './the-journey/components/AutoJoin';
 
@@ -47,15 +45,15 @@ export default function App() {
             <Route path="/focus">
               <AutoJoin/><FocusGroup/>
             </Route>
-            <Route path="/muppets" component={PaddingOperator} />
+            <Route path="/muppets" component={MuppetOperator} />
             <Route path="/mockup" component={MockupGallery} />
             <Route path="/operator" component={Operator} />
             <Route path="/gallery" component={FixedGallery} />
             <Route path="/hybrid">
-              <AutoJoin/><Broadcast style={'hybrid'}/>
+              <AutoJoin/><Broadcast type={'hybrid'}/>
             </Route>
             <Route path="/pure">
-              <AutoJoin/><Broadcast style={'pure'}/>
+              <AutoJoin/><Broadcast type={'pure'}/>
             </Route>
             <Route component={Broadcast}/>
           </Switch>

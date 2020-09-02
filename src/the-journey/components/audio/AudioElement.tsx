@@ -5,13 +5,9 @@ interface AudioElementProps {
   track: IAudioTrack;
 }
 
-let counter = 0;
-
 export default function AudioElement({ track }: AudioElementProps) {
   // const { activeSinkId } = useAppState();
   const audioEl = useRef<HTMLAudioElement>();
-
-  const n = ++counter;
 
   useEffect(() => {
     audioEl.current = track.attach();

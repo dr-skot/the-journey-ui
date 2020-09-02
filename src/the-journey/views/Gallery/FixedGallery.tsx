@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import useGalleryParticipants from './hooks/useGalleryParticipants';
 import { AppContext } from '../../contexts/AppContext';
 import FlexibleGallery from './FlexibleGallery';

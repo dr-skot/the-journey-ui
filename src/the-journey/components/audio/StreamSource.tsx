@@ -6,8 +6,6 @@ interface AudioTrackProps {
   track: IAudioTrack;
 }
 
-let counter = 0;
-
 export default function StreamSource({ track }: AudioTrackProps) {
   const [{ audioOut }] = useContext(AppContext);
   const streamSource = useRef<MediaStreamAudioSourceNode>()
@@ -17,7 +15,6 @@ export default function StreamSource({ track }: AudioTrackProps) {
     const stream = new MediaStream([track.mediaStreamTrack])
     streamSource.current?.disconnect();
     streamSource.current = audioOut.audioContext.createMediaStreamSource(stream);
-    const n = ++counter;
     streamSource.current.connect(audioOut.outputNode);
     audioOut.delayNode.connect(audioOut.gainNode);
     audioOut.gainNode.connect(audioOut.audioContext.destination);
@@ -25,7 +22,7 @@ export default function StreamSource({ track }: AudioTrackProps) {
     return () => {
       streamSource.current?.disconnect();
     }
-  }, [track, audioOut?.audioContext]);
+  }, [track, audioOut]);
 
   return null;
 }

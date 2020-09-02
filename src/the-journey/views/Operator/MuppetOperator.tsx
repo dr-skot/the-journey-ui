@@ -1,5 +1,5 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';

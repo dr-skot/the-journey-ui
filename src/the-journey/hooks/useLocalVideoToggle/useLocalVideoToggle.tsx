@@ -6,7 +6,7 @@ import useLocalTracks from '../../../twilio/components/VideoProvider/useLocalTra
 export default function useLocalVideoToggle() {
   const [{ room, localTracks }] = useContext(AppContext);
   const { getLocalVideoTrack, removeLocalVideoTrack } = useLocalTracks();
-  const onError = () => {}; // TODO implement
+  // const onError = () => {}; // TODO implement
   const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const [isPublishing, setIsPublishing] = useState(false);
   const previousDeviceIdRef = useRef<string>();
@@ -25,11 +25,11 @@ export default function useLocalVideoToggle() {
         setIsPublishing(true);
         getLocalVideoTrack({ deviceId: { exact: previousDeviceIdRef.current } })
           .then((track: LocalVideoTrack) => localParticipant?.publishTrack(track, { priority: 'low' }))
-          .catch(onError)
+          // .catch(onError) TODO deal with this
           .finally(() => setIsPublishing(false));
       }
     }
-  }, [videoTrack, localParticipant, getLocalVideoTrack, isPublishing, onError, removeLocalVideoTrack]);
+  }, [videoTrack, localParticipant, getLocalVideoTrack, isPublishing, removeLocalVideoTrack]);
 
   return [!!videoTrack, toggleVideoEnabled] as const;
 }

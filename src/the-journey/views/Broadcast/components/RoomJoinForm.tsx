@@ -5,8 +5,8 @@ import React, { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { SubscribeProfile } from '../../../hooks/useTrackSubscriber';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppContext } from '../../../contexts/AppContext';
-import useLocalTracks from '../../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
-import { useLocalVideoTrack } from '../../../hooks/useLocalVideoTrack';
+// import useLocalTracks from '../../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
+// import { useLocalVideoTrack } from '../../../hooks/useLocalVideoTrack';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,8 +46,8 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [identity, setIdentity] = useState<string>('');
-  const localTracks = useLocalTracks();
-  const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
+  // const localTracks = useLocalTracks();
+  // const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
 
   // TODO autofill remembered identity
 

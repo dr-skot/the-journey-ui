@@ -1,19 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-import { v4 as uuidv4 } from 'uuid';
 import { isDev } from '../../../utils/react-help';
-
 import { AppContext } from '../../../contexts/AppContext';
 import DelayControl from '../../Operator/components/DelayControl';
 import GainControl from '../../Operator/components/GainControl';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import Menu from '../../../components/MenuBar/Menu/Menu';
-
+import { unixTime } from '../../../utils/functional';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,7 +71,9 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
   const subscribeProfile = 'gallery'
 
   // TODO joiner adds uniqId to all names (could be timestamp instead of uuid)
-  useEffect(() => { setIdentity(isOperator ? 'operator' : `gallery-${uuidv4()}`) }, []);
+  useEffect(() => { setIdentity(isOperator ? 'operator' : `gallery-${unixTime()}`) },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []);  // just once
 
   useEffect(() => {
     if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });

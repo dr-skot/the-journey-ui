@@ -5,11 +5,10 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  CreateLocalTrackOptions, LocalVideoTrack, LocalAudioTrack,
+  LocalVideoTrack, LocalAudioTrack,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
-import { useCallback } from 'react';
 
 const DEFAULT_OPTIONS = {
   tracks: [],

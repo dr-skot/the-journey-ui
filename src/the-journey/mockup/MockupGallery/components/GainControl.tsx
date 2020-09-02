@@ -4,8 +4,6 @@ import MinusIcon from '@material-ui/icons/RemoveCircle';
 import PlusIcon from '@material-ui/icons/AddCircle';
 import { AppContext } from '../../../contexts/AppContext';
 
-const valence = (x: number) => (x < 0 ? -1 : 1);
-
 export default function GainControl() {
   const [{ audioGain }, dispatch] = useContext(AppContext);
 

@@ -12,11 +12,6 @@ const Container = styled('div')({
   height: '100%',
 });
 
-const Menu = styled('div')({
-  flex: '0 1 auto',
-  height: '3em',
-});
-
 const Main = styled('div')({
   flex: '1 1 0',
   display: 'flex',

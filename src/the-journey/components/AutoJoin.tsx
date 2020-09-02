@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { isDev } from '../utils/react-help';
-import { v4 as uuidv4 } from 'uuid';
 import { AppContext } from '../contexts/AppContext';
+import { unixTime } from '../utils/functional';
 
 export default function AutoJoin() {
   const [, dispatch] = useContext(AppContext);
@@ -11,9 +11,7 @@ export default function AutoJoin() {
   const roomName = isDev() ? 'dev-room2' : 'room2';
   const subscribeProfile = 'gallery'
 
-  // TODO joiner adds uniqId to all names (could be timestamp instead of uuid)
-  // TODO use backstage instead of gallery for prefix
-  useEffect(() => { setIdentity(`gallery-${uuidv4()}`) }, []);
+  useEffect(() => { setIdentity(`backstage-${unixTime()}`) }, []);
 
   useEffect(() => {
     if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });

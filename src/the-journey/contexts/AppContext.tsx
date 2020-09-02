@@ -10,11 +10,9 @@ import {
   TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, Participant,
 } from 'twilio-video';
 import { Sid } from 'twilio/lib/interfaces';
-import { constrain, toggleMembership } from '../utils/functional';
+import { toggleMembership } from '../utils/functional';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
-import useLocalTracks from '../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
-import { useLocalVideoTrack } from '../hooks/useLocalVideoTrack';
 import { AudioOut, getAudioOut, setDelay, setGain } from '../utils/audio';
 
 type Identity = Participant.Identity;
@@ -273,12 +271,14 @@ export default function AppContextProvider({ children }: ChildrenProps) {
     const { audioDelay, audioGain } = state;
     getAudioOut(32, audioDelay, audioGain)
       .then(audioOut => dispatch('setAudioOut', { audioOut }));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // only once at startup
 
   // once we have an audio out, set the gain to DEFAULT_GAIN
   useEffect(() => {
     if (state.audioOut) dispatch('bumpAudioGain', { bump: DEFAULT_GAIN - state.audioGain });
-  }, [!state.audioOut]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!state.audioOut]); // only when audioOut initializes
 
   return <AppContext.Provider value={[state, dispatch]}>
     {children}

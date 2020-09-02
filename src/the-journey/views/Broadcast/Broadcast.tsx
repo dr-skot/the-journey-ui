@@ -31,16 +31,14 @@ const Column = styled('div')(() => ({
 }));
 
 interface BroadcastProps {
-  style?: 'millicast' | 'hybrid' | 'pure'
+  type?: 'millicast' | 'hybrid' | 'pure'
 }
 
-let count = 0;
-
-const AudienceMain = React.memo(({ style }: BroadcastProps) => {
+const AudienceMain = React.memo(({ type }: BroadcastProps) => {
   const [{ focusGroup }] = useContext(AppContext);
   const [split, setSplit] = useState(false);
 
-  const newSplit = (style === 'pure' || style === 'hybrid') && focusGroup.length > 0;
+  const newSplit = (type === 'pure' || type === 'hybrid') && focusGroup.length > 0;
   const width = newSplit ? '50%' : '100%';
 
   if (newSplit !== split) setSplit(newSplit);
@@ -62,7 +60,7 @@ const AudienceMain = React.memo(({ style }: BroadcastProps) => {
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>
           { /* TODO find an elegant alternative to these forced rerenders */}
-          { style === 'pure' ? <Stage/> : <Millicast/> }
+          { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
       <Controls />
@@ -70,9 +68,9 @@ const AudienceMain = React.memo(({ style }: BroadcastProps) => {
   );
 });
 
-export default function Broadcast({ style }: BroadcastProps) {
+export default function Broadcast({ type }: BroadcastProps) {
   const [{ roomStatus }] = useContext(AppContext);
   return roomStatus === 'disconnected'
     ? <><MenuBar /><LocalVideoPreview /></>
-    : <AudienceMain style={style} />;
+    : <AudienceMain type={type} />;
 }

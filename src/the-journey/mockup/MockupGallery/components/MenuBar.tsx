@@ -1,16 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { v4 as uuidv4 } from 'uuid';
-import { isDev } from '../../../utils/react-help';
-
-import { AppContext } from '../../../contexts/AppContext';
 import DelayControl from './DelayControl';
 import GainControl from './GainControl';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import Menu from '../../../components/MenuBar/Menu/Menu';
 

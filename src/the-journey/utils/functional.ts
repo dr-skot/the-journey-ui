@@ -15,3 +15,5 @@ export const toggleMembership = (xs: any[]) => (x: any) =>
   xs.includes(x) ? xs.filter(xx => xx !== x) : [...xs, x];
 
 export const constrain = (a: number, b: number) => (n: number) => Math.max(a, Math.min(b, n));
+
+export const unixTime = () => Math.floor(Date.now() / 1000);

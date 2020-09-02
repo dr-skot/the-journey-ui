@@ -1,4 +1,3 @@
-// TODO where should this live?
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
 
@@ -17,6 +16,7 @@ export default function useOperatorMessaging() {
     if (audioDelay) message = { ...message, audioDelay };
     if (starIdentity) message = { ...message, starIdentity };
     setTimeout(() => dispatch('broadcast', message), MESSAGE_DELAY);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants, dispatch, starIdentity]);
 }
 
