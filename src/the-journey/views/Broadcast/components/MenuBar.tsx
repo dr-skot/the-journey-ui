@@ -7,10 +7,10 @@ import { AppContext } from '../../../contexts/AppContext';
 import RoomJoinForm from './RoomJoinForm';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Menu from '../../../components/MenuBar/Menu/Menu';
-// import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
-// import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
-// import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import FlipCameraButton from '../../../components/MenuBar/FlipCameraButton/FlipCameraButton';
+import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
+import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import SettingsButton from '../../../components/MenuBar/SettingsButton/SettingsButton';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,10 +48,10 @@ export default function MenuBar() {
         { roomStatus === 'disconnected'
           ? <RoomJoinForm roomName={roomName} subscribeProfile={subscribeProfile} /> : <h3>The Journey</h3> }
         <div className={classes.rightButtonContainer}>
-          { /* <FlipCameraButton />
+          <FlipCameraButton />
           <LocalAudioLevelIndicator />
-          <ToggleFullscreenButton /> */ }
-          <Menu />
+          <ToggleFullscreenButton />
+          <SettingsButton />
         </div>
       </Toolbar>
     </AppBar>
