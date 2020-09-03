@@ -109,14 +109,40 @@ export default function GetCode() {
               </Button>
           </Item>
               { code &&
-                <Item>
-                  <Typography>
+                <>
+              <Item>
+                <h4>
+                  Show code
+                </h4>
+                <Typography>
+                  {code}
+                </Typography>
+                  <h4>
                     Show link
-                  </Typography>
+                  </h4>
                   <Typography>
                     {`${BASE_URL}/show/${code}`}
                   </Typography>
+                <h4>
+                  Front of House
+                </h4>
+                <Typography>
+                  {`${BASE_URL}/foh/holding/${code}`}
+                </Typography>
+                <h4>
+                  Operator
+                </h4>
+                <Typography>
+                  {`${BASE_URL}/operator/${code}`}
+                </Typography>
+                <h4>
+                  Gallery
+                </h4>
+                <Typography>
+                  {`${BASE_URL}/gallery/${code}`}
+                </Typography>
                 </Item>
+              </>
               }
             </Grid>
           </Paper>
