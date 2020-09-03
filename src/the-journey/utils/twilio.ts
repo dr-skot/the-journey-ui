@@ -9,6 +9,9 @@ import Video, {
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
+import { element, unixTime } from './functional';
+import { User } from 'firebase';
+import { isDev } from './react-help';
 
 const DEFAULT_OPTIONS = {
   tracks: [],
@@ -112,3 +115,20 @@ export const extractTracks = (publishers: Map<Sid, Map<Sid, RemoteAudioTrackPubl
     .flatMap((publications) => Array.from(publications.values()))
     .map(publication => publication.track)
 )
+
+
+export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker'
+
+export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
+  `${username || type}|${type}|${unixTime()}`;
+
+export const getUsername = (identity: string) =>
+  identity.split('|').slice(0, -2).join('|') || identity;
+
+export const getParticipants = (room?: Room) => room ?
+  [room.localParticipant, ...Array.from(room.participants.values())] : [];
+
+export const isRole = (type: UserRole) => (p?: Participant) =>
+  p ? element(-2)(p.identity.split('|')) === type : false;
+
+export const defaultRoom = () => isDev() ? 'dev-room' : 'room';

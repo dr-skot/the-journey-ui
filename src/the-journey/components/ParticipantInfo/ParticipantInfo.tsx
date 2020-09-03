@@ -15,6 +15,7 @@ import useParticipantNetworkQualityLevel from '../../../twilio/hooks/useParticip
 import useIsTrackSwitchedOff from '../../../twilio/hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
 import useTrack from '../../../twilio/hooks/useTrack/useTrack';
 import { LocalOrRemotePublication } from '../../types/types';
+import { getUsername } from '../../utils/twilio';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -115,7 +116,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
             <ParticipantConnectionIndicator participant={participant} />
-            {participant.identity}
+            {getUsername(participant.identity)}
           </h4>
           <NetworkQualityLevel qualityLevel={networkQualityLevel} />
         </div>

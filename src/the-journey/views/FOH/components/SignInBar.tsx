@@ -32,14 +32,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function MenuBar() {
+interface SignInBarProps {
+  roomName: string,
+}
+
+export default function SignInBar({ roomName }: SignInBarProps) {
   const classes = useStyles();
   const [{ roomStatus }] = useContext(AppContext)
 
-  // TODO make these props
-  // TODO reinstate buttons & menu
-
-  const roomName = isDev() ? 'dev-room2' : 'room2';
+  // TODO is this right? review subscribing
   const subscribeProfile = 'data-only';
 
   return (

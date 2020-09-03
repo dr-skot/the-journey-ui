@@ -5,6 +5,8 @@ import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import StarIcon from '@material-ui/icons/Star';
 import { muppetImage } from '../../../../mockup/Muppet';
+import { getUsername } from '../../../../utils/twilio';
+import FOHControls from '../../../FOH/components/FOHControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,6 +70,7 @@ interface ParticipantInfoProps {
   height: number;
   hotKey?: string;
   star?: boolean;
+  foh?: boolean;
 }
 
 export default function ParticipantInfo({
@@ -86,10 +89,11 @@ export default function ParticipantInfo({
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
-            {participant.identity}
+            {getUsername(participant.identity)}
           </h4>
         </div>
         <div>
+          <FOHControls participant={participant} />
           {star && <StarIcon style={{ fontSize: 50, color: 'gold', float: 'right', marginBottom: '-0.1em' }} />}
           {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
           {hotKey && <KeyIcon keyName={hotKey} />}

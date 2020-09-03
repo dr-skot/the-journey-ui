@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SelfView from '../../components/Controls/SelfView';
 import { AppContext } from '../../contexts/AppContext';
-import LocalVideoPreview from './components/LocalVideoPreview';
+import LocalVideoPreview from '../FOH/components/LocalVideoPreview';
 import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import MenuBar from './components/MenuBar';
+import SignInBar from '../FOH/components/SignInBar';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -30,11 +30,12 @@ const Column = styled('div')(() => ({
   flex: '1 1 0',
 }));
 
+export type BroadcastType = 'millicast' | 'hybrid' | 'pure'
 interface BroadcastProps {
-  type?: 'millicast' | 'hybrid' | 'pure'
+  type?: BroadcastType,
 }
 
-const AudienceMain = React.memo(({ type }: BroadcastProps) => {
+export default function Broadcast({ type }: BroadcastProps) {
   const [{ focusGroup }] = useContext(AppContext);
   const [split, setSplit] = useState(false);
 
@@ -64,11 +65,4 @@ const AudienceMain = React.memo(({ type }: BroadcastProps) => {
       <Controls />
     </Container>
   );
-});
-
-export default function Broadcast({ type }: BroadcastProps) {
-  const [{ roomStatus }] = useContext(AppContext);
-  return roomStatus === 'disconnected'
-    ? <><MenuBar /><LocalVideoPreview /></>
-    : <AudienceMain type={type} />;
 }

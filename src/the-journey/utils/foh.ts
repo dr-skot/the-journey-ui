@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment';
 export interface DoorPolicy { open: number, close: number };
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
 
-type Time = Date | Moment
+export type Time = Date | Moment
 
 const DEFAULT_DOOR_POLICY = { open: 30, close: 10 }
 
@@ -17,7 +17,7 @@ export const punctuality = (curtain: Time, time: Time, doorPolicy: DoorPolicy = 
     : minutes < 0 ? 'late' : 'on time';
 }
 
-export const format = (time: Time) => ({
+export const formatTime = (time: Time) => ({
   day: moment(time).format('dddd, MMMM D'),
   time: moment(time).format('h:mma'),
 });

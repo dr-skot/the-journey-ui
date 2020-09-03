@@ -45,19 +45,19 @@ interface RoomJoinFormProps {
 export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' }: RoomJoinFormProps) {
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
-  const [identity, setIdentity] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   // const localTracks = useLocalTracks();
   // const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
 
   // TODO autofill remembered identity
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setIdentity(event.target.value);
+    setUsername(event.target.value);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch('joinRoom', { roomName, identity, subscribeProfile });
+    dispatch('joinRoom', { roomName, role: 'audience', username: username, subscribeProfile });
   };
 
   return (
@@ -66,7 +66,7 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
           id="menu-name"
           label="Name"
           className={classes.textField}
-          value={identity}
+          value={username}
           onChange={handleNameChange}
           margin="dense"
         />

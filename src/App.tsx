@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppContextProvider from './the-journey/contexts/AppContext';
@@ -24,7 +24,9 @@ import { CssBaseline } from '@material-ui/core';
 import FocusGroup from './the-journey/views/Gallery/FocusGroup';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
-import Lobby from './the-journey/views/Lobby/Lobby';
+import FrontDoor from './the-journey/views/FOH/FrontDoor';
+import Holding from './the-journey/views/FOH/Holding';
+import Rejected from './the-journey/views/FOH/Rejected';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -44,22 +46,32 @@ export default function App() {
        <div style={{ height }}>
         <Router>
           <Switch>
-            <Route path="/show/:code" component={Lobby}/>
-            <Route path="/foh/code" component={GetCode}/>
-            <Route path="/focus">
-              <AutoJoin/><FocusGroup/>
-            </Route>
-            <Route path="/muppets" component={MuppetOperator} />
+            <Route path="/rejected" component={Rejected} />
             <Route path="/mockup" component={MockupGallery} />
-            <Route path="/operator" component={Operator} />
-            <Route path="/gallery" component={FixedGallery} />
-            <Route path="/hybrid">
-              <AutoJoin/><Broadcast type={'hybrid'}/>
+            <Route path="/foh/code" component={GetCode} />
+            <Route path="/foh/holding/:code?">
+              <AutoJoin role="foh" /><Holding />
             </Route>
-            <Route path="/pure">
-              <AutoJoin/><Broadcast type={'pure'}/>
+            <Route path="/focus/:code?">
+              <AutoJoin role="lurker" /><FocusGroup />
             </Route>
-            <Route component={Broadcast}/>
+            <Route path="/muppets/:code?">
+              <AutoJoin role="operator" /><MuppetOperator />
+            </Route>
+            <Route path="/operator/:code?">
+              <AutoJoin role="operator" /><Operator />
+            </Route>
+            <Route path="/gallery/:code?">
+              <AutoJoin role="lurker" /><FixedGallery />
+            </Route>
+            <Route path="/hybrid/:code?">
+              <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
+            </Route>
+            <Route path="/pure/:code?">
+              <AutoJoin role="audience" /><Broadcast type={'pure'} />
+            </Route>
+            <Route path="/show/:code?" component={FrontDoor} />
+            <Redirect to="/show" />
           </Switch>
         </Router>
          { /* <ReconnectingNotification /> */ }

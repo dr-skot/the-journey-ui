@@ -63,21 +63,7 @@ interface MenuBarProps {
 // TODO don't use a prop for this it causes rerenders; maybe use userType in AppContext instead
 export default function MenuBar({ isOperator }: MenuBarProps) {
   const classes = useStyles();
-  const [{ roomStatus }, dispatch] = useContext(AppContext);
-  const [identity, setIdentity] = useState('');
-
-  // TODO where should these live?
-  const roomName = isDev() ? 'dev-room2' : 'room2';
-  const subscribeProfile = 'gallery'
-
-  // TODO joiner adds uniqId to all names (could be timestamp instead of uuid)
-  useEffect(() => { setIdentity(isOperator ? 'operator' : `gallery-${unixTime()}`) },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []);  // just once
-
-  useEffect(() => {
-    if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });
-  }, [roomName, identity, subscribeProfile, dispatch]);
+  const [{ roomStatus }] = useContext(AppContext);
 
   return (
       <AppBar className={classes.container}>

@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Participant } from '../MockupGallery/Gallery';
 import KeyIcon from './KeyIcon/KeyIcon';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
+import { getUsername } from '../../utils/twilio';
 
 
 const KEYS = 'QWERTYUIOPASDFGHJKL;ZXCVBNM,./';
@@ -90,7 +91,7 @@ function ParticipantInfo({
       <div className={classes.infoContainer}>
         <div className={classes.infoRow}>
           <h4 className={classes.identity}>
-            {participant.identity}
+            {getUsername(participant.identity)}
           </h4>
         </div>
         <div>

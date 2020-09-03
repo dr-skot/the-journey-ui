@@ -8,6 +8,7 @@ import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackS
 import usePublications from '../../hooks/usePublications/usePublications';
 import useTrack from '../../hooks/useTrack/useTrack';
 import VideocamOff from '@material-ui/icons/VideocamOff';
+import { getUsername } from '../../../the-journey/utils/twilio';
 
 const useStyles = makeStyles({
   container: {
@@ -63,7 +64,7 @@ export default function MainParticipantInfo({ participant, children }: MainParti
     >
       <div className={classes.infoContainer}>
         <h4 className={classes.identity}>
-          {participant.identity}
+          {getUsername(participant.identity)}
           {!isVideoEnabled && <VideocamOff />}
         </h4>
       </div>

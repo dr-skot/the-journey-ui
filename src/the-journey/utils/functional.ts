@@ -17,3 +17,6 @@ export const toggleMembership = (xs: any[]) => (x: any) =>
 export const constrain = (a: number, b: number) => (n: number) => Math.max(a, Math.min(b, n));
 
 export const unixTime = () => Math.floor(Date.now() / 1000);
+
+// allows negative indexing
+export const element = (i: number) => (xs: any[]) => xs[i < 0 ? xs.length + i : i];

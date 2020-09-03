@@ -1,21 +1,36 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { isDev } from '../utils/react-help';
 import { AppContext } from '../contexts/AppContext';
-import { unixTime } from '../utils/functional';
+import { defaultRoom, getIdentity, SubscribeProfile, UserRole } from '../utils/twilio';
+import { useRouteMatch, match } from 'react-router-dom';
 
-export default function AutoJoin() {
-  const [, dispatch] = useContext(AppContext);
-  const [identity, setIdentity] = useState('');
+interface AutoJoinProps {
+  roomName?: string,
+  username?: string,
+  role?: UserRole,
+  profile?: SubscribeProfile
+  children?: any,
+}
 
-  // TODO where should these live?
-  const roomName = isDev() ? 'dev-room2' : 'room2';
-  const subscribeProfile = 'gallery'
+export default function AutoJoin({ roomName, username, role = 'lurker', profile = 'gallery',
+                                   children }: AutoJoinProps) {
+  const [{ room }, dispatch] = useContext(AppContext);
+  const match = useRouteMatch() as match<{ code?: string }>;
+  const roomNameReally = roomName || match.params.code || defaultRoom();
 
-  useEffect(() => { setIdentity(`backstage-${unixTime()}`) }, []);
+  console.log('AutoJoin', {
+    role,
+    roomName: roomNameReally,
+    identity: getIdentity(role, username),
+    match,
+    code: match.params.code
+  });
 
   useEffect(() => {
-    if (identity) dispatch('joinRoom', { roomName, identity, subscribeProfile });
-  }, [roomName, identity, subscribeProfile, dispatch]);
+    dispatch('joinRoom', {
+      roomName: roomNameReally, role: role, username, subscriberProfile: profile
+    });
+  }, []);
 
-  return null;
+  return room ? children || null : null;
 }

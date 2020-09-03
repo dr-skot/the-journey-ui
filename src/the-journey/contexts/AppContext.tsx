@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useReducer } from 'react';
 import { createContext } from 'react';
-import { joinRoom, getTracks, getLocalTracks, subscribe } from '../utils/twilio';
+import { joinRoom, getTracks, getLocalTracks, subscribe, getIdentity } from '../utils/twilio';
 import {
   Room,
   RemoteAudioTrackPublication,
@@ -15,6 +15,9 @@ import { initialSettings, Settings, settingsReducer } from './settings/settingsR
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { AudioOut, getAudioOut, setDelay, setGain } from '../utils/audio';
 
+// TODO maintain participants as an array
+// TODO maintain track arrays as well, based on events
+
 type Identity = Participant.Identity;
 
 const DEFAULT_GAIN = 0.8;
@@ -26,6 +29,8 @@ interface AppState {
   localDataTrack?: LocalDataTrack,
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
+  admitted: Identity[],
+  rejected: Identity[],
   participants: Map<Sid, RemoteParticipant>,
   starIdentity?: Identity,
   focusGroup: Identity[];
@@ -48,6 +53,8 @@ const initialState: AppState = {
   room: undefined,
   roomStatus: 'disconnected',
   participants: new Map(),
+  admitted: [],
+  rejected: [],
   focusGroup: [],
   starIdentity: undefined,
   tracks: new Map(),
@@ -68,7 +75,7 @@ type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'join
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
   'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
   'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
-  'changeSetting' | 'toggleStar'
+  'changeSetting' | 'toggleStar' | 'admit' | 'reject'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -105,16 +112,17 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
-      console.log("joining with identity", payload.identity);
-      console.log('joining with tracks', state.localTracks);
-      joinRoom(payload.roomName, payload.identity,
+      console.log("joining with username", payload.username);
+      console.log("joining with identity", getIdentity(payload.role, payload.username));
+      console.log('joining with tracks', state.localTracks); // TODO allow payload tracks & stereo for star
+      joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
         {...generateConnectionOptions(state.settings), ...payload.options }, state.localTracks)
         .then((room) => {
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
         })
         .catch((error) => {
-          dispatch('roomJoinFailed');
+          dispatch('roomJoinFailed', { error });
           if (payload.catch) payload.catch(error);
         });
       newState = { ...state, roomStatus: 'connecting' };
@@ -173,6 +181,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'trackSubscribed':
     case 'trackUnsubscribed':
+      console.log('track subscriptions changed')
       newState = {
         ...state,
         tracks: getTracks(state.room!),
@@ -222,6 +231,8 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       if (payload.audioGain) newState = { ...newState, audioGain: setGain(payload.audioGain, newState.audioOut) };
       if (payload.focusGroup) newState = { ...newState, focusGroup: payload.focusGroup };
       if (payload.starIdentity) newState = { ...newState, starIdentity: payload.starIdentity };
+      if (payload.admitted) newState = { ...newState, admitted: payload.admitted };
+      if (payload.rejected) newState = { ...newState, rejected: payload.rejected };
       break;
 
     case 'bumpAudioDelay':
@@ -249,6 +260,15 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
         starIdentity: broadcast(state.starIdentity === payload.starIdentity
           ? undefined : payload.starIdentity) };
       break;
+
+    case 'admit':
+      newState = { ...state,
+        ...broadcast({ admitted: [...state.admitted, ...payload.identities ] }) };
+      break;
+
+    case 'reject':
+      newState = { ...state,
+        ...broadcast({ rejected: [...state.rejected, ...payload.identities ] })  };
   }
 
   return newState;
