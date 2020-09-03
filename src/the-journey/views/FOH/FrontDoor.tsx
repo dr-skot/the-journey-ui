@@ -21,7 +21,7 @@ function Lobby({ broadcastType }: LobbyProps) {
 }
 
 interface CodeParam {
-  code: string;
+  code?: string;
 }
 
 interface BroadcastProps extends RouteComponentProps<CodeParam> {

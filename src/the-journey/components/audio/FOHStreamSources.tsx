@@ -6,12 +6,11 @@ import { isRole } from '../../utils/twilio';
 import { Participant } from 'twilio-video';
 
 export default function FOHStreamSources() {
-  const [{ participants, admitted, rejected }] = useContext(AppContext);
+  const [{ participants, admitted, rejected, mutedInLobby }] = useContext(AppContext);
   const notYetAdmitted = (p: Participant) => !admitted.includes(p.identity) && !rejected.includes(p.identity);
+  const muted = (p: Participant) => mutedInLobby.includes(p.identity);
   const group = Array.from(participants.values()).filter(p =>
-    isRole('foh')(p) || (isRole('audience')(p) && notYetAdmitted(p)));
-
-  console.log("FOHStreamSources render");
+    isRole('foh')(p) || (isRole('audience')(p) && notYetAdmitted(p) && !muted(p)));
 
   return (
     <>

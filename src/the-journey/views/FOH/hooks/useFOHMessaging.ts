@@ -5,7 +5,7 @@ import { isRole } from '../../../utils/twilio';
 const MESSAGE_DELAY = 1500;
 
 export default function useFOHMessaging() {
-  const [{ room, participants, admitted, rejected }, dispatch] = useContext(AppContext);
+  const [{ room, participants, admitted, rejected, mutedInLobby }, dispatch] = useContext(AppContext);
   const me = room?.localParticipant;
   const amFOH = isRole('foh')(me);
 
@@ -21,6 +21,7 @@ export default function useFOHMessaging() {
     let message = {};
     if (admitted.length) message = { ...message, admitted };
     if (rejected.length) message = { ...message, rejected };
+    if (mutedInLobby.length) message = { ...message, mutedInLobby };
     // give them a couple of seconds to subscribe to the data channel
     console.log('FOH broadcasting admitted/rejected lists after change in participants');
     setTimeout(() => dispatch('broadcast', message), MESSAGE_DELAY);

@@ -5,6 +5,7 @@ import React, { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { SubscribeProfile } from '../../../hooks/useTrackSubscriber';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppContext } from '../../../contexts/AppContext';
+import { UserRole } from '../../../utils/twilio';
 // import useLocalTracks from '../../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 // import { useLocalVideoTrack } from '../../../hooks/useLocalVideoTrack';
 
@@ -39,10 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface RoomJoinFormProps {
   roomName: string,
+  role?: UserRole,
   subscribeProfile?: SubscribeProfile,
 }
 
-export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' }: RoomJoinFormProps) {
+export default function RoomJoinForm({ roomName, role = 'audience', subscribeProfile = 'data-only' }: RoomJoinFormProps) {
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [username, setUsername] = useState<string>('');
@@ -57,7 +59,7 @@ export default function RoomJoinForm({ roomName, subscribeProfile = 'data-only' 
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch('joinRoom', { roomName, role: 'audience', username: username, subscribeProfile });
+    dispatch('joinRoom', { roomName, role, username: username, subscribeProfile });
   };
 
   return (

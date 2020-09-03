@@ -25,46 +25,62 @@ const DEFAULT_GAIN = 0.8;
 interface AppState {
   error?: TwilioError,
   userType: 'audience' | 'operator' | 'gallery',
-  localTracks: (LocalAudioTrack | LocalVideoTrack)[], // TODO separate these
-  localDataTrack?: LocalDataTrack,
+  // room
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
+  // participants
+  participants: Map<Sid, RemoteParticipant>,
+  focusGroup: Identity[];
+  starIdentity?: Identity,
+  // lobby
   admitted: Identity[],
   rejected: Identity[],
-  participants: Map<Sid, RemoteParticipant>,
-  starIdentity?: Identity,
-  focusGroup: Identity[];
+  mutedInLobby: Identity[],
+  // local tracks
+  localTracks: (LocalAudioTrack | LocalVideoTrack)[], // TODO separate these
+  localDataTrack?: LocalDataTrack,
+  // remote tracks
   tracks: Map<Sid, Map<Identity, RemoteTrackPublication>>
   audioTracks: Map<Identity, Map<Sid, RemoteAudioTrackPublication>>,
   videoTracks: Map<Identity, Map<Sid, RemoteVideoTrackPublication>>,
   dataTracks: Map<Identity, Map<Sid, RemoteDataTrackPublication>>,
+  // audio
   audioOut?: AudioOut,
   audioDelay: number,
   audioGain: number,
   activeSinkId: string,
+  // settings
   settings: Settings,
 }
 
 const initialState: AppState = {
   error: undefined,
   userType: 'audience',
-  localTracks: [],
-  localDataTrack: undefined,
+  // room
   room: undefined,
   roomStatus: 'disconnected',
+  // participants
   participants: new Map(),
-  admitted: [],
-  rejected: [],
   focusGroup: [],
   starIdentity: undefined,
+  // lobby
+  admitted: [],
+  rejected: [],
+  mutedInLobby: [],
+  // local tracks
+  localTracks: [],
+  localDataTrack: undefined,
+  // remote tracks
   tracks: new Map(),
   audioTracks: new Map(),
   videoTracks: new Map(),
   dataTracks: new Map(),
+  // audio
   audioOut: undefined,
   audioDelay: 0,
   audioGain: 1,
   activeSinkId: 'default',
+  // settings
   settings: initialSettings,
 };
 
@@ -75,7 +91,7 @@ type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'join
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
   'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
   'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
-  'changeSetting' | 'toggleStar' | 'admit' | 'reject'
+  'changeSetting' | 'toggleStar' | 'admit' | 'reject' | 'toggleMute'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -269,6 +285,10 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
     case 'reject':
       newState = { ...state,
         ...broadcast({ rejected: [...state.rejected, ...payload.identities ] })  };
+
+    case 'toggleMute':
+      newState = { ...state,
+        ...broadcast({ mutedInLobby: toggleMembership(state.mutedInLobby)(payload.identity) })  };
   }
 
   return newState;

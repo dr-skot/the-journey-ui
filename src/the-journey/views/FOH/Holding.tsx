@@ -9,6 +9,7 @@ import { styled } from '@material-ui/core/styles';
 import { Participant } from 'twilio-video';
 import FOHStreamSources from '../../components/audio/FOHStreamSources';
 import FOHMessaging from './components/FOHMessaging';
+import Controls from '../../components/Controls/Controls';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -27,9 +28,9 @@ const Column = styled('div')(() => ({
 }));
 
 export default function Holding() {
-  const [{ room, admitted, rejected }] = useContext(AppContext);
+  const [{ room, participants, admitted, rejected }] = useContext(AppContext);
   const notYetAdmitted = (p: Participant) => !admitted.includes(p.identity) && !rejected.includes(p.identity);
-  const participants = useGalleryParticipants({ withMuppets: true, withMe: true }).filter(notYetAdmitted);
+  const gallery = useGalleryParticipants({ withMuppets: true, withMe: true }).filter(notYetAdmitted);
   if (!room) return null;
 
   const foh = getParticipants(room).filter(isRole('foh'));
@@ -45,12 +46,13 @@ export default function Holding() {
     <Container>
       <Main>
         <Column style={{width: '50%'}}>
-          <FlexibleGallery participants={participants}/>
+          <FlexibleGallery participants={gallery}/>
         </Column>
         <Column style={{width: '50%'}}>
           <FlexibleGallery participants={foh}/>
         </Column>
       </Main>
+      <Controls />
       <FOHStreamSources />
       {isRole('foh')(room.localParticipant) && <FOHMessaging />}
     </Container>

@@ -3,15 +3,28 @@ import { Button } from '@material-ui/core';
 import { AppContext } from '../../../contexts/AppContext';
 import { isRole } from '../../../utils/twilio';
 import { Participant } from 'twilio-video';
+import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 
 interface FOHControlsProps {
   participant: Participant;
 }
 export default function FOHControls({ participant }: FOHControlsProps) {
-  const  [{ room }, dispatch] =  useContext(AppContext)
+  const  [{ room, mutedInLobby }, dispatch] =  useContext(AppContext)
   if (!isRole('foh')(room?.localParticipant) || isRole('foh')(participant)) return null;
 
+  const audioTrack = mutedInLobby.includes(participant.identity)
+    ? null
+    : participant.audioTracks.values().next().value?.track;
+
+  function toggleMute() {
+    dispatch('toggleMute', { identity: participant.identity });
+  }
+
   return  (
+    <>
+    <div style={{ width: '100%', textAlign: 'right' }}>
+      <span onClick={toggleMute}><AudioLevelIndicator audioTrack={audioTrack} background="white" /></span>
+    </div>
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
         <Button
@@ -28,5 +41,6 @@ export default function FOHControls({ participant }: FOHControlsProps) {
         </Button>
       </div>
     </div>
+      </>
   )
 }

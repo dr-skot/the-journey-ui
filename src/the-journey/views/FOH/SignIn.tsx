@@ -1,15 +1,17 @@
 import LocalVideoPreview from './components/LocalVideoPreview';
 import SignInBar from './components/SignInBar';
 import React from 'react';
+import { defaultRoom, UserRole } from '../../utils/twilio';
 
 interface SignInProps {
-  roomName: string,
+  roomName?: string,
+  role?: UserRole,
 }
 
-export default function SignIn({ roomName }: SignInProps) {
+export default function SignIn({ roomName = defaultRoom(), role = 'audience' }: SignInProps) {
   return (
     <>
-      <SignInBar roomName={roomName} />
+      <SignInBar roomName={roomName} role={role} />
       <LocalVideoPreview />
     </>
   )
