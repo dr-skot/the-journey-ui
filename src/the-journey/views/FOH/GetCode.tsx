@@ -80,6 +80,11 @@ export default function GetCode() {
     setError(date.isValid() ? '' : 'Invalid Date');
   };
 
+  function link(path: string) {
+    const url = `${BASE_URL}/${path}/${code}`;
+    return <a href={url}>{url}</a>;
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <form onSubmit={handleSubmit}>
@@ -118,28 +123,28 @@ export default function GetCode() {
                   {code}
                 </Typography>
                   <h4>
-                    Show link
+                    Show
                   </h4>
                   <Typography>
-                    {`${BASE_URL}/show/${code}`}
+                    {link('show')}
                   </Typography>
                 <h4>
                   Front of House
                 </h4>
                 <Typography>
-                  {`${BASE_URL}/foh/holding/${code}`}
+                  {link('foh/holding')}
                 </Typography>
                 <h4>
                   Operator
                 </h4>
                 <Typography>
-                  {`${BASE_URL}/operator/${code}`}
+                  {link('operator')}
                 </Typography>
                 <h4>
                   Gallery
                 </h4>
                 <Typography>
-                  {`${BASE_URL}/gallery/${code}`}
+                  {link('gallery')}
                 </Typography>
                 </Item>
               </>
