@@ -7,10 +7,15 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, styled, ThemeProvider } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import { timeToCode } from '../../utils/foh';
+import { isDev } from '../../utils/react-help';
+
+const Item = styled('div')(() => ({
+  margin: '1em',
+}));
 
 const useStyles = makeStyles({
   container: {
@@ -50,7 +55,7 @@ function defaultTime() {
   return result;
 }
 
-const BASE_URL = `https://${window.location.hostname}`;
+const BASE_URL = isDev() ? 'http://localhost:3000' : `https://${window.location.hostname}`;
 
 export default function GetCode() {
   const classes = useStyles();
@@ -81,27 +86,37 @@ export default function GetCode() {
         <Grid container justify="center" alignItems="flex-start" className={classes.container}>
           <Paper className={classes.paper} elevation={6}>
             <Grid container alignItems="center" direction="column">
+              <Item>
+                <h3>Enter Showtime:</h3>
               <TextField
                 id="showtime"
                 type="datetime-local"
                 defaultValue={defaultTime()}
                 onChange={handleChange}
               />
-              <div>
+            </Item>
                 {error && (
+                  <Item>
                   <Typography variant="caption" className={classes.errorMessage}>
                     <ErrorOutlineIcon />
                     {error}
                   </Typography>
+                  </Item>
                 )}
-              </div>
+          <Item>
               <Button type="submit" color="primary" variant="contained">
                 Get Code
               </Button>
-              {code &&
-              <Typography variant="caption">
-                Show link: {`${BASE_URL}/show/${code}`}
-              </Typography>
+          </Item>
+              { code &&
+                <Item>
+                  <Typography>
+                    Show link
+                  </Typography>
+                  <Typography>
+                    {`${BASE_URL}/show/${code}`}
+                  </Typography>
+                </Item>
               }
             </Grid>
           </Paper>
