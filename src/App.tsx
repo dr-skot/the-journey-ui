@@ -28,6 +28,7 @@ import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Holding from './the-journey/views/FOH/Holding';
 import Rejected from './the-journey/views/FOH/Rejected';
 import FOHEntry from './the-journey/views/FOH/FOHEntry';
+import SignerEntry from './the-journey/views/Signer/SignerEntry';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="/mockup" component={MockupGallery} />
             <Route path="/foh/code" component={GetCode} />
             <Route path="/foh/holding/:code?" component={FOHEntry}/>
+            <Route path="/signer/:code?" component={SignerEntry} />
             <Route path="/focus/:code?">
               <AutoJoin role="lurker" /><FocusGroup />
             </Route>

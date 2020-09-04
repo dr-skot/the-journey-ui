@@ -2,12 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SelfView from '../../components/Controls/SelfView';
 import { AppContext } from '../../contexts/AppContext';
-import LocalVideoPreview from '../FOH/components/LocalVideoPreview';
 import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import SignInBar from '../FOH/components/SignInBar';
+import { isRole } from '../../utils/twilio';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -36,7 +35,7 @@ interface BroadcastProps {
 }
 
 export default function Broadcast({ type }: BroadcastProps) {
-  const [{ focusGroup }] = useContext(AppContext);
+  const [{ room, focusGroup }] = useContext(AppContext);
   const [split, setSplit] = useState(false);
 
   const newSplit = (type === 'pure' || type === 'hybrid') && focusGroup.length > 0;
@@ -61,8 +60,7 @@ export default function Broadcast({ type }: BroadcastProps) {
           { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
-      <SelfView />
-      <Controls />
+      {isRole('audience')(room?.localParticipant) && <><SelfView /><Controls /></>}
     </Container>
   );
 }

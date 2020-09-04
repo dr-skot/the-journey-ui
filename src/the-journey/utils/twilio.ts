@@ -117,7 +117,7 @@ export const extractTracks = (publishers: Map<Sid, Map<Sid, RemoteAudioTrackPubl
 )
 
 
-export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker'
+export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer'
 
 export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
   `${username || type}|${type}|${unixTime()}`;
