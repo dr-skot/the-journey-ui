@@ -132,3 +132,7 @@ export const isRole = (type: UserRole) => (p?: Participant) =>
   p ? element(-2)(p.identity.split('|')) === type : false;
 
 export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
+
+export const getSigner = (room?: Room) =>
+  Array.from(room?.participants.values() || [])
+    .find(isRole('signer'));

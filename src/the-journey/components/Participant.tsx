@@ -7,16 +7,16 @@ interface ParticipantProps {
   participant: IParticipant;
   disableAudio?: boolean;
   enableScreenShare?: boolean;
-  onClick: () => void;
-  isSelected: boolean;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
 export default function Participant({
   participant,
   disableAudio,
   enableScreenShare,
-  onClick,
-  isSelected,
+  onClick = () => {},
+  isSelected = false,
 }: ParticipantProps) {
   return (
     <ParticipantInfo participant={participant} onClick={onClick} isSelected={isSelected}>

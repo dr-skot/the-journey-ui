@@ -53,7 +53,7 @@ export default function App() {
             <Route path="/foh/code" component={GetCode} />
             <Route path="/foh/holding/:code?" component={FOHEntry}/>
             <Route path="/signer/:code?" component={SignerEntry} />
-            <Route path="/focus/:code?">
+              <Route path="/focus/:code?">
               <AutoJoin role="lurker" /><FocusGroup />
             </Route>
             <Route path="/lurk/:code?">

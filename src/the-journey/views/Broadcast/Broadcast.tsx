@@ -6,7 +6,13 @@ import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import { isRole } from '../../utils/twilio';
+import { getSigner, isRole } from '../../utils/twilio';
+import Participant from '../Gallery/components/Participant/Participant';
+
+const SIGNER_WINDOW_SIZE = {
+  width: 16 * 20,
+  height: 9 * 20,
+}
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -29,6 +35,15 @@ const Column = styled('div')(() => ({
   flex: '1 1 0',
 }));
 
+const SignerWindow = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  bottom: 70,
+  right: 10,
+  width: SIGNER_WINDOW_SIZE.width,
+}));
+
+
+
 export type BroadcastType = 'millicast' | 'hybrid' | 'pure'
 interface BroadcastProps {
   type?: BroadcastType,
@@ -50,6 +65,8 @@ export default function Broadcast({ type }: BroadcastProps) {
     window.dispatchEvent(ev); // fire 'resize' event!
   }, [split]);
 
+  const signer = getSigner(room);
+  console.log('signer', { signer });
 
   return (
     <Container>
@@ -60,6 +77,7 @@ export default function Broadcast({ type }: BroadcastProps) {
           { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
+      {signer && <SignerWindow><Participant participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
       {isRole('audience')(room?.localParticipant) && <><SelfView /><Controls /></>}
     </Container>
   );

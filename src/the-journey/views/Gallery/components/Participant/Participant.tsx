@@ -5,9 +5,9 @@ import ParticipantInfo from './ParticipantInfo';
 
 interface ParticipantProps {
   participant: IParticipant,
-  star: boolean,
-  onClick: MouseEventHandler;
-  selectedIndex: number;
+  star?: boolean,
+  onClick?: MouseEventHandler;
+  selectedIndex?: number;
   width: number,
   height: number,
   hotKey?: string;
@@ -16,9 +16,9 @@ interface ParticipantProps {
 
 export default function Participant({
   participant,
-  star,
-  onClick,
-  selectedIndex,
+  star = false,
+  onClick = () => {},
+  selectedIndex = 0,
   width,
   height,
   hotKey,
