@@ -29,19 +29,10 @@ export const inGroup = (group: string[]) => (p: Participant) => group.includes(p
 export default function Operator() {
   const participants = useGalleryParticipants({ withMuppets: true });
   const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls({ withMuppets: true });
-  const [{ focusGroup, starIdentity }, dispatch] = useContext(AppContext);
+  const [{ focusGroup }, dispatch] = useContext(AppContext);
   useOperatorMessaging();
 
-  console.log("FUUUUUUUUUUUUUUUUUUCGH", participants);
-
   const focusing = focusGroup.length && !forceGallery;
-
-  const handleClick = (e: MouseEvent, participant: Participant) => {
-    // TODO star's video priority should be high -- look at dominant speaker code
-    if (e.altKey) dispatch('toggleStar', { starIdentity: participant.identity });
-    else toggleFocus?.(participant);
-  }
-
 
   return (
     <Container>
@@ -50,11 +41,9 @@ export default function Operator() {
       <FlexibleGallery
         participants={(focusing ? participants?.filter(inGroup(focusGroup)) : participants) || []}
           selection={focusing ? [] : focusGroup}
-        star={starIdentity}
         fixedLength={focusing ? undefined : GALLERY_SIZE}
         hotKeys={!focusing || forceHotKeys ? KEYS : ''}
         mute={true}
-        onClick={handleClick}
       />
       </Main>
     </Container>

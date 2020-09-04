@@ -4,7 +4,7 @@ import { AppContext } from '../../../contexts/AppContext';
 const MESSAGE_DELAY = 1500;
 
 export default function useOperatorMessaging() {
-  const [{ room, focusGroup, audioDelay, participants, starIdentity },
+  const [{ room, focusGroup, audioDelay, participants },
     dispatch] = useContext(AppContext);
   useEffect(() => { if (room) dispatch('publishDataTrack') }, [room, dispatch]);
 
@@ -14,9 +14,8 @@ export default function useOperatorMessaging() {
     let message = {};
     if (focusGroup.length) message = { ...message, focusGroup };
     if (audioDelay) message = { ...message, audioDelay };
-    if (starIdentity) message = { ...message, starIdentity };
     setTimeout(() => dispatch('broadcast', message), MESSAGE_DELAY);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [participants, dispatch, starIdentity]);
+  }, [participants, dispatch]);
 }
 

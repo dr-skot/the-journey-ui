@@ -14,7 +14,7 @@ const SIGNER_WINDOW_SIZE = {
   height: 9 * 20,
 }
 
-const Container = styled('div')(({ theme }) => ({
+const Container = styled('div')(() => ({
   position: 'relative',
   height: '100%',
 }));
@@ -26,16 +26,11 @@ const Main = styled('div')(() => ({
   alignContent: 'center',
 }));
 
-const Floater = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  width: theme.sidebarWidth,
-}));
-
 const Column = styled('div')(() => ({
   flex: '1 1 0',
 }));
 
-const SignerWindow = styled('div')(({ theme }) => ({
+const SignerWindow = styled('div')(() => ({
   position: 'absolute',
   bottom: 70,
   right: 10,

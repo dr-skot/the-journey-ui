@@ -25,13 +25,7 @@ const Main = styled('div')({
 
 
 export default function FixedGallery() {
-  const [, dispatch] = useContext(AppContext);
   const participants = useGalleryParticipants();
-
-  // TODO move this elsewhere and provide fallback alternatives
-  useEffect(() => {
-    dispatch('subscribe', { policy: 'gallery' });
-  }, [dispatch]);
 
   return (
     <Container>

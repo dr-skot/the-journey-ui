@@ -21,7 +21,7 @@ interface NobodyProps {
 
 export default function Nobody({ width, height, index }: NobodyProps) {
   const classes = useStyles();
-  const image = `url(${muppetImageForIdx(index)})`;
+  const image = `url(${muppetImageForIdx(index + 1)})`; // muppets start at 1 not 0
   return (
     <div className={classes.nobody} style={{ width, height, backgroundColor: paletteColor(index) }}>
       <div style={{ width, height, backgroundImage: image, opacity: '25%', backgroundSize: 'cover',

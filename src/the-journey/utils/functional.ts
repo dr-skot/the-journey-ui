@@ -1,7 +1,13 @@
 import { range, isEqual } from 'lodash';
 
+type BooleanFn = (...args: any[]) => boolean;
+
 export const noop = () => {};
-export const not = (f: (...args: any[]) => boolean) => (...args: any[]) => !f(...args);
+export const not = (f: BooleanFn) => (...args: any[]) => !f(...args);
+
+export const and: (...fs: BooleanFn[]) => BooleanFn =
+  (...fs: BooleanFn[]) => (...args: any[]) =>
+    fs.length > 0 ? fs[0](...args) && and(...fs.slice(1))(...args) : true;
 
 export const propsEqual = (prop: string) => (a: Record<string, any>) =>
   (b: Record<string, any>) => isEqual(a[prop], b[prop]);
@@ -20,3 +26,10 @@ export const unixTime = () => Math.floor(Date.now() / 1000);
 
 // allows negative indexing
 export const element = (i: number) => (xs: any[]) => xs[i < 0 ? xs.length + i : i];
+
+export const toggle = (prevValue: any, newValue: any) => isEqual(prevValue, newValue) ? undefined : newValue;
+
+export const tryToParse = (json: string) => {
+  try { return JSON.parse(json) }
+  catch (e) { console.log('Error parsing JSON', e) }
+}

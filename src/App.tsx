@@ -28,7 +28,8 @@ import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Holding from './the-journey/views/FOH/Holding';
 import Rejected from './the-journey/views/FOH/Rejected';
 import FOHEntry from './the-journey/views/FOH/FOHEntry';
-import SignerEntry from './the-journey/views/Signer/SignerEntry';
+import SignerEntry from './the-journey/views/Broadcast/components/SignerEntry';
+import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -40,6 +41,8 @@ export default function App() {
 
   // TODO reinstate reconnecting notification
   // TODO reinstate controls
+
+  console.log('RENDER APP')
 
   return (
     <MuiThemeProvider theme={theme}>
@@ -53,7 +56,8 @@ export default function App() {
             <Route path="/foh/code" component={GetCode} />
             <Route path="/foh/holding/:code?" component={FOHEntry}/>
             <Route path="/signer/:code?" component={SignerEntry} />
-              <Route path="/focus/:code?">
+            <Route path="/star/:code?" component={StarEntry} />
+            <Route path="/focus/:code?">
               <AutoJoin role="lurker" /><FocusGroup />
             </Route>
             <Route path="/lurk/:code?">
@@ -71,8 +75,9 @@ export default function App() {
             <Route path="/hybrid/:code?">
               <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
             </Route>
-            <Route path="/pure/:code?">
-              <AutoJoin role="audience" /><Broadcast type={'pure'} />
+            <Route path="/pure/:code?" render={(props) => (
+              <FrontDoor broadcastType="pure" { ...props } />
+            )}>
             </Route>
             <Route path="/show/:code?" component={FrontDoor} />
             <Redirect to="/show" />

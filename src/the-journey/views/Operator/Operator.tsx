@@ -8,6 +8,7 @@ import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import { Participant } from 'twilio-video';
 import useOperatorMessaging from './hooks/useOperatorMessaging';
 import { styled } from '@material-ui/core/styles';
+import { getTimestamp } from '../../utils/twilio';
 
 const Container = styled('div')({
   display: 'flex',
@@ -24,19 +25,19 @@ const Main = styled('div')({
   alignContent: 'center',
 });
 
+let count = 0;
+
 export default function Operator() {
   const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls();
-  const [{ focusGroup, starIdentity }, dispatch] = useContext(AppContext);
-
-  useOperatorMessaging();
+  const [{ focusGroup, participants: p }, dispatch] = useContext(AppContext);
 
   const focusing = focusGroup.length && !forceGallery;
 
-  const handleClick = (e: MouseEvent, participant: Participant) => {
-    // TODO star's video priority should be high -- look at dominant speaker code
-    if (e.altKey) dispatch('toggleStar', { star: participant });
-    else toggleFocus?.(participant);
-  }
+  const gp = useGalleryParticipants();
+  const participants = gp
+    .filter(p => focusing ? focusGroup.includes(p.identity) : true);
+
+  useOperatorMessaging();
 
   return (
     <Container>
@@ -45,13 +46,12 @@ export default function Operator() {
       <FlexibleGallery
         participants={useGalleryParticipants().filter(p => focusing ? focusGroup.includes(p.identity) : true)}
         selection={focusing ? [] : focusGroup}
-        star={starIdentity}
         fixedLength={focusing ? undefined : GALLERY_SIZE}
         hotKeys={!focusing || forceHotKeys ? KEYS : ''}
         mute={true}
-        onClick={handleClick}
       />
       </Main>
     </Container>
   );
 }
+Operator.whyDidYouRender = false;

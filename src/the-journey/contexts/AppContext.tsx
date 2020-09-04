@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useReducer } from 'react';
 import { createContext } from 'react';
-import { joinRoom, getTracks, getLocalTracks, subscribe, getIdentity } from '../utils/twilio';
+import { joinRoom, getTracks, getLocalTracks, subscribe, getIdentity, setTrackPriorities } from '../utils/twilio';
 import {
   Room,
   RemoteAudioTrackPublication,
@@ -10,7 +10,7 @@ import {
   TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, Participant,
 } from 'twilio-video';
 import { Sid } from 'twilio/lib/interfaces';
-import { toggleMembership } from '../utils/functional';
+import { toggle, toggleMembership } from '../utils/functional';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { AudioOut, getAudioOut, setDelay, setGain } from '../utils/audio';
@@ -31,7 +31,6 @@ interface AppState {
   // participants
   participants: Map<Sid, RemoteParticipant>,
   focusGroup: Identity[];
-  starIdentity?: Identity,
   // lobby
   admitted: Identity[],
   rejected: Identity[],
@@ -62,7 +61,6 @@ const initialState: AppState = {
   // participants
   participants: new Map(),
   focusGroup: [],
-  starIdentity: undefined,
   // lobby
   admitted: [],
   rejected: [],
@@ -91,7 +89,7 @@ type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'join
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
   'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
   'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
-  'changeSetting' | 'toggleStar' | 'admit' | 'reject' | 'toggleMute'
+  'changeSetting' | 'admit' | 'reject' | 'toggleMute'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -103,7 +101,7 @@ type EasyDispatch = (action: ReducerAction, payload?: any) => void;
 
 const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, request: ReducerRequest) => {
   const { action, payload, dispatch } = request;
-  console.log('action', action);
+  console.log('action', action, 'payload', payload);
   let newState = state;
 
   const broadcast = (message: any) => { state.localDataTrack?.send(JSON.stringify(message)); return message };
@@ -128,9 +126,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
-      console.log("joining with username", payload.username);
-      console.log("joining with identity", getIdentity(payload.role, payload.username));
-      console.log('joining with tracks', state.localTracks); // TODO allow payload tracks & stereo for star
+      console.log('joining with tracks', state.localTracks); // TODO allow payload tracks
       joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
         {...generateConnectionOptions(state.settings), ...payload.options }, state.localTracks)
         .then((room) => {
@@ -164,6 +160,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
         (track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) =>
           dispatch('trackUnsubscribed', { track, publication, participant }));
       payload.room.on('trackMessage', (data: string) => {
+          console.log('raw data received', data);
           try { const message = JSON.parse(data); dispatch('messageReceived', message) }
           finally {}
         });
@@ -246,7 +243,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       if (payload.audioDelay) newState = { ...newState, audioDelay: setDelay(payload.audioDelay, newState.audioOut) };
       if (payload.audioGain) newState = { ...newState, audioGain: setGain(payload.audioGain, newState.audioOut) };
       if (payload.focusGroup) newState = { ...newState, focusGroup: payload.focusGroup };
-      if (payload.starIdentity) newState = { ...newState, starIdentity: payload.starIdentity };
       if (payload.admitted) newState = { ...newState, admitted: payload.admitted };
       if (payload.rejected) newState = { ...newState, rejected: payload.rejected };
       break;
@@ -269,12 +265,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'changeSetting':
       newState = { ...state, settings: settingsReducer(state.settings, payload) };
-      break;
-
-    case 'toggleStar':
-      newState = { ...state,
-        starIdentity: broadcast(state.starIdentity === payload.starIdentity
-          ? undefined : payload.starIdentity) };
       break;
 
     case 'admit':

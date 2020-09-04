@@ -29,8 +29,7 @@ const Column = styled('div')(() => ({
 
 export default function Holding() {
   const [{ room, participants, admitted, rejected }] = useContext(AppContext);
-  const notYetAdmitted = (p: Participant) => !admitted.includes(p.identity) && !rejected.includes(p.identity);
-  const gallery = useGalleryParticipants({ withMuppets: true, withMe: true }).filter(notYetAdmitted);
+  const gallery = useGalleryParticipants({ withMuppets: true, withMe: true, inLobby: true });
   if (!room) return null;
 
   const foh = getParticipants(room).filter(isRole('foh'));

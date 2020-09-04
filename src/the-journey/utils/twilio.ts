@@ -5,13 +5,13 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack,
+  LocalVideoTrack, LocalAudioTrack, LocalParticipant, Track,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
-import { element, unixTime } from './functional';
-import { User } from 'firebase';
+import { element, tryToParse, unixTime } from './functional';
 import { isDev } from './react-help';
+import { isFunction, pick } from 'lodash';
 
 const DEFAULT_OPTIONS = {
   tracks: [],
@@ -36,9 +36,19 @@ export function connect(token: string, roomName: string, options: Video.ConnectO
   });
 }
 
+type Priorities = Record<Track.Kind, Track.Priority>;
+
+
 function publishTracks(room: Room, tracks: LocalTrack[]) {
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+
+  const me = room.localParticipant;
+  const priorities: Priorities = isRole('star')(me)
+    ? { video: 'high', audio: 'high', data: 'standard' }
+    : { video: 'low', audio: 'standard', data: 'standard' };
+
+  console.log('publishing tracks with priorities', priorities);
 
   [videoTrack, audioTrack].forEach(track => {
     // Tracks can be supplied as arguments to the Video.connect() function and they will automatically be published.
@@ -47,7 +57,7 @@ function publishTracks(room: Room, tracks: LocalTrack[]) {
     // track that is displayed in the 'MainParticipant' component will have it's priority
     // set to 'high' via track.setPriority()
     if (track) {
-      room.localParticipant.publishTrack(track, { priority: track.kind === 'video' ? 'low' : 'standard' })
+      room.localParticipant.publishTrack(track, { priority: priorities[track.kind] })
     }
   });
 }
@@ -117,7 +127,7 @@ export const extractTracks = (publishers: Map<Sid, Map<Sid, RemoteAudioTrackPubl
 )
 
 
-export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer'
+export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer' | 'star'
 
 export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
   `${username || type}|${type}|${unixTime()}`;
@@ -136,3 +146,91 @@ export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
 export const getSigner = (room?: Room) =>
   Array.from(room?.participants.values() || [])
     .find(isRole('signer'));
+
+
+interface PrioritySettings {
+  video: Track.Priority,
+  audio: Track.Priority,
+}
+export const setTrackPriorities = (room: Room, settings: PrioritySettings) => {
+  const participant = room.localParticipant
+  console.log('setting priorities...');
+  participant.videoTracks.forEach(pub => {
+    console.log('setting video priority', settings.video, 'for', participant.identity);
+    // @ts-ignore
+    pub.setPriority(settings.video);
+  });
+  participant.audioTracks.forEach(pub => {
+    console.log('setting audio priority', settings.video, 'for', participant.identity);
+      // @ts-ignore
+    pub.setPriority(settings.audio);
+  });
+}
+
+export const getTimestamp = (p: Participant) => element(-1)(p.identity.split('|'));
+
+export const isAmong = (identities: string[]) => (p: Participant) => identities.includes(p.identity);
+
+export const getStar = (participants: Map<string, Participant>) =>
+  Array.from(participants.values()).find(isRole('star'));
+
+
+//
+// synchronized room data
+//
+type State = Record<string, any>
+type StateChangeCallback = (changes: State) => void
+
+export function newRoomStateManager() {
+  let room: Room;
+  let state: State = {};
+  let listeners: StateChangeCallback[] = [];
+  let publishedProps: string[] = [];
+
+  function setRoom(newRoom: Room) {
+    if (room) room.off('trackMessage', onMessageReceived)
+    room = newRoom;
+    room.on('trackMessage', onMessageReceived);
+  }
+
+  function setPublishedProps(props: string[]) {
+    publishedProps = props;
+  }
+
+  function changeState(change: (prev: State) => State | State) {
+    const changes = isFunction(change) ? change(state) : change;
+    publish(changes); // TODO check publishedProps?
+    state = { ...state, ...changes };
+    return state;
+  }
+
+  function publish(data: State) {
+    if (Object.values(data).length === 0) return;
+    room.localParticipant.dataTracks.forEach((pub) => {
+      pub.track.send(JSON.stringify({ 'changeRoomState': data }))
+    });
+  }
+
+  function addListener(newListener: StateChangeCallback) {
+    listeners = [...listeners, newListener];
+  }
+
+  function removeListener(listenerToRemove: StateChangeCallback) {
+    listeners = listeners.filter((listener) => listener !== listenerToRemove);
+  }
+
+  function onMessageReceived(data: string) {
+    const message = tryToParse(data);
+    const changes = message?.changeRoomState;
+    if (!changes) return;
+    state = { ...state, ...changes };
+    listeners.forEach(listener => listener(changes));
+  }
+
+  function onParticipantJoin() {
+    const dataToPublish = pick(publishedProps, state);
+    publish(dataToPublish);
+  }
+
+  return { setRoom, setPublishedProps, changeState, addListener, removeListener };
+}
