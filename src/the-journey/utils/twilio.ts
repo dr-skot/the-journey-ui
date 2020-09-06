@@ -9,9 +9,8 @@ import Video, {
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
-import { element, tryToParse, unixTime } from './functional';
+import { element, unixTime } from './functional';
 import { isDev } from './react-help';
-import { isFunction, pick } from 'lodash';
 
 const DEFAULT_OPTIONS = {
   tracks: [],
@@ -91,11 +90,23 @@ export function getLocalTracks() {
   })
 }
 
-export async function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
-  if (room.localParticipant.dataTracks.size === 0) {
-    await room.localParticipant.publishTrack(new LocalDataTrack());
-  }
-  return room.localParticipant.dataTracks.values().next().value;
+export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
+  const me = room.localParticipant;
+  const existingTrack = Array.from(me.dataTracks.values())
+    .map((pub) => pub.track)
+    .find((track) => !!track.send);
+  if (existingTrack) return Promise.resolve(existingTrack);
+  const promise = new Promise<LocalDataTrack>((resolve, reject) => {
+    function handlePublished(pub: LocalTrackPublication) {
+      if (pub.kind === 'data') {
+        me.off('trackPublished', handlePublished);
+        resolve(pub.track as LocalDataTrack);
+      }
+    }
+    me.on('trackPublished', handlePublished);
+  });
+  me.publishTrack(new LocalDataTrack());
+  return promise;
 }
 
 export function getPublications(participant: Participant) {
@@ -189,62 +200,3 @@ export const getStar = (participants: Map<string, Participant>) =>
   Array.from(participants.values()).find(isRole('star'));
 
 
-//
-// synchronized room data
-//
-type State = Record<string, any>
-type StateChangeCallback = (changes: State) => void
-
-export function newRoomStateManager() {
-  let room: Room;
-  let state: State = {};
-  let listeners: StateChangeCallback[] = [];
-  let publishedProps: string[] = [];
-
-  function setRoom(newRoom: Room) {
-    if (room) room.off('trackMessage', onMessageReceived)
-    room = newRoom;
-    room.on('trackMessage', onMessageReceived);
-  }
-
-  function setPublishedProps(props: string[]) {
-    publishedProps = props;
-  }
-
-  function changeState(change: (prev: State) => State | State) {
-    const changes = isFunction(change) ? change(state) : change;
-    publish(changes); // TODO check publishedProps?
-    state = { ...state, ...changes };
-    return state;
-  }
-
-  function publish(data: State) {
-    if (Object.values(data).length === 0) return;
-    room.localParticipant.dataTracks.forEach((pub) => {
-      pub.track.send(JSON.stringify({ 'changeRoomState': data }))
-    });
-  }
-
-  function addListener(newListener: StateChangeCallback) {
-    listeners = [...listeners, newListener];
-  }
-
-  function removeListener(listenerToRemove: StateChangeCallback) {
-    listeners = listeners.filter((listener) => listener !== listenerToRemove);
-  }
-
-  function onMessageReceived(data: string) {
-    const message = tryToParse(data);
-    const changes = message?.changeRoomState;
-    if (!changes) return;
-    state = { ...state, ...changes };
-    listeners.forEach(listener => listener(changes));
-  }
-
-  function onParticipantJoin() {
-    const dataToPublish = pick(publishedProps, state);
-    publish(dataToPublish);
-  }
-
-  return { setRoom, setPublishedProps, changeState, addListener, removeListener };
-}

@@ -8,6 +8,8 @@ import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
 import { getSigner, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
+import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -45,7 +47,8 @@ interface BroadcastProps {
 }
 
 export default function Broadcast({ type }: BroadcastProps) {
-  const [{ room, focusGroup }] = useContext(AppContext);
+  const [{ room }] = useContext(AppContext);
+  const [{ focusGroup }] = useContext(SharedRoomContext);
   const [split, setSplit] = useState(false);
 
   const newSplit = (type === 'pure' || type === 'hybrid') && focusGroup.length > 0;
@@ -74,6 +77,7 @@ export default function Broadcast({ type }: BroadcastProps) {
       </Main>
       {signer && <SignerWindow><ParticipantVideoWindow participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
       {isRole('audience')(room?.localParticipant) && <><SelfView /><Controls /></>}
+      <FocusGroupAudio/>
     </Container>
   );
 }

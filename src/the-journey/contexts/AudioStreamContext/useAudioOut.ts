@@ -1,8 +1,12 @@
 import { AudioOut, getAudioOut } from '../../utils/audio';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function useAudioOut(inputs?: number, gain?: number, delay?: number) {
   const [audioOut, setAudioOut] = useState<AudioOut>();
-  getAudioOut(inputs, gain, delay).then(setAudioOut);
+
+  useEffect(() => {
+    if (!audioOut) getAudioOut(inputs, gain, delay).then(setAudioOut);
+  }, [!audioOut]);
+
   return audioOut;
 }

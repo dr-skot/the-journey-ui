@@ -2,23 +2,12 @@ import React, { useContext } from 'react';
 import { codeToTime, formatTime, punctuality } from '../../utils/foh';
 import moment from 'moment';
 import { AppContext } from '../../contexts/AppContext';
-import Broadcast, { BroadcastType } from '../Broadcast/Broadcast';
-import Holding from './Holding';
+import { BroadcastType } from '../Broadcast/Broadcast';
 import SignIn from './SignIn';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { defaultRoom } from '../../utils/twilio';
+import Lobby from './Lobby';
 
-interface LobbyProps {
-  broadcastType: BroadcastType,
-}
-
-function Lobby({ broadcastType }: LobbyProps) {
-  const [{ room, admitted, rejected }] = useContext(AppContext);
-  const { identity } = room?.localParticipant || {};
-  return (!identity || rejected.includes(identity)) ? <Redirect to="/rejected" />
-    : admitted.includes(identity) ? <Broadcast type={broadcastType} />
-    : <Holding />;
-}
 
 interface CodeParam {
   code?: string;

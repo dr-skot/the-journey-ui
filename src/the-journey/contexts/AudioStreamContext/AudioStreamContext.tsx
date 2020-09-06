@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 import { isEqual } from 'lodash';
-import { Participant, Room } from 'twilio-video';
+import { Participant } from 'twilio-video';
 import useStreamNodes from './useStreamNodes';
 import useAudioOut from './useAudioOut';
 import { setDelay, setGain } from '../../utils/audio';
@@ -31,13 +31,12 @@ export const DEFAULT_DELAY = 0;
 
 interface ProviderProps {
   children: ReactNode,
-  room?: Room,
 }
 
-export default function AudioStreamContextProvider({ room, children }: ProviderProps) {
+export default function AudioStreamContextProvider({ children }: ProviderProps) {
   const [unmuted, setUnmuted] = useState<Identity[]>([]);
-  const nodes = useStreamNodes();
   const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
+  const nodes = useStreamNodes();
 
   const setUnmutedGroup = useCallback((group: Identity[]) => {
     setUnmuted((prev) => isEqual(group.sort(), prev) ? prev : group);

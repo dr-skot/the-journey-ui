@@ -4,22 +4,37 @@ import { AppContext } from '../../../contexts/AppContext';
 import { isRole } from '../../../utils/twilio';
 import { Participant } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
+import { toggleMembership } from '../../../utils/functional';
+import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 
 interface FOHControlsProps {
   participant: Participant;
 }
+
+// TODO deal with all this @ts-ignore, and maybe SharedRoomContext needs a reducer
 export default function FOHControls({ participant }: FOHControlsProps) {
-  const  [{ room, mutedInLobby }, dispatch] =  useContext(AppContext)
+  const [{ room }] = useContext(AppContext);
+  const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomContext)
   if (!isRole('foh')(room?.localParticipant) || isRole('foh')(participant)) return null;
 
   const audioTrack = mutedInLobby.includes(participant.identity)
     ? null
     : participant.audioTracks.values().next().value?.track;
 
-  function toggleMute() {
-    dispatch('toggleMute', { identity: participant.identity });
-  }
+  const toggleMute = () =>
+    // @ts-ignore
+    changeSharedState({ mutedInLobby: toggleMembership(mutedInLobby, participant.identity) });
 
+  // TODO send rejected to page? is that already happening?
+  const reject = () =>
+    // @ts-ignore
+    changeSharedState({ rejected: [...rejected, participant.identity] });
+
+  const admit = () =>
+    // @ts-ignore
+    changeSharedState({ admitted: [...admitted, participant.identity] });
+
+  // TODO what is this warning about cannot resolve file "white" below?
   return  (
     <>
     <div style={{ width: '100%', textAlign: 'right' }}>
@@ -28,14 +43,14 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
         <Button
-          onClick={() => dispatch('reject', { identities: [participant.identity]})}
+          onClick={reject}
           size="small" color="secondary" variant="contained">
           Reject
         </Button>
       </div>
       <div>
         <Button
-          onClick={() => dispatch('admit', { identities: [participant.identity]})}
+          onClick={admit}
           size="small" color="default" variant="contained">
           Admit
         </Button>

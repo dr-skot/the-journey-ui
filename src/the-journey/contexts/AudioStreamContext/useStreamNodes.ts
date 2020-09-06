@@ -19,21 +19,25 @@ function getNode(audioContext: AudioContext, track: RemoteAudioTrack) {
 // wrapping them in nodes when they arrive, disconnecting the nodes when they leave
 
 export default function useStreamNodes() {
-  const [{ room }] = useContext(AppContext);
-  const audioContext = useAudioContext();
   const [nodes, setNodes] = useState<TrackRecord[]>([]);
+  const audioContext = useAudioContext();
+  const [{ room }] = useContext(AppContext);
 
   useEffect(() => {
     if (!room || !audioContext) return;
+    const me = room.localParticipant;
 
     function addStreamSource(track: RemoteAudioTrack, { trackSid }: RemoteAudioTrackPublication,
                              { identity }: RemoteParticipant) {
+      if (identity === me.identity || track.kind !== 'audio') return;
+      console.log('addStreamSource for track', track);
       const node = getNode(audioContext!, track);
       setNodes((prev) => [...prev, [identity, trackSid, node]]);
     }
 
     function removeStreamSource(track: RemoteAudioTrack, { trackSid }: RemoteAudioTrackPublication,
                                 { identity }: RemoteParticipant) {
+      console.log('removeStreamSource for track', track);
       setNodes((prev) => {
         prev.forEach(([id, sid, node]: TrackRecord) => {
           if (id === identity && sid === trackSid) node.disconnect();
@@ -42,17 +46,19 @@ export default function useStreamNodes() {
       });
     }
 
-    room.participants.forEach((participant) =>
+    room.participants.forEach((participant) => {
+      if (participant.identity === me.identity) return;
       participant.audioTracks.forEach((publication) => {
         if (publication.track) addStreamSource(publication.track, publication, participant);
-      }));
+      })
+    });
 
     room.on('trackSubscribed', addStreamSource)
-    room.on('trackSubscribed', removeStreamSource)
+    room.on('trackUnsubscribed', removeStreamSource)
 
     return () => {
       room.off('trackSubscribed', addStreamSource)
-      room.off('trackSubscribed', removeStreamSource)
+      room.off('trackUnsubscribed', removeStreamSource)
       setNodes((prev) => {
         prev.forEach(([,, node]) => node.disconnect());
         return [];
@@ -62,3 +68,4 @@ export default function useStreamNodes() {
 
   return nodes;
 }
+useStreamNodes.whyDidYouRender = true;

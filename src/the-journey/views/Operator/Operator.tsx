@@ -1,12 +1,13 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
 import React, { useContext } from 'react';
-import { AppContext } from '../../contexts/AppContext';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
-import useOperatorMessaging from './hooks/useOperatorMessaging';
 import { styled } from '@material-ui/core/styles';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import { AppContext } from '../../contexts/AppContext';
 
 const Container = styled('div')({
   display: 'flex',
@@ -28,11 +29,15 @@ interface OperatorProps {
 }
 
 export default function Operator({ withMuppets }: OperatorProps = {}) {
+  const [{ room }] = useContext(AppContext);
   const { forceGallery, forceHotKeys } = useOperatorControls({ withMuppets });
-  const [{ focusGroup }] = useContext(AppContext);
-  const gallery = useGalleryParticipants({ withMuppets });
+  const [{ focusGroup }] = useContext(SharedRoomContext);
+  // const gallery = useGalleryParticipants({ withMuppets });
+  const gallery = useParticipants();
+
+  console.log('useParticipants', gallery);
+  console.log('room.participants', room?.participants);
   const focusing = focusGroup.length && !forceGallery;
-  useOperatorMessaging();
 
   return (
     <Container>

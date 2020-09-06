@@ -1,23 +1,34 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { createContext, ReactNode, useEffect } from 'react';
-import { Participant, Room } from 'twilio-video';
+import { Participant } from 'twilio-video';
 import { getLocalDataTrack } from '../utils/twilio';
-import { pick, tryToParse } from '../utils/functional';
-import { isEqual, isEmpty, uniq } from 'lodash';
-import { DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
+import { tryToParse } from '../utils/functional';
+import { isEqual } from 'lodash';
+import { AudioStreamContext, DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
+import { AppContext } from './AppContext';
 
 type Identity = Participant.Identity;
 
 interface SharedRoomState {
+  admitted: Identity[],
+  rejected: Identity[],
+  mutedInLobby: Identity[],
+  focusGroup: Identity[],
+  gain: number,
+  delayTime: number,
+}
+type StateChanger = (changes: SharedRoomState) => void;
+type SharedRoomContextValue = [SharedRoomState, StateChanger];
+
+// a separate type for partial states, to make typescript happy
+export interface RoomStateChange {
   admitted?: Identity[],
   rejected?: Identity[],
   mutedInLobby?: Identity[],
   focusGroup?: Identity[],
   gain?: number,
-  delayTime?: number,
+  delayTime?: number;
 }
-
-type StateChanger = (changes: SharedRoomState) => void;
 
 const initialState = {
   admitted: [],
@@ -27,26 +38,26 @@ const initialState = {
   gain: DEFAULT_GAIN,
   delayTime: DEFAULT_DELAY,
 } as SharedRoomState;
-
 const initialStateChanger: StateChanger = () => {};
+const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];
 
-
-const SharedRoomContext = createContext([initialState, initialStateChanger]);
+export const SharedRoomContext = createContext(initalContextValue);
 
 interface QueuedMessage {
   to: Identity | 'all',
-  payload: { request: 'sharedState' } | { sharedStateUpdate: SharedRoomState },
+  payload: { request: 'sharedState' } | { sharedStateUpdate: RoomStateChange },
 }
 
 interface ProviderProps {
   children: ReactNode,
-  room?: Room,
 }
 
-export default function SharedRoomContextProvider({ room, children }: ProviderProps) {
+export default function SharedRoomContextProvider({ children }: ProviderProps) {
+  const [{ room }] = useContext(AppContext);
   const [queue, setQueue] = useState<QueuedMessage[]>([]);
   const [sharedState, setSharedState] = useState<SharedRoomState>(initialState);
-  const myProps = useRef<string[]>([]);
+  const { setGain, setDelayTime } = useContext(AudioStreamContext);
+  const me = room?.localParticipant.identity;
 
   // queue messages
   const sendMessage = useCallback((message: QueuedMessage) => {
@@ -55,26 +66,29 @@ export default function SharedRoomContextProvider({ room, children }: ProviderPr
 
   // return-address and send queued messages when we have a data track
   useEffect(() => {
-    if (!room) return;
-    const me = room.localParticipant.identity;
+    if (!room || queue.length === 0) return;
     getLocalDataTrack(room).then((track) => {
       queue.forEach((message) => {
+        console.log('sending data track message', message);
         track.send(JSON.stringify({ ...message, from: me }));
       });
     });
+    setQueue([]);
   }, [room, queue])
 
   // listen for shared state updates, then request an update
   useEffect(() => {
     if (!room) return;
-    const me = room.localParticipant.identity;
 
     function syncSharedState(data: string) {
       const message = tryToParse(data) || {};
       const { from, to, payload: { sharedStateUpdate, request } } = message;
+      console.log('oh yeah, i got something', message);
       if (to === me || (to === 'all' && from !== me)) {
+        console.log('its for me!');
         // receive updates
         if (sharedStateUpdate) {
+          console.log('its an update!');
           setSharedState((prev) => {
             const newState = { ...prev, ...sharedStateUpdate };
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
@@ -82,36 +96,52 @@ export default function SharedRoomContextProvider({ room, children }: ProviderPr
         }
         // send updates when requested
         if (request === 'sharedState') {
+          console.log('its a request for update!');
+          console.log('request for sharedState');
           setSharedState((currentState) => {
-            const myState = pick(myProps.current, currentState);
-            if (!isEmpty(myState)) sendMessage({ to: from, payload: { sharedStateUpdate: myState } });
+            sendMessage({ to: from, payload: { sharedStateUpdate: currentState } });
             return currentState;
           });
         }
-
       }
     }
 
     room.on('trackMessage', syncSharedState);
-    sendMessage({ to: 'all', payload: { request: 'sharedState' } })
+
+    // when you enter the room, ask somebody there what the deal is
+    let others = Array.from(room.participants.values()).filter((p) => p.identity !== me);
+    if (others.length) {
+      // they might not be listening yet, so keep asking until they respond
+      let gotInfo = false, retries = 10, i = 0, intervalId = 0;
+      let stop = () => { window.clearInterval(intervalId); gotInfo = true }
+      room.once('trackMessage', stop);
+      intervalId = window.setInterval(() => {
+        console.log('try #', i, 'with', others[i % others.length].identity, others.length, 'others');
+        sendMessage({ to: others[i % others.length]?.identity, payload: { request: 'sharedState' } });
+        if (++i > retries) window.clearInterval(intervalId);
+      }, 500);
+    }
 
     return () => {
       room.off('trackMessage', syncSharedState);
     }
-  }, [room]);
+  }, [room, sendMessage]);
 
-  // you become custodian of any state data that you change explicitly (ie not via updates)
-  const changeState: StateChanger = useCallback((changes) => {
-    myProps.current = uniq([...myProps.current, ...Object.keys(changes)]);
-    // @ts-ignore
+  const changeState: StateChanger = useCallback((changes: RoomStateChange) => {
     setSharedState((prev) => {
       const newState = { ...prev, ...changes };
       return isEqual(prev, changes) ? prev : newState;
     });
     sendMessage({ to: 'all', payload: { sharedStateUpdate: changes }});
-  }, []);
+  }, [sendMessage, setSharedState, sendMessage]);
 
-  return <SharedRoomContext.Provider value={[sharedState, changeState]}>
+  // wire gain and delayTime to the audio streams
+  useEffect(() => { setGain(sharedState.gain) },
+    [sharedState.gain, setGain]);
+  useEffect(() => { setDelayTime(sharedState.delayTime) },
+    [sharedState.delayTime, setDelayTime]);
+
+  return <SharedRoomContext.Provider value={[sharedState, changeState] as SharedRoomContextValue}>
     {children}
   </SharedRoomContext.Provider>
 }

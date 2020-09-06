@@ -8,10 +8,15 @@ export const GAIN_MAX = 4;
 export const DELAY_MAX = 20;
 
 let audioContext: AudioContext | undefined;
+let contextAcquisitionReported = false;
 
 export function getAudioContext() : Promise<AudioContext> {
   if (!AUDIO_CONTEXT_SUPPORTED) return Promise.reject(new Error('AudioContext not supported'));
   audioContext = audioContext || (AudioContext && new AudioContext());
+  if (audioContext && !contextAcquisitionReported) {
+    console.log('got AudioContext');
+    contextAcquisitionReported = true;
+  }
   if (audioContext) return Promise.resolve(audioContext);
   return new Promise((resolve) => {
     document.addEventListener('click', () => getAudioContext().then(resolve), { once: true });

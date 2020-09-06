@@ -6,6 +6,7 @@ import { GALLERY_SIZE } from '../FixedGallery';
 import { getTimestamp, isAmong, isRole } from '../../../utils/twilio';
 import { and, not } from '../../../utils/functional';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
+import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 
 // TODO sort by entry time
 
@@ -16,7 +17,8 @@ export interface MuppetOption {
 }
 
 export default function useGalleryParticipants({ withMuppets, withMe, inLobby }: MuppetOption = {}) {
-  const [{ room, admitted, rejected }] = useContext(AppContext);
+  const [{ room }] = useContext(AppContext);
+  const [{ admitted, rejected }] = useContext(SharedRoomContext);
   const participants = useParticipants();
 
   const allFolks = withMe && room ? [room.localParticipant, ...participants] : participants;

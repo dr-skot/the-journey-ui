@@ -1,12 +1,13 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../../contexts/AppContext';
+import React, { useContext, useEffect } from 'react';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
-import { getParticipants, isRole } from '../../utils/twilio';
+import { isRole } from '../../utils/twilio';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
-import FOHStreamSources from '../../components/audio/FOHStreamSources';
-import FOHMessaging from './components/FOHMessaging';
 import Controls from '../../components/Controls/Controls';
+import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { not } from '../../utils/functional';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -25,12 +26,17 @@ const Column = styled('div')(() => ({
 }));
 
 export default function Holding() {
-  const [{ room }] = useContext(AppContext);
   const gallery = useGalleryParticipants({ withMuppets: true, withMe: true, inLobby: true });
-  if (!room) return null;
+  const foh = useParticipants().filter(isRole('foh'));
+  const { setUnmutedGroup } = useContext(AudioStreamContext);
+  const [{ mutedInLobby }] = useContext(SharedRoomContext);
 
-  // TODO do we need a useParticipants(role)?
-  const foh = getParticipants(room).filter(isRole('foh'));
+  // turn everybody's audio on
+  useEffect(() => {
+    const group = [...gallery, ...foh].map((p) => p.identity)
+      .filter((identity) => !mutedInLobby.includes(identity));
+    setUnmutedGroup(group);
+  }, [gallery, foh, mutedInLobby]);
 
   return (
     <Container>
@@ -43,8 +49,6 @@ export default function Holding() {
         </Column>
       </Main>
       <Controls />
-      <FOHStreamSources />
-      {isRole('foh')(room.localParticipant) && <FOHMessaging />}
     </Container>
   )
 }

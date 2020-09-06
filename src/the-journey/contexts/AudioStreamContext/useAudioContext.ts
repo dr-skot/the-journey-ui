@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAudioContext } from '../../utils/audio';
 
 export default function useAudioContext() {
   const [audioContext, setAudioContext] = useState<AudioContext>();
-  getAudioContext().then(setAudioContext);
+
+  useEffect(() => {
+    if (!audioContext) getAudioContext().then(setAudioContext);
+  }, [!audioContext]);
+
   return audioContext;
 }
