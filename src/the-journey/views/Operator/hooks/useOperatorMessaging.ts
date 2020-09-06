@@ -1,11 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
+import useParticipants from '../../../hooks/useParticipants/useParticipants';
 
 const MESSAGE_DELAY = 1500;
 
 export default function useOperatorMessaging() {
-  const [{ room, focusGroup, audioDelay, participants },
-    dispatch] = useContext(AppContext);
+  const [{ room, focusGroup, audioDelay }, dispatch] = useContext(AppContext);
+  const participants = useParticipants();
   useEffect(() => { if (room) dispatch('publishDataTrack') }, [room, dispatch]);
 
   // sync data (that's not presently at default values) when new participants arrive

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
-import Participant from './components/Participant/Participant';
+import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
 import Nobody from './components/Nobody';
@@ -18,17 +18,15 @@ const Container = styled('div')(() => ({
 
 interface FlexibleGalleryProps {
   participants: IParticipant[];
-  star?: string;
   selection?: string[];
   fixedLength?: number;
   hotKeys?: string;
-  mute?: boolean;
-  // TODO figure out what to put for e that will satisfy TypeScript
+  // Typescript's being weird about MouseEvent, but that's what e is
   onClick?: (e: any, participant: IParticipant) => void;
 }
 
-export default function FlexibleGallery({ participants, fixedLength = 0, star, selection = [],
-                                          hotKeys = '', mute = true, onClick = () => {}
+export default function FlexibleGallery({ participants, fixedLength = 0, selection = [],
+                                          hotKeys = '', onClick = () => {}
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const containerRef = (node: HTMLElement | null) => setContainer(node);
@@ -50,16 +48,14 @@ export default function FlexibleGallery({ participants, fixedLength = 0, star, s
     <Container ref={containerRef}>
       { boxes.map((participant, i) => (
         participant ? (
-        <Participant
+        <ParticipantVideoWindow
           key={participant.sid}
           participant={participant}
           selectedIndex={selectedIndex(participant)}
           hotKey={hotKeys && hotKeys[i]}
           width={boxSize.width}
           height={boxSize.height}
-          mute={mute}
           onClick={(e) => onClick(e, participant)}
-          star={participant.identity === star}
         />
         ) : <Nobody width={boxSize.width} height={boxSize.height} index={i}/>
       )) }

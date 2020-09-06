@@ -5,10 +5,8 @@ import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuBar from '../Gallery/components/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
-import { Participant } from 'twilio-video';
 import useOperatorMessaging from './hooks/useOperatorMessaging';
 import { styled } from '@material-ui/core/styles';
-import { getTimestamp } from '../../utils/twilio';
 
 const Container = styled('div')({
   display: 'flex',
@@ -25,18 +23,15 @@ const Main = styled('div')({
   alignContent: 'center',
 });
 
-let count = 0;
+interface OperatorProps {
+  withMuppets?: boolean,
+}
 
-export default function Operator() {
-  const { forceGallery, forceHotKeys, toggleFocus } = useOperatorControls();
-  const [{ focusGroup, participants: p }, dispatch] = useContext(AppContext);
-
+export default function Operator({ withMuppets }: OperatorProps = {}) {
+  const { forceGallery, forceHotKeys } = useOperatorControls({ withMuppets });
+  const [{ focusGroup }] = useContext(AppContext);
+  const gallery = useGalleryParticipants({ withMuppets });
   const focusing = focusGroup.length && !forceGallery;
-
-  const gp = useGalleryParticipants();
-  const participants = gp
-    .filter(p => focusing ? focusGroup.includes(p.identity) : true);
-
   useOperatorMessaging();
 
   return (
@@ -44,11 +39,10 @@ export default function Operator() {
       <MenuBar isOperator/>
       <Main>
       <FlexibleGallery
-        participants={useGalleryParticipants().filter(p => focusing ? focusGroup.includes(p.identity) : true)}
+        participants={gallery.filter(p => focusing ? focusGroup.includes(p.identity) : true)}
         selection={focusing ? [] : focusGroup}
         fixedLength={focusing ? undefined : GALLERY_SIZE}
         hotKeys={!focusing || forceHotKeys ? KEYS : ''}
-        mute={true}
       />
       </Main>
     </Container>

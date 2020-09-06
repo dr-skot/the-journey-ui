@@ -1,16 +1,14 @@
 import React, { ReactNode, useCallback, useEffect, useReducer } from 'react';
 import { createContext } from 'react';
-import { joinRoom, getTracks, getLocalTracks, subscribe, getIdentity, setTrackPriorities } from '../utils/twilio';
+import { joinRoom, getTracks, getLocalTracks, subscribe, getIdentity } from '../utils/twilio';
 import {
   Room,
   RemoteAudioTrackPublication,
-  RemoteDataTrackPublication,
   RemoteTrackPublication,
-  RemoteVideoTrackPublication,
   TwilioError, RemoteParticipant, RemoteTrack, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, Participant,
 } from 'twilio-video';
 import { Sid } from 'twilio/lib/interfaces';
-import { toggle, toggleMembership } from '../utils/functional';
+import { toggleMembership, tryToParse } from '../utils/functional';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { AudioOut, getAudioOut, setDelay, setGain } from '../utils/audio';
@@ -24,29 +22,25 @@ const DEFAULT_GAIN = 0.8;
 
 interface AppState {
   error?: TwilioError,
-  userType: 'audience' | 'operator' | 'gallery',
   // room
   room?: Room,
   roomStatus: 'disconnected' | 'connecting' | 'connected',
-  // participants
-  participants: Map<Sid, RemoteParticipant>,
-  focusGroup: Identity[];
-  // lobby
-  admitted: Identity[],
-  rejected: Identity[],
-  mutedInLobby: Identity[],
   // local tracks
   localTracks: (LocalAudioTrack | LocalVideoTrack)[], // TODO separate these
   localDataTrack?: LocalDataTrack,
   // remote tracks
-  tracks: Map<Sid, Map<Identity, RemoteTrackPublication>>
   audioTracks: Map<Identity, Map<Sid, RemoteAudioTrackPublication>>,
-  videoTracks: Map<Identity, Map<Sid, RemoteVideoTrackPublication>>,
-  dataTracks: Map<Identity, Map<Sid, RemoteDataTrackPublication>>,
-  // audio
-  audioOut?: AudioOut,
+
+  // shared state
+  focusGroup: Identity[];
+  admitted: Identity[],
+  rejected: Identity[],
+  mutedInLobby: Identity[],
   audioDelay: number,
   audioGain: number,
+
+  // local
+  audioOut?: AudioOut,
   activeSinkId: string,
   // settings
   settings: Settings,
@@ -54,29 +48,28 @@ interface AppState {
 
 const initialState: AppState = {
   error: undefined,
-  userType: 'audience',
   // room
   room: undefined,
   roomStatus: 'disconnected',
+  // local tracks
+  localTracks: [],
+  localDataTrack: undefined,
+  // remote tracks
+  audioTracks: new Map(),
+
+  // shared state
   // participants
-  participants: new Map(),
   focusGroup: [],
   // lobby
   admitted: [],
   rejected: [],
   mutedInLobby: [],
-  // local tracks
-  localTracks: [],
-  localDataTrack: undefined,
-  // remote tracks
-  tracks: new Map(),
-  audioTracks: new Map(),
-  videoTracks: new Map(),
-  dataTracks: new Map(),
-  // audio
-  audioOut: undefined,
   audioDelay: 0,
   audioGain: 1,
+
+  // local state
+  // audio
+  audioOut: undefined,
   activeSinkId: 'default',
   // settings
   settings: initialSettings,
@@ -88,7 +81,7 @@ export const AppContext = createContext([initialState, () => {}] as AppContextVa
 type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'participantConnected' | 'participantDisconnected' |
   'trackSubscribed' | 'trackUnsubscribed' | 'subscribe' | 'clearFocus' | 'toggleFocus' | 'publishDataTrack' |
-  'publishedDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
+  'publishedDataTrack' | 'unpublishDataTrack' | 'broadcast' | 'messageReceived' | 'bumpAudioDelay' | 'bumpAudioGain' | 'setSinkId' |
   'changeSetting' | 'admit' | 'reject' | 'toggleMute'
 
 interface ReducerRequest {
@@ -141,7 +134,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       break;
 
     case 'roomJoined':
-      console.log('localParticipants tracks', payload.room.localParticipant.tracks);
       document.addEventListener('beforeunload', payload.room.disconnect);
       payload.room.on('disconnected', (room: Room, error: TwilioError) =>
         dispatch('roomDisconnected', { room, error }));
@@ -149,10 +141,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
         dispatch('setRoomStatus', { status: 'connecting' }));
       payload.room.on('reconnected', () =>
         dispatch('setRoomStatus', { status: 'connected' }));
-      payload.room.on('participantConnected', (participant: RemoteParticipant) =>
-        dispatch('participantConnected', { participant }));
-      payload.room.on('participantDisconnected', (participant: RemoteParticipant) =>
-        dispatch('participantDisconnected', { participant }));
       payload.room.on('trackSubscribed',
         (track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) =>
           dispatch('trackSubscribed', { track, publication, participant }));
@@ -161,13 +149,12 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
           dispatch('trackUnsubscribed', { track, publication, participant }));
       payload.room.on('trackMessage', (data: string) => {
           console.log('raw data received', data);
-          try { const message = JSON.parse(data); dispatch('messageReceived', message) }
+          try { const message = tryToParse(data); dispatch('messageReceived', message) }
           finally {}
         });
       console.log('connected to room', payload.room, 'with participants', payload.room.participants)
       newState = {
         ...state, room: payload.room, roomStatus: 'connected',
-        participants: new Map(payload.room.participants)
       };
       break;
 
@@ -183,13 +170,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       // TODO whatever cleanup is needed
       newState = {
         ...state, room: undefined, roomStatus: 'disconnected', error: payload.error,
-        participants: new Map(), tracks: new Map()
       };
-      break;
-
-    case 'participantConnected':
-    case 'participantDisconnected':
-      newState = { ...state, participants: new Map(state.room!.participants) };
       break;
 
     case 'trackSubscribed':
@@ -197,7 +178,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       console.log('track subscriptions changed')
       newState = {
         ...state,
-        tracks: getTracks(state.room!),
         [`${payload.track.kind}Tracks`]: getTracks(state.room!, payload.track.kind)
       };
       break;
@@ -228,6 +208,10 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
           .then(pub => dispatch('publishedDataTrack', { track: pub.track }));
       }
       break;
+
+    case 'unpublishDataTrack':
+      state.room?.localParticipant.dataTracks.forEach((pub) => pub.unpublish());
+      return { ...state,  localDataTrack: undefined };
 
     case 'publishedDataTrack':
       newState = { ...state, localDataTrack: payload.track };
@@ -275,10 +259,12 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
     case 'reject':
       newState = { ...state,
         ...broadcast({ rejected: [...state.rejected, ...payload.identities ] })  };
+      break;
 
     case 'toggleMute':
       newState = { ...state,
         ...broadcast({ mutedInLobby: toggleMembership(state.mutedInLobby)(payload.identity) })  };
+      break;
   }
 
   return newState;

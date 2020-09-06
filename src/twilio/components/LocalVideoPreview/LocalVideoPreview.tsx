@@ -1,6 +1,6 @@
 import React from 'react';
 import { LocalVideoTrack } from 'twilio-video';
-import VideoTrack from '../VideoTrack/VideoTrack';
+import VideoTrack from '../../../the-journey/components/VideoTrack/VideoTrack';
 import useVideoContext from '../../../the-journey/hooks/useVideoContext';
 
 export default function LocalVideoPreview() {

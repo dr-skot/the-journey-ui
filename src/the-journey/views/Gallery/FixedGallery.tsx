@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import useGalleryParticipants from './hooks/useGalleryParticipants';
-import { AppContext } from '../../contexts/AppContext';
 import FlexibleGallery from './FlexibleGallery';
 import MenuBar from './components/MenuBar';
 import { styled } from '@material-ui/core/styles';

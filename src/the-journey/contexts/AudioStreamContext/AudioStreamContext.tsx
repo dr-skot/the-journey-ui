@@ -1,0 +1,76 @@
+import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
+import { isEqual } from 'lodash';
+import { Participant, Room } from 'twilio-video';
+import useStreamNodes from './useStreamNodes';
+import useAudioOut from './useAudioOut';
+import { setDelay, setGain } from '../../utils/audio';
+
+type Identity = Participant.Identity;
+
+interface AudioStreamContextValues {
+  getDelayTime: () => number,
+  setDelayTime: (delayTime: number) => void,
+  getGain: () => number,
+  setGain: (gain: number) => void,
+  setUnmutedGroup: (identities: string[]) => void,
+}
+
+const initialValues: AudioStreamContextValues = {
+  getDelayTime: () => 0,
+  setDelayTime: () => {},
+  getGain: () => 1,
+  setGain: () => {},
+  setUnmutedGroup: () => {},
+};
+
+export const AudioStreamContext = createContext(initialValues);
+
+const MAX_STREAMS = 31;
+const DEFAULT_GAIN = 0.8;
+const DEFAULT_DELAY = 0;
+
+interface ProviderProps {
+  children: ReactNode,
+  room?: Room,
+}
+
+export default function AudioStreamContextProvider({ room, children }: ProviderProps) {
+  const [unmuted, setUnmuted] = useState<Identity[]>([]);
+  const nodes = useStreamNodes();
+  const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
+
+  const setUnmutedGroup = useCallback((group: Identity[]) => {
+    setUnmuted((prev) => isEqual(group.sort(), prev) ? prev : group);
+  }, [setUnmuted]);
+
+  // connect up only the streams that are in the unmuted group
+  useEffect(() => {
+    if (!audioOut) return;
+    nodes.forEach(([identity, trackSid, node]) => {
+      if (unmuted.includes(identity)) node.connect(audioOut.outputNode);
+      else node.disconnect();
+    });
+  }, [unmuted, nodes, audioOut])
+
+  const setTheGain = useCallback((gain: number) =>
+    setGain(gain, audioOut),
+    [audioOut]);
+
+  const getGain = useCallback(() =>
+    audioOut?.gainNode.gain.value || 1,
+    [audioOut]);
+
+  const setDelayTime = useCallback((delayTime: number) =>
+      setDelay(delayTime, audioOut),
+    [audioOut]);
+
+  const getDelayTime = useCallback(() =>
+      audioOut?.delayNode.delayTime.value || 0,
+    [audioOut]);
+
+  const contextValues = { setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain };
+
+  return <AudioStreamContext.Provider value={contextValues}>
+    {children}
+  </AudioStreamContext.Provider>
+}

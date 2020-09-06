@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import Participant from '../../../twilio/components/Participant/Participant';
 import { AppContext } from '../../contexts/AppContext';
-import { createStyles, makeStyles, styled, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import useIsUserActive from './useIsUserActive/useIsUserActive';
+import ParticipantVideoWindow from '../Participant/ParticipantVideoWindow';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,10 +39,9 @@ export default function SelfView() {
 
   if (!room?.localParticipant) return null;
 
-  // TODO make these attributes optional
   return (
     <div className={clsx(classes.container, { showControls })}>
-      <Participant participant={room.localParticipant} onClick={() => {}} isSelected={false} disableAudio={true} />
+      <ParticipantVideoWindow participant={room.localParticipant} />
     </div>
   )
 }

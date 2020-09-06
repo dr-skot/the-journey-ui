@@ -3,7 +3,7 @@ import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../../../constants';
 import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
 import { LocalVideoTrack } from 'twilio-video';
 import { makeStyles } from '@material-ui/core/styles';
-import VideoTrack from '../../../../../twilio/components/VideoTrack/VideoTrack';
+import VideoTrack from '../../../VideoTrack/VideoTrack';
 import useMediaStreamTrack from '../../../../../twilio/hooks/useMediaStreamTrack/useMediaStreamTrack';
 import { useVideoInputDevices } from '../deviceHooks/deviceHooks';
 import { AppContext } from '../../../../contexts/AppContext';

@@ -7,10 +7,12 @@ export const AUDIO_CONTEXT_SUPPORTED = !!AudioContext;
 export const GAIN_MAX = 4;
 export const DELAY_MAX = 20;
 
+let audioContext: AudioContext | undefined;
+
 export function getAudioContext() : Promise<AudioContext> {
   if (!AUDIO_CONTEXT_SUPPORTED) return Promise.reject(new Error('AudioContext not supported'));
-  const context = AudioContext && new AudioContext();
-  if (context) return Promise.resolve(context);
+  audioContext = audioContext || (AudioContext && new AudioContext());
+  if (audioContext) return Promise.resolve(audioContext);
   return new Promise((resolve) => {
     document.addEventListener('click', () => getAudioContext().then(resolve), { once: true });
     document.addEventListener('keydown', () => getAudioContext().then(resolve), { once: true });

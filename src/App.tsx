@@ -6,8 +6,6 @@ import AppContextProvider from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
-import MuppetOperator from './the-journey/views/Operator/MuppetOperator';
-import MockupGallery from './the-journey/mockup/MockupGallery/Gallery';
 
 import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupStreamSources';
 // import ReconnectingNotification from './twilio/components/ReconnectingNotification/ReconnectingNotification';
@@ -16,7 +14,7 @@ import FocusGroupStreamSources from './the-journey/components/audio/FocusGroupSt
 // import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
 // import UnsupportedBrowserWarning from './twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 
-import useHeight from './twilio/hooks/useHeight/useHeight';
+import useHeight from './the-journey/hooks/useHeight/useHeight';
 import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
 // import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
@@ -25,10 +23,9 @@ import FocusGroup from './the-journey/views/Gallery/FocusGroup';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
 import FrontDoor from './the-journey/views/FOH/FrontDoor';
-import Holding from './the-journey/views/FOH/Holding';
 import Rejected from './the-journey/views/FOH/Rejected';
 import FOHEntry from './the-journey/views/FOH/FOHEntry';
-import SignerEntry from './the-journey/views/Broadcast/components/SignerEntry';
+import CaptioningEntry from './the-journey/views/Broadcast/components/CaptioningEntry';
 import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 
 export default function App() {
@@ -40,7 +37,6 @@ export default function App() {
   const height = useHeight();
 
   // TODO reinstate reconnecting notification
-  // TODO reinstate controls
 
   console.log('RENDER APP')
 
@@ -52,10 +48,9 @@ export default function App() {
         <Router>
           <Switch>
             <Route path="/rejected" component={Rejected} />
-            <Route path="/mockup" component={MockupGallery} />
             <Route path="/foh/code" component={GetCode} />
             <Route path="/foh/holding/:code?" component={FOHEntry}/>
-            <Route path="/signer/:code?" component={SignerEntry} />
+            <Route path="/captioning/:code?" component={CaptioningEntry} />
             <Route path="/star/:code?" component={StarEntry} />
             <Route path="/focus/:code?">
               <AutoJoin role="lurker" /><FocusGroup />
@@ -64,7 +59,7 @@ export default function App() {
               <AutoJoin role="lurker" /><Broadcast />
             </Route>
             <Route path="/muppets/:code?">
-              <AutoJoin role="operator" /><MuppetOperator />
+              <AutoJoin role="operator" /><Operator withMuppets={true} />
             </Route>
             <Route path="/operator/:code?">
               <AutoJoin role="operator" /><Operator />

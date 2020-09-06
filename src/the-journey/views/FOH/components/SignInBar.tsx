@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { isDev } from '../../../utils/react-help';
 import { AppContext } from '../../../contexts/AppContext';
 
 import RoomJoinForm from './RoomJoinForm';

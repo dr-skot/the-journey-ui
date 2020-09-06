@@ -41,9 +41,8 @@ export default function Operator() {
       <FlexibleGallery
         participants={(focusing ? participants?.filter(inGroup(focusGroup)) : participants) || []}
           selection={focusing ? [] : focusGroup}
-        fixedLength={focusing ? undefined : GALLERY_SIZE}
-        hotKeys={!focusing || forceHotKeys ? KEYS : ''}
-        mute={true}
+          fixedLength={focusing ? undefined : GALLERY_SIZE}
+          hotKeys={!focusing || forceHotKeys ? KEYS : ''}
       />
       </Main>
     </Container>

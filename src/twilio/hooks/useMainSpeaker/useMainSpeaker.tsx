@@ -1,6 +1,6 @@
 import useVideoContext from '../../../the-journey/hooks/useVideoContext';
 import useDominantSpeaker from '../useDominantSpeaker/useDominantSpeaker';
-import useParticipants from '../useParticipants/useParticipants';
+import useParticipants from '../../../the-journey/hooks/useParticipants/useParticipants';
 import useScreenShareParticipant from '../useScreenShareParticipant/useScreenShareParticipant';
 import useSelectedParticipant from '../../components/VideoProvider/useSelectedParticipant/useSelectedParticipant';
 

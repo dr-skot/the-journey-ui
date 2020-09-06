@@ -5,7 +5,7 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack, LocalParticipant, Track,
+  LocalVideoTrack, LocalAudioTrack, Track,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
@@ -94,6 +94,13 @@ export function getLocalTracks() {
 export function getPublications(participant: Participant) {
   return Array.from(participant.tracks.values()) as (LocalTrackPublication | RemoteTrackPublication)[];
 }
+
+export const inGroup = (group: string[]) => (p: Participant) => group.includes(p.identity);
+
+
+//
+// SUBSCRIBING
+//
 
 export type SubscribeProfile = 'audio' | 'data-only' | 'focus' | 'gallery' | 'listen' | 'none'
 const TIMEOUT_DELAY = 5000;

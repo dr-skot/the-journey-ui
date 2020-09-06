@@ -2,11 +2,8 @@ import React, { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { getParticipants, isRole } from '../../utils/twilio';
-import { codeToTime, formatTime, punctuality } from '../../utils/foh';
-import moment from 'moment';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
-import { Participant } from 'twilio-video';
 import FOHStreamSources from '../../components/audio/FOHStreamSources';
 import FOHMessaging from './components/FOHMessaging';
 import Controls from '../../components/Controls/Controls';
@@ -28,18 +25,12 @@ const Column = styled('div')(() => ({
 }));
 
 export default function Holding() {
-  const [{ room, participants, admitted, rejected }] = useContext(AppContext);
+  const [{ room }] = useContext(AppContext);
   const gallery = useGalleryParticipants({ withMuppets: true, withMe: true, inLobby: true });
   if (!room) return null;
 
+  // TODO do we need a useParticipants(role)?
   const foh = getParticipants(room).filter(isRole('foh'));
-  const curtain = codeToTime(room!.name);
-  const display = formatTime(curtain);
-
-  console.log('this room has', room.participants.size, 'participants');
-  console.log(foh.length, 'of them are foh');
-  console.log('admitted/rejected', { admitted, rejected });
-  console.log({ participants });
 
   return (
     <Container>

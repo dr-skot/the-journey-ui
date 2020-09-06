@@ -1,10 +1,11 @@
 import { sortBy } from 'lodash';
 import { useContext } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
-import { padWithMuppets } from '../../../mockup/Muppet';
+import { padWithMuppets } from '../../../components/Participant/Muppet';
 import { GALLERY_SIZE } from '../FixedGallery';
-import { getParticipants, getTimestamp, isAmong, isRole } from '../../../utils/twilio';
+import { getTimestamp, isAmong, isRole } from '../../../utils/twilio';
 import { and, not } from '../../../utils/functional';
+import useParticipants from '../../../hooks/useParticipants/useParticipants';
 
 // TODO sort by entry time
 
@@ -15,10 +16,10 @@ export interface MuppetOption {
 }
 
 export default function useGalleryParticipants({ withMuppets, withMe, inLobby }: MuppetOption = {}) {
-  const [{ room, participants, admitted, rejected }] = useContext(AppContext);
+  const [{ room, admitted, rejected }] = useContext(AppContext);
+  const participants = useParticipants();
 
-  const otherFolks = Array.from(participants.values());
-  const allFolks = withMe && room ? [room.localParticipant, ...otherFolks] : otherFolks;
+  const allFolks = withMe && room ? [room.localParticipant, ...participants] : participants;
 
   let gallery = allFolks.filter(
     and(

@@ -9,11 +9,11 @@ interface CodeParam {
   code?: string;
 }
 
-export default function StarEntry({ match }: RouteComponentProps<CodeParam>) {
+export default function CaptioningEntry({ match }: RouteComponentProps<CodeParam>) {
   const [{ roomStatus }] = useContext(AppContext);
   const code = match.params.code;
 
   return roomStatus === 'connected'
-    ? <Broadcast type="pure" />
-    : <SignIn roomName={code || defaultRoom()} role="star"/>
+    ? <Broadcast />
+    : <SignIn roomName={code || defaultRoom()} role="signer"/>
 }

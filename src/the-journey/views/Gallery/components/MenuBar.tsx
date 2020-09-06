@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { isDev } from '../../../utils/react-help';
 import { AppContext } from '../../../contexts/AppContext';
 import DelayControl from '../../Operator/components/DelayControl';
 import GainControl from '../../Operator/components/GainControl';
@@ -8,8 +7,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
-import Menu from '../../../components/MenuBar/Menu/Menu';
-import { unixTime } from '../../../utils/functional';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +69,6 @@ export default function MenuBar({ isOperator }: MenuBarProps) {
           <div className={classes.rightButtonContainer}>
             { isOperator && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
             <ToggleFullscreenButton />
-            <Menu />
           </div>
         </Toolbar>
       </AppBar>

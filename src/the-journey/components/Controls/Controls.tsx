@@ -8,7 +8,6 @@ import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
 import useIsUserActive from './useIsUserActive/useIsUserActive';
 import { AppContext } from '../../contexts/AppContext';
 import SettingsButton from './SettingsButton/SettingsButton';
-import SelfView from './SelfView';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

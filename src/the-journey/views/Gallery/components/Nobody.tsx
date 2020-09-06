@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { muppetImageForIdx } from '../../../mockup/Muppet';
+import { muppetImageForIdx } from '../../../components/Participant/Muppet';
 
 const useStyles = makeStyles(() => createStyles({
   nobody: {

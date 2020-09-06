@@ -7,7 +7,7 @@ import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
 import { getSigner, isRole } from '../../utils/twilio';
-import Participant from '../Gallery/components/Participant/Participant';
+import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -72,7 +72,7 @@ export default function Broadcast({ type }: BroadcastProps) {
           { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
-      {signer && <SignerWindow><Participant participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
+      {signer && <SignerWindow><ParticipantVideoWindow participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
       {isRole('audience')(room?.localParticipant) && <><SelfView /><Controls /></>}
     </Container>
   );

@@ -1,11 +1,13 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
 import { isRole } from '../../../utils/twilio';
+import useParticipants from '../../../hooks/useParticipants/useParticipants';
 
 const MESSAGE_DELAY = 1500;
 
 export default function useFOHMessaging() {
-  const [{ room, participants, admitted, rejected, mutedInLobby }, dispatch] = useContext(AppContext);
+  const [{ room, admitted, rejected, mutedInLobby }, dispatch] = useContext(AppContext);
+  const participants = useParticipants();
   const me = room?.localParticipant;
   const amFOH = isRole('foh')(me);
 
