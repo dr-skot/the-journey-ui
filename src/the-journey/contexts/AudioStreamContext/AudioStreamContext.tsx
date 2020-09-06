@@ -25,9 +25,9 @@ const initialValues: AudioStreamContextValues = {
 
 export const AudioStreamContext = createContext(initialValues);
 
-const MAX_STREAMS = 31;
-const DEFAULT_GAIN = 0.8;
-const DEFAULT_DELAY = 0;
+export const MAX_STREAMS = 31;
+export const DEFAULT_GAIN = 0.8;
+export const DEFAULT_DELAY = 0;
 
 interface ProviderProps {
   children: ReactNode,

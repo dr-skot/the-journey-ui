@@ -5,7 +5,7 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack, Track,
+  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
@@ -89,6 +89,13 @@ export function getLocalTracks() {
     },
     audio: true,
   })
+}
+
+export async function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
+  if (room.localParticipant.dataTracks.size === 0) {
+    await room.localParticipant.publishTrack(new LocalDataTrack());
+  }
+  return room.localParticipant.dataTracks.values().next().value;
 }
 
 export function getPublications(participant: Participant) {

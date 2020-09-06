@@ -33,3 +33,11 @@ export const tryToParse = (json: string) => {
   try { return JSON.parse(json) }
   catch (e) { console.log('Error parsing JSON', e) }
 }
+
+export const pick = (keys: string[], obj: Record<string, any>) => {
+  let result: Record<string, any> = {};
+  keys.forEach((key) => {
+    if (obj.key !== undefined) result[key] = obj[key];
+  });
+  return result;
+}
