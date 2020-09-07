@@ -6,6 +6,7 @@ import { tryToParse } from '../utils/functional';
 import { isEqual } from 'lodash';
 import { AudioStreamContext, DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
 import { AppContext } from './AppContext';
+import { prevIfEqual } from '../utils/react-help';
 
 type Identity = Participant.Identity;
 
@@ -45,6 +46,7 @@ export const SharedRoomContext = createContext(initalContextValue);
 
 interface QueuedMessage {
   to: Identity | 'all',
+  attempt?: number,
   payload: { request: 'sharedState' } | { sharedStateUpdate: RoomStateChange },
 }
 
@@ -82,13 +84,11 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
 
     function syncSharedState(data: string) {
       const message = tryToParse(data) || {};
-      const { from, to, payload: { sharedStateUpdate, request } } = message;
-      console.log('oh yeah, i got something', message);
+      const { from, to, attempt, payload: { sharedStateUpdate, request } } = message;
       if (to === me || (to === 'all' && from !== me)) {
-        console.log('its for me!');
+        console.log('received data track message', message);
         // receive updates
         if (sharedStateUpdate) {
-          console.log('its an update!');
           setSharedState((prev) => {
             const newState = { ...prev, ...sharedStateUpdate };
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
@@ -96,10 +96,8 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
         }
         // send updates when requested
         if (request === 'sharedState') {
-          console.log('its a request for update!');
-          console.log('request for sharedState');
           setSharedState((currentState) => {
-            sendMessage({ to: from, payload: { sharedStateUpdate: currentState } });
+            sendMessage({ to: from, payload: { sharedStateUpdate: currentState }, attempt });
             return currentState;
           });
         }
@@ -109,16 +107,20 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
     room.on('trackMessage', syncSharedState);
 
     // when you enter the room, ask somebody there what the deal is
-    let others = Array.from(room.participants.values()).filter((p) => p.identity !== me);
+    let others = Array.from(room.participants.values())
+      .filter((p) => p.state === 'connected')
+      .filter((p) => p.identity !== me)
     if (others.length) {
       // they might not be listening yet, so keep asking until they respond
-      let gotInfo = false, retries = 10, i = 0, intervalId = 0;
+      let gotInfo = false, retries = 5, attempt = 1, intervalId = 0;
       let stop = () => { window.clearInterval(intervalId); gotInfo = true }
       room.once('trackMessage', stop);
       intervalId = window.setInterval(() => {
-        console.log('try #', i, 'with', others[i % others.length].identity, others.length, 'others');
-        sendMessage({ to: others[i % others.length]?.identity, payload: { request: 'sharedState' } });
-        if (++i > retries) window.clearInterval(intervalId);
+        others = others.filter((p) => p.state === 'connected');
+        if (others.length === 0) { window.clearInterval(intervalId); return }
+        const other = others[attempt % others.length];
+        sendMessage({ to: other.identity, attempt, payload: { request: 'sharedState' } });
+        if (++attempt > retries) window.clearInterval(intervalId);
       }, 500);
     }
 
@@ -141,7 +143,11 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
   useEffect(() => { setDelayTime(sharedState.delayTime) },
     [sharedState.delayTime, setDelayTime]);
 
-  return <SharedRoomContext.Provider value={[sharedState, changeState] as SharedRoomContextValue}>
+  // console.log('SharedRoomContext.Provider rerender');
+  // reportEqual({ sharedState, changeState });
+  const providerValue = prevIfEqual('SharedRoomContext.value', [sharedState, changeState]);
+
+  return <SharedRoomContext.Provider value={providerValue as SharedRoomContextValue}>
     {children}
   </SharedRoomContext.Provider>
 }

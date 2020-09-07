@@ -26,6 +26,7 @@ export const unixTime = () => Math.floor(Date.now() / 1000);
 
 // allows negative indexing
 export const element = (i: number) => (xs: any[]) => xs[i < 0 ? xs.length + i : i];
+export const elements = (indexes: number[]) => (xs: any[]) => indexes.map((i) => element(i)(xs));
 
 export const toggle = (prevValue: any, newValue: any) => isEqual(prevValue, newValue) ? undefined : newValue;
 
@@ -40,4 +41,9 @@ export const pick = (keys: string[], obj: Record<string, any>) => {
     if (obj.key !== undefined) result[key] = obj[key];
   });
   return result;
+}
+
+export function findIndexes<T>(predicate: (x: T, i: number) => boolean) {
+  return (xs: T[]) =>
+    xs.map((x, i) => i).filter((i) => predicate(xs[i], i));
 }

@@ -65,6 +65,7 @@ export default function App() {
                     <AutoJoin role="operator" /><Operator withMuppets={true} />
                   </Route>
                   <Route path="/operator/:code?">
+                    { console.log('Operator\'s parent rendered') }
                     <AutoJoin role="operator" /><Operator />
                   </Route>
                   <Route path="/gallery/:code?">

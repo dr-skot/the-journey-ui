@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
 import FlexibleGallery from './FlexibleGallery';
 import useGalleryParticipants from './hooks/useGalleryParticipants';
-import { inGroup } from '../../utils/twilio';
+import { inGroup, sameIdentities } from '../../utils/twilio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { cached } from '../../utils/react-help';
+import { Participant } from 'twilio-video';
 
 export default function FocusGroup() {
   const [{ focusGroup }] = useContext(SharedRoomContext);
-  const group = useGalleryParticipants({ withMuppets: true }).filter(inGroup(focusGroup));
+  const group = useGalleryParticipants({ withMuppets: true, withMe: true }).filter(inGroup(focusGroup));
 
-  return <FlexibleGallery participants={group} />
+  const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
+  return <FlexibleGallery participants={final} />
 }

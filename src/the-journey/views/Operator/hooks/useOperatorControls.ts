@@ -1,9 +1,10 @@
-import { useCallback, useContext, useEffect, useReducer } from 'react';
+import { useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import useGalleryParticipants, { MuppetOption } from '../../Gallery/hooks/useGalleryParticipants';
 import { Participant } from 'twilio-video';
 import { isEqual } from 'lodash';
 import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 import { toggleMembership } from '../../../utils/functional';
+import { cached } from '../../../utils/react-help';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -18,10 +19,14 @@ interface OperatorData {
 export default function useOperatorControls({ withMuppets }: MuppetOption = {}) {
   let participants = useGalleryParticipants({ withMuppets });
   const [{ focusGroup }, setSharedState] = useContext(SharedRoomContext);
+  const [forceGallery, setForceGallery] = useState(false);
+  const [forceHotKeys, setForceHotKeys] = useState(true);
 
-  const toggleFocus = useCallback((participant: Participant) =>
-      // @ts-ignore
-      setSharedState({ focusGroup: toggleMembership(focusGroup, participant.identity) }),
+  const toggleFocus = useCallback((participant: Participant) => {
+    console.log('toggleFocus', { focusGroup, identitiy: participant.identity });
+    // @ts-ignore
+    setSharedState({ focusGroup: toggleMembership(focusGroup)(participant.identity) });
+  },
     [focusGroup, setSharedState]);
 
   const clearFocus = useCallback(() =>
@@ -29,7 +34,6 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
     setSharedState({ focusGroup: [] }),
     [setSharedState]);
 
-  // TODO am I working too hard here to avoid a rerender, and is it even succeeding?
   const [data, setData] = useReducer((state: OperatorData, payload: OperatorData) => {
     const newState = { ...state, ...payload };
     return isEqual(newState, state) ? state : newState;
@@ -38,12 +42,12 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
   // hotkeys
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Shift') setData({ forceGallery: true });
-      if (e.key === 'Control') setData({ forceHotKeys: true });
+      if (e.key === 'Shift') setForceGallery(true);
+      if (e.key === 'Control') setForceHotKeys(true);
     }
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'Shift') setData({ forceGallery: false });
-      if (e.key === 'Control') setData({ forceHotKeys: false });
+      if (e.key === 'Shift') setForceGallery(false);
+      if (e.key === 'Control') setForceHotKeys(false);
       if (e.key === '0' || e.key === ')') clearFocus();
       // KEYS includes shifted KEYS, so % length / 2
       const idx = KEYS.indexOf(e.key) % (KEYS.length / 2);
@@ -57,5 +61,7 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
     }
   }, [participants, clearFocus, toggleFocus]);
 
-  return data;
+
+  return cached('useOperatorControls')
+    .ifEqual({ forceGallery, forceHotKeys, toggleFocus }) as OperatorData;
 }

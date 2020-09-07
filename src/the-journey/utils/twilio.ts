@@ -11,6 +11,7 @@ import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
 import { element, unixTime } from './functional';
 import { isDev } from './react-help';
+import { sortBy, isEqual } from 'lodash';
 
 const DEFAULT_OPTIONS = {
   tracks: [],
@@ -113,8 +114,6 @@ export function getPublications(participant: Participant) {
   return Array.from(participant.tracks.values()) as (LocalTrackPublication | RemoteTrackPublication)[];
 }
 
-export const inGroup = (group: string[]) => (p: Participant) => group.includes(p.identity);
-
 
 //
 // SUBSCRIBING
@@ -192,9 +191,16 @@ export const setTrackPriorities = (room: Room, settings: PrioritySettings) => {
   });
 }
 
+
 export const getTimestamp = (p: Participant) => element(-1)(p.identity.split('|'));
 
-export const isAmong = (identities: string[]) => (p: Participant) => identities.includes(p.identity);
+export const sortedParticipants = (ps: Participant[]) => sortBy(ps, getTimestamp);
+export const getIdentities = (ps: Participant[]) => ps.map((p) => p.identity);
+export const sortedIdentities = (ps: Participant[]) => getIdentities(sortedParticipants(ps));
+
+export const inGroup = (group: string[]) => (p: Participant) => group.includes(p.identity);
+export const sameIdentities = (a: Participant[], b: Participant[]) =>
+  isEqual(sortedIdentities(a), sortedIdentities(b));
 
 export const getStar = (participants: Map<string, Participant>) =>
   Array.from(participants.values()).find(isRole('star'));

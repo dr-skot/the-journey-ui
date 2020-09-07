@@ -10,6 +10,7 @@ import { getSigner, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -50,6 +51,8 @@ export default function Broadcast({ type }: BroadcastProps) {
   const [{ room }] = useContext(AppContext);
   const [{ focusGroup }] = useContext(SharedRoomContext);
   const [split, setSplit] = useState(false);
+  const signer = useParticipants('includeMe').find(isRole('signer'));
+  console.log('signer', { signer });
 
   const newSplit = (type === 'pure' || type === 'hybrid') && focusGroup.length > 0;
   const width = newSplit ? '50%' : '100%';
@@ -63,8 +66,6 @@ export default function Broadcast({ type }: BroadcastProps) {
     window.dispatchEvent(ev); // fire 'resize' event!
   }, [split]);
 
-  const signer = getSigner(room);
-  console.log('signer', { signer });
 
   return (
     <Container>

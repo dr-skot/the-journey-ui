@@ -4,6 +4,7 @@ import { Participant } from 'twilio-video';
 import useStreamNodes from './useStreamNodes';
 import useAudioOut from './useAudioOut';
 import { setDelay, setGain } from '../../utils/audio';
+import { prevIfEqual } from '../../utils/react-help';
 
 type Identity = Participant.Identity;
 
@@ -39,11 +40,16 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
   const nodes = useStreamNodes();
 
   const setUnmutedGroup = useCallback((group: Identity[]) => {
-    setUnmuted((prev) => isEqual(group.sort(), prev) ? prev : group);
+    setUnmuted((prev) => {
+      const value = isEqual(group.sort(), prev) ? prev : group;
+      console.log('unmuted group going from', prev, 'to', value);
+      return value;
+    });
   }, [setUnmuted]);
 
   // connect up only the streams that are in the unmuted group
   useEffect(() => {
+    console.log('unmuted changed with audioOut', audioOut);
     if (!audioOut) return;
     nodes.forEach(([identity, trackSid, node]) => {
       if (unmuted.includes(identity)) node.connect(audioOut.outputNode);
@@ -67,7 +73,10 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
       audioOut?.delayNode.delayTime.value || 0,
     [audioOut]);
 
-  const contextValues = { setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain };
+  console.log('AudioStreamContext.Provider rerender');
+  // reportEqual({ setUnmutedGroup, getDelayTime, setDelayTime, getGain, setTheGain });
+  const contextValues = prevIfEqual('AudioStreamContext.value',
+    { setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain });
 
   return <AudioStreamContext.Provider value={contextValues}>
     {children}

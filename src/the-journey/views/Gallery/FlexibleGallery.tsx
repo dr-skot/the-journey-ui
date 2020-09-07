@@ -6,6 +6,8 @@ import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
 import Nobody from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
+import { listKey } from '../../utils/react-help';
+import { reportEqual } from '../../utils/dev';
 
 const Container = styled('div')(() => ({
   flex: '1 1 0',
@@ -16,13 +18,12 @@ const Container = styled('div')(() => ({
   alignContent: 'center',
 }));
 
-interface FlexibleGalleryProps {
+export interface FlexibleGalleryProps {
   participants: IParticipant[];
   selection?: string[];
   fixedLength?: number;
   hotKeys?: string;
-  // Typescript's being weird about MouseEvent, but that's what e is
-  onClick?: (e: any, participant: IParticipant) => void;
+  onClick?: (participant: IParticipant, e: MouseEvent) => void;
 }
 
 export default function FlexibleGallery({ participants, fixedLength = 0, selection = [],
@@ -37,6 +38,9 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
     window.addEventListener('resize', forceRender);
     return () => window.removeEventListener('resize', forceRender);
   })
+
+  console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
+  reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
@@ -55,9 +59,9 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
           hotKey={hotKeys && hotKeys[i]}
           width={boxSize.width}
           height={boxSize.height}
-          onClick={(e) => onClick(e, participant)}
+          onClick={(e) => onClick(participant, e as unknown as MouseEvent)}
         />
-        ) : <Nobody width={boxSize.width} height={boxSize.height} index={i}/>
+        ) : <Nobody width={boxSize.width} height={boxSize.height} index={i} key={listKey('nobody', i)}/>
       )) }
     </Container>
   );

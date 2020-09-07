@@ -4,6 +4,7 @@ import { joinRoom, getLocalTracks, getIdentity } from '../utils/twilio';
 import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
+import { prevIfEqual } from '../utils/react-help';
 
 // TODO maintain participants as an array
 // TODO maintain track arrays as well, based on events
@@ -136,6 +137,10 @@ export default function AppContextProvider({ children }: ChildrenProps) {
   const dispatch = useCallback((action: ReducerAction, payload = {}) => {
     _dispatch({ action, payload, dispatch });
   }, [_dispatch]);
+
+  console.log('AppContext.Provider rerender');
+  // reportEqual({ state, dispatch });
+  const providerValue = prevIfEqual('AppContext.value', [state, dispatch]);
 
   return <AppContext.Provider value={[state, dispatch]}>
     {children}
