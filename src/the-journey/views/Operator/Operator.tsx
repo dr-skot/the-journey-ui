@@ -10,6 +10,7 @@ import { inGroup } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import { elements, findIndexes } from '../../utils/functional';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
+import { Helmet } from 'react-helmet';
 
 const Container = styled('div')({
   display: 'flex',
@@ -64,6 +65,7 @@ export default function Operator(props: OperatorProps = {}) {
 
   return (
     <Container>
+      <Helmet><title>Operator : The Journey</title></Helmet>
       <MenuBar />
       <Main>
       <FlexibleGallery

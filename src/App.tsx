@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
@@ -30,6 +31,7 @@ import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Chat from './the-journey/views/FOH/components/Chat/Chat';
+import MenuedView from './the-journey/views/Gallery/MenuedView';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -54,24 +56,29 @@ export default function App() {
                   <Route path="/chat" component={Chat} />
                   <Route path="/rejected" component={Rejected} />
                   <Route path="/foh/code" component={GetCode} />
-                  <Route path="/foh/holding/:code?" component={FOHEntry}/>
+                  <Route path="/foh/holding/:code?" component={FOHEntry} />
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
                   <Route path="/star/:code?" component={StarEntry} />
                   <Route path="/focus/:code?">
-                    <AutoJoin role="lurker" /><FocusGroup />
+                    <AutoJoin role="lurker" />
+                    <Helmet><title>Focus : The Journey</title></Helmet>
+                    <MenuedView><FocusGroup /></MenuedView>
                   </Route>
                   <Route path="/lurk/:code?">
-                    <AutoJoin role="lurker" /><Broadcast />
+                    <AutoJoin role="lurker" />
+                    <Helmet><title>Lurker : The Journey</title></Helmet>
+                    <Broadcast />
                   </Route>
                   <Route path="/muppets/:code?">
                     <AutoJoin role="operator" /><Operator withMuppets={true} />
                   </Route>
                   <Route path="/operator/:code?">
-                    { console.log('Operator\'s parent rendered') }
                     <AutoJoin role="operator" /><Operator />
                   </Route>
                   <Route path="/gallery/:code?">
-                    <AutoJoin role="lurker" /><FixedGallery />
+                    <AutoJoin role="lurker" />
+                    <Helmet><title>Gallery : The Journey</title></Helmet>
+                    <FixedGallery />
                   </Route>
                   <Route path="/hybrid/:code?">
                     <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
@@ -81,7 +88,8 @@ export default function App() {
                   )}>
                   </Route>
                   <Route path="/show/:code?" component={FrontDoor} />
-                  <Redirect to="/show" />                </Switch>
+                  <Redirect to="/show" />
+                </Switch>
               </Router>
             </div>
           </SharedRoomContextProvider>
@@ -90,55 +98,7 @@ export default function App() {
     </MuiThemeProvider>
   );
 
-  return (
-    <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    <h1>hi</h1>
-      { /*
-      <AppContextProvider>
-        <AudioStreamContextProvider>
-          <SharedRoomContextProvider>
-       <div style={{ height }}>
-        <Router>
-          <Switch>
-            <Route path="/rejected" component={Rejected} />
-            <Route path="/foh/code" component={GetCode} />
-            <Route path="/foh/holding/:code?" component={FOHEntry}/>
-            <Route path="/captioning/:code?" component={CaptioningEntry} />
-            <Route path="/star/:code?" component={StarEntry} />
-            <Route path="/focus/:code?">
-              <AutoJoin role="lurker" /><FocusGroup />
-            </Route>
-            <Route path="/lurk/:code?">
-              <AutoJoin role="lurker" /><Broadcast />
-            </Route>
-            <Route path="/muppets/:code?">
-              <AutoJoin role="operator" /><Operator withMuppets={true} />
-            </Route>
-            <Route path="/operator/:code?">
-              <AutoJoin role="operator" /><Operator />
-            </Route>
-            <Route path="/gallery/:code?">
-              <AutoJoin role="lurker" /><FixedGallery />
-            </Route>
-            <Route path="/hybrid/:code?">
-              <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
-            </Route>
-            <Route path="/pure/:code?" render={(props) => (
-              <FrontDoor broadcastType="pure" { ...props } />
-            )}>
-            </Route>
-            <Route path="/show/:code?" component={FrontDoor} />
-            <Redirect to="/show" />
-          </Switch>
-        </Router>
-       </div>
-          </SharedRoomContextProvider>
-        </AudioStreamContextProvider>
-      </AppContextProvider>
-        */ }
-  </MuiThemeProvider>
-  );
+
 }
  /* <ReconnectingNotification /> */
 

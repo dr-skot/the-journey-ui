@@ -91,6 +91,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
         if (sharedStateUpdate) {
           setSharedState((prev) => {
             const newState = { ...prev, ...sharedStateUpdate };
+            console.log('updating state to', newState);
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
           });
         }

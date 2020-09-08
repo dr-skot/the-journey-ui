@@ -26,11 +26,13 @@ const Main = styled('div')({
 export default function FixedGallery() {
   const participants = useGalleryParticipants();
 
+  console.log('Gallery here. I think participants are', participants);
+
   return (
     <Container>
       <MenuBar/>
       <Main>
-        <FlexibleGallery participants={participants} fixedLength={undefined}/>
+        <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE} blanks="black"/>
       </Main>
     </Container>
   );

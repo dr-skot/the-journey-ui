@@ -10,8 +10,9 @@ import { not } from '../../utils/functional';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { cached } from '../../utils/react-help';
 import MenuBar from '../../components/MenuBar/MenuBar';
-import { addResponseMessage, Widget } from 'react-chat-widget';
 import Chat from './components/Chat/Chat';
+import { Helmet } from 'react-helmet';
+import { AppContext } from '../../contexts/AppContext';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -19,7 +20,7 @@ const Container = styled('div')(() => ({
 }));
 
 const Main = styled('div')(() => ({
-  height: '100vh',
+  height: '100%',
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
@@ -27,12 +28,14 @@ const Main = styled('div')(() => ({
 
 const Column = styled('div')(() => ({
   flex: '1 1 0',
+  height: '100%'
 }));
 
 
 export default function Holding() {
   const foh = useParticipants('includeMe').filter(isRole('foh'));
   const gallery = useGalleryParticipants({ withMe: true, inLobby: true });
+  const [{ room }] = useContext(AppContext);
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const [{ mutedInLobby }] = useContext(SharedRoomContext);
 
@@ -50,8 +53,11 @@ export default function Holding() {
     setUnmutedGroup(getIdentities(group));
   }, [deps.gallery, deps.foh, deps.mutedInLobby]);
 
+  const title = isRole('foh')(room?.localParticipant) ? 'FOH' : 'Lobby'
+
   return (
     <Container>
+      <Helmet><title>{title} : The Journey</title></Helmet>
       <MenuBar/>
       <Main>
         <Column style={{width: '50%'}}>
