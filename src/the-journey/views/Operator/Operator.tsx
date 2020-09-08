@@ -64,7 +64,7 @@ export default function Operator(props: OperatorProps = {}) {
 
   return (
     <Container>
-      <MenuBar isOperator />
+      <MenuBar />
       <Main>
       <FlexibleGallery
         participants={final.participants}

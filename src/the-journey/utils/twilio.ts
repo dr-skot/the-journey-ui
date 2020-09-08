@@ -162,8 +162,9 @@ export const getUsername = (identity: string) =>
 export const getParticipants = (room?: Room) => room ?
   [room.localParticipant, ...Array.from(room.participants.values())] : [];
 
-export const isRole = (type: UserRole) => (p?: Participant) =>
-  p ? element(-2)(p.identity.split('|')) === type : false;
+export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|')) : undefined;
+
+export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
 export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
 

@@ -7,6 +7,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
+import { elements } from '../../../utils/functional';
+import { getRole } from '../../../utils/twilio';
+import AdmitAllButton from '../../FOH/components/AdmitAllButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,21 +56,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface MenuBarProps {
-  isOperator?: boolean;
-}
-
-// TODO don't use a prop for this it causes rerenders; maybe use userType in AppContext instead
-export default function MenuBar({ isOperator }: MenuBarProps) {
+export default function MenuBar() {
   const classes = useStyles();
-  const [{ roomStatus }] = useContext(AppContext);
+  const [{ room, roomStatus }] = useContext(AppContext);
+
+  const role = getRole(room?.localParticipant);
 
   return (
       <AppBar className={classes.container}>
         <Toolbar className={classes.toolbar}>
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { isOperator && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
+            { role === 'foh' && <AdmitAllButton />}
+            { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

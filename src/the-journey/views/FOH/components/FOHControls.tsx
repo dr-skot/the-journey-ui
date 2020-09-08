@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { AppContext } from '../../../contexts/AppContext';
-import { isRole } from '../../../utils/twilio';
+import { inGroup, isRole } from '../../../utils/twilio';
 import { Participant } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 import { toggleMembership } from '../../../utils/functional';
@@ -17,15 +17,14 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomContext)
   if (!isRole('foh')(room?.localParticipant) || isRole('foh')(participant)) return null;
 
-  const audioTrack = mutedInLobby.includes(participant.identity)
+  const audioTrack = inGroup(mutedInLobby)(participant)
     ? null
     : participant.audioTracks.values().next().value?.track;
 
   const toggleMute = () =>
     // @ts-ignore
-    changeSharedState({ mutedInLobby: toggleMembership(mutedInLobby, participant.identity) });
+    changeSharedState({ mutedInLobby: toggleMembership(mutedInLobby)(participant.identity) });
 
-  // TODO send rejected to page? is that already happening?
   const reject = () =>
     // @ts-ignore
     changeSharedState({ rejected: [...rejected, participant.identity] });
@@ -34,7 +33,6 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     // @ts-ignore
     changeSharedState({ admitted: [...admitted, participant.identity] });
 
-  // TODO what is this warning about cannot resolve file "white" below?
   return  (
     <>
     <div style={{ width: '100%', textAlign: 'right' }}>

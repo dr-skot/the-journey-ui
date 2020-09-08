@@ -9,6 +9,7 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { not } from '../../utils/functional';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { cached } from '../../utils/react-help';
+import MenuBar from '../Gallery/components/MenuBar';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -49,6 +50,7 @@ export default function Holding() {
 
   return (
     <Container>
+      <MenuBar/>
       <Main>
         <Column style={{width: '50%'}}>
           <FlexibleGallery participants={gallery}/>
