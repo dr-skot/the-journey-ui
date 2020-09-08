@@ -13,6 +13,7 @@ import MenuBar from '../../components/MenuBar/MenuBar';
 import Chat from './components/Chat/Chat';
 import { Helmet } from 'react-helmet';
 import { AppContext } from '../../contexts/AppContext';
+import MenuedView from '../Gallery/MenuedView';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -56,19 +57,16 @@ export default function Holding() {
   const title = isRole('foh')(room?.localParticipant) ? 'FOH' : 'Lobby'
 
   return (
-    <Container>
+    <MenuedView>
       <Helmet><title>{title} : The Journey</title></Helmet>
-      <MenuBar/>
-      <Main>
-        <Column style={{width: '50%'}}>
-          <FlexibleGallery participants={gallery}/>
-        </Column>
-        <Column style={{width: '50%'}}>
-          <FlexibleGallery participants={foh}/>
-          <Chat/>
-        </Column>
-      </Main>
+      <Column style={{width: '50%'}}>
+        <FlexibleGallery participants={gallery}/>
+      </Column>
+      <Column style={{width: '50%'}}>
+        <FlexibleGallery participants={foh}/>
+        <Chat/>
+      </Column>
       <Controls />
-    </Container>
+    </MenuedView>
   )
 }

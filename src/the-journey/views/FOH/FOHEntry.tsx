@@ -4,6 +4,7 @@ import Holding from './Holding';
 import { RouteComponentProps } from 'react-router-dom';
 import SignIn from './SignIn';
 import { defaultRoom } from '../../utils/twilio';
+import { Helmet } from 'react-helmet';
 
 
 interface CodeParam {
@@ -16,5 +17,5 @@ export default function FOHEntry({ match }: RouteComponentProps<CodeParam>) {
 
   return roomStatus === 'connected'
     ? <Holding />
-    : <SignIn roomName={code || defaultRoom()} role="foh"/>
+    : <><Helmet><title>FOH : The Journey</title></Helmet><SignIn roomName={code || defaultRoom()} role="foh"/></>
 }
