@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
-import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
-import useParticipants from '../../../hooks/useParticipants/useParticipants';
-import { getIdentities, isRole } from '../../../utils/twilio';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import { getIdentities, isRole } from '../../utils/twilio';
 import { Button } from '@material-ui/core';
 
 export default function AdmitAllButton() {
@@ -16,6 +16,7 @@ export default function AdmitAllButton() {
 
   return (
     <Button
+      style={{ margin: '0.5em' }}
       onClick={admitAll}
       size="small" color="default" variant="contained">
       Admit All

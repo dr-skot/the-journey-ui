@@ -4,7 +4,7 @@ import { Participant } from 'twilio-video';
 import useStreamNodes from './useStreamNodes';
 import useAudioOut from './useAudioOut';
 import { setDelay, setGain } from '../../utils/audio';
-import { prevIfEqual } from '../../utils/react-help';
+import { cached } from '../../utils/react-help';
 
 type Identity = Participant.Identity;
 
@@ -14,6 +14,8 @@ interface AudioStreamContextValues {
   getGain: () => number,
   setGain: (gain: number) => void,
   setUnmutedGroup: (identities: string[]) => void,
+  muteAll: boolean,
+  setMuteAll: (setState: React.SetStateAction<boolean>) => void;
 }
 
 const initialValues: AudioStreamContextValues = {
@@ -22,6 +24,8 @@ const initialValues: AudioStreamContextValues = {
   getGain: () => 1,
   setGain: () => {},
   setUnmutedGroup: () => {},
+  muteAll: false,
+  setMuteAll: () => {},
 };
 
 export const AudioStreamContext = createContext(initialValues);
@@ -36,6 +40,7 @@ interface ProviderProps {
 
 export default function AudioStreamContextProvider({ children }: ProviderProps) {
   const [unmuted, setUnmuted] = useState<Identity[]>([]);
+  const [muteAll, setMuteAll] = useState<boolean>(false);
   const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
   const nodes = useStreamNodes();
 
@@ -51,11 +56,11 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
   useEffect(() => {
     console.log('unmuted changed with audioOut', audioOut);
     if (!audioOut) return;
-    nodes.forEach(([identity, trackSid, node]) => {
-      if (unmuted.includes(identity)) node.connect(audioOut.outputNode);
+    nodes.forEach(([identity, _, node]) => {
+      if (!muteAll && unmuted.includes(identity)) node.connect(audioOut.outputNode);
       else node.disconnect();
     });
-  }, [unmuted, nodes, audioOut])
+  }, [unmuted, muteAll, nodes, audioOut])
 
   const setTheGain = useCallback((gain: number) =>
     setGain(gain, audioOut),
@@ -75,8 +80,9 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
 
   console.log('AudioStreamContext.Provider rerender');
   // reportEqual({ setUnmutedGroup, getDelayTime, setDelayTime, getGain, setTheGain });
-  const contextValues = prevIfEqual('AudioStreamContext.value',
-    { setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain });
+  const contextValues = cached('AudioStreamContext.value').ifEqual({
+    setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain, muteAll, setMuteAll
+  }) as AudioStreamContextValues;
 
   return <AudioStreamContext.Provider value={contextValues}>
     {children}

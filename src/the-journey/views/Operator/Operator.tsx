@@ -1,7 +1,7 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
 import React, { useContext } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
-import MenuBar from '../Gallery/components/MenuBar';
+import MenuBar from '../../components/MenuBar/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import { styled } from '@material-ui/core/styles';

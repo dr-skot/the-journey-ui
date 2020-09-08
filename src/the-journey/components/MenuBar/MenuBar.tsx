@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { AppContext } from '../../../contexts/AppContext';
-import DelayControl from '../../Operator/components/DelayControl';
-import GainControl from '../../Operator/components/GainControl';
+import { AppContext } from '../../contexts/AppContext';
+import DelayControl from './DelayControl';
+import GainControl from './GainControl';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
-import { elements } from '../../../utils/functional';
-import { getRole } from '../../../utils/twilio';
-import AdmitAllButton from '../../FOH/components/AdmitAllButton';
+import ToggleFullscreenButton from './ToggleFullScreenButton/ToggleFullScreenButton';
+import { getRole } from '../../utils/twilio';
+import AdmitAllButton from './AdmitAllButton';
+import MuteAllButton from './MuteAllButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,15 +60,16 @@ export default function MenuBar() {
   const classes = useStyles();
   const [{ room, roomStatus }] = useContext(AppContext);
 
-  const role = getRole(room?.localParticipant);
+  const role = getRole(room?.localParticipant) || '';
 
   return (
       <AppBar className={classes.container}>
         <Toolbar className={classes.toolbar}>
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { role === 'foh' && <AdmitAllButton />}
             { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
+            { role === 'foh' && <AdmitAllButton />}
+            { role.match(/foh|operator/) && <MuteAllButton />}
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

@@ -9,7 +9,7 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { not } from '../../utils/functional';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { cached } from '../../utils/react-help';
-import MenuBar from '../Gallery/components/MenuBar';
+import MenuBar from '../../components/MenuBar/MenuBar';
 
 const Container = styled('div')(() => ({
   position: 'relative',

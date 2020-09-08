@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import MinusIcon from '@material-ui/icons/RemoveCircle';
 import PlusIcon from '@material-ui/icons/AddCircle';
-import { RoomStateChange, SharedRoomContext } from '../../../contexts/SharedRoomContext';
+import { RoomStateChange, SharedRoomContext } from '../../contexts/SharedRoomContext';
 
 const valence = (x: number) => (x < 0 ? -1 : 1);
 

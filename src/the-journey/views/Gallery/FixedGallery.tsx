@@ -1,7 +1,7 @@
 import React from 'react';
 import useGalleryParticipants from './hooks/useGalleryParticipants';
 import FlexibleGallery from './FlexibleGallery';
-import MenuBar from './components/MenuBar';
+import MenuBar from '../../components/MenuBar/MenuBar';
 import { styled } from '@material-ui/core/styles';
 
 export const GALLERY_SIZE = 30;
