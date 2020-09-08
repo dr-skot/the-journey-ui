@@ -11,6 +11,7 @@ import { cached } from '../../utils/react-help';
 import { elements, findIndexes } from '../../utils/functional';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { Helmet } from 'react-helmet';
+import { reportEqual } from '../../utils/dev';
 
 const Container = styled('div')({
   display: 'flex',
@@ -43,7 +44,6 @@ export default function Operator(props: OperatorProps = {}) {
   const { forceGallery, forceHotKeys, toggleFocus } = operatorControls;
 
   console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery, props });
-  reportEqual({ prefix: 'Operator', appContext, sharedRoom, operatorControls, gallery, props });
 
   const focusing = focusGroup.length && !forceGallery;
   const selector = focusing ? inGroup(focusGroup) : () => true;
