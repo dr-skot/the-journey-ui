@@ -9,23 +9,10 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { not } from '../../utils/functional';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { cached } from '../../utils/react-help';
-import MenuBar from '../../components/MenuBar/MenuBar';
 import Chat from './components/Chat/Chat';
 import { Helmet } from 'react-helmet';
 import { AppContext } from '../../contexts/AppContext';
 import MenuedView from '../Gallery/MenuedView';
-
-const Container = styled('div')(() => ({
-  position: 'relative',
-  height: '100%',
-}));
-
-const Main = styled('div')(() => ({
-  height: '100%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignContent: 'center',
-}));
 
 const Column = styled('div')(() => ({
   flex: '1 1 0',

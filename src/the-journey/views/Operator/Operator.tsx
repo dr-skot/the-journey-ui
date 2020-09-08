@@ -61,7 +61,7 @@ export default function Operator(props: OperatorProps = {}) {
 
   const final = cached('Operator.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
 
-  // console.log('Operator passing', final === galleryProps ? 'cached' : 'uncached', 'gallery props', { final });
+  console.log('Operator passing', final === galleryProps ? 'cached' : 'uncached', 'gallery props', { final });
 
   return (
     <Container>

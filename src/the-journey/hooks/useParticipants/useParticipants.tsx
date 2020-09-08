@@ -10,15 +10,16 @@ export default function useParticipants(includeMe?: 'includeMe') {
   const [{ room }] = appContext;
   const [participants, setParticipants] = useState(Array.from(room?.participants.values() || []));
 
-
   useEffect(() => {
+    console.log('useParticipants: room changed! updating')
+    setParticipants(Array.from(room?.participants.values() || []));
     const participantConnected = (participant: RemoteParticipant) => {
       console.log('useParticipants: new connection! updating')
-      setParticipants(prevParticipants => [...prevParticipants, participant]);
+      setParticipants(Array.from(room?.participants.values() || []));
     }
     const participantDisconnected = (participant: RemoteParticipant) => {
       console.log('useParticipants: somebody left! updating');
-      setParticipants(prevParticipants => prevParticipants.filter(p => p !== participant));
+      setParticipants(Array.from(room?.participants.values() || []));
     }
     room?.on('participantConnected', participantConnected);
     room?.on('participantDisconnected', participantDisconnected);
