@@ -193,7 +193,7 @@ export const setTrackPriorities = (room: Room, settings: PrioritySettings) => {
 }
 
 
-export const getTimestamp = (p: Participant) => element(-1)(p.identity.split('|'));
+export const getTimestamp = (p?: Participant) => p ? element(-1)(p.identity.split('|')) : '';
 
 export const sortedParticipants = (ps: Participant[]) => sortBy(ps, getTimestamp);
 export const getIdentities = (ps: Participant[]) => ps.map((p) => p.identity);

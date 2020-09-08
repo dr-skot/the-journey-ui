@@ -1,46 +1,40 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { addResponseMessage, Widget } from 'react-chat-widget';
 import { AppContext } from '../../../../contexts/AppContext';
-import { listKey } from '../../../../utils/react-help';
 import { tryToParse } from '../../../../utils/functional';
-import { getUsername } from '../../../../utils/twilio';
-import { LocalDataTrack, RemoteParticipant } from 'twilio-video';
-import ChatMessage from './ChatMessage';
-
-interface Message {
-  name: string,
-  text: string,
-}
+import { getLocalDataTrack, getUsername } from '../../../../utils/twilio';
+import 'react-chat-widget/lib/styles.css';
+import '../../../../../chat.css';
 
 export default function Chat() {
-  const [{ room }, dispatch] = useContext(AppContext);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [{ room }] = useContext(AppContext);
+  const me = room?.localParticipant;
 
   useEffect(() => {
-    // publish data track and listen for messages
-    const alreadyOpen = room?.localParticipant.dataTracks.size || 0 > 0;
-    if (!alreadyOpen) room?.localParticipant.publishTrack(new LocalDataTrack());
-    const handleMessage = (data: string, _: any, participant: RemoteParticipant) => {
-      const message = tryToParse(data);
-      if (message.chat) setMessages((messages) => [ ...messages,
-        { name: getUsername(participant.identity), text: message.chat }
-      ]);
-    };
-    room?.on('trackMessage', handleMessage);
-    return () => {
-      room?.off('trackMessage', handleMessage);
-      if (!alreadyOpen) room?.localParticipant.dataTracks
-        .forEach((pub) => pub.unpublish());
+    function handleMessage(data: string) {
+      const message = tryToParse(data) || {};
+      const { from, payload: { chat } } = message;
+      if (chat) addResponseMessage(`${getUsername(from)}:\n${chat}`);
     }
-  }, [room]);
+    room?.on('trackMessage', handleMessage);
+    return () => { room?.off('trackMessage', handleMessage) };
+  }, [room])
+
+  const handleNewUserMessage = (newMessage: string) => {
+    if (!room) return;
+    getLocalDataTrack(room).then((track) =>
+      track.send(JSON.stringify({
+        from: me?.identity,
+        payload: { chat: newMessage },
+      })));
+  };
 
   return (
     <div>
-      { messages.map((message, i) =>
-        <ChatMessage
-          key={listKey('message', i)}
-          name={message.name} text={message.text}
-        />
-      )}
+      <Widget
+        title="Lobby for The Journey"
+        subtitle="we'll be letting you in soon"
+        handleNewUserMessage={handleNewUserMessage} />
     </div>
-  )
+  );
 }

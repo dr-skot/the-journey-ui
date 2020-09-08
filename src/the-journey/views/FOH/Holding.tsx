@@ -10,6 +10,8 @@ import { not } from '../../utils/functional';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { cached } from '../../utils/react-help';
 import MenuBar from '../../components/MenuBar/MenuBar';
+import { addResponseMessage, Widget } from 'react-chat-widget';
+import Chat from './components/Chat/Chat';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -57,6 +59,7 @@ export default function Holding() {
         </Column>
         <Column style={{width: '50%'}}>
           <FlexibleGallery participants={foh}/>
+          <Chat/>
         </Column>
       </Main>
       <Controls />

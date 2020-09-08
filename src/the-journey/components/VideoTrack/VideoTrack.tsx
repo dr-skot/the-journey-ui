@@ -14,9 +14,10 @@ interface VideoTrackProps {
   track: IVideoTrack;
   isLocal?: boolean;
   priority?: Track.Priority | null;
+  reverse?: boolean;
 }
 
-export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps) {
+export default function VideoTrack({ track, isLocal, priority, reverse = true }: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null!);
   // const mediaStreamTrack = useMediaStreamTrack(track);
 
@@ -36,9 +37,8 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
     };
   }, [track, priority]);
 
-  // The local video track is mirrored if it is not facing the environment.
-  // const isFrontFacing = mediaStreamTrack?.getSettings().facingMode !== 'environment';
-  const style = { transform: 'rotateY(180deg)' }; // mirror everyone
+  // mirror unless asked not to
+  const style = reverse ? { transform: 'rotateY(180deg)' } : {};
 
   return <Video ref={ref} style={style} />;
 }

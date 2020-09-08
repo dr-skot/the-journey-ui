@@ -1,0 +1,18 @@
+.rcw-conversation-container > .rcw-header {
+    background-color: cornflowerblue;
+}
+
+.rcw-response > .rcw-message-text {
+    color: #444;
+    background-color: #DDD;
+}
+.rcw-client > .rcw-message-text {
+    background-color: cornflowerblue;
+}
+.rcw-launcher {
+    background-color: cornflowerblue;
+}
+
+.rcw-timestamp {
+    color: lightslategray;
+}

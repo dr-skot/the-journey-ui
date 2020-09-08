@@ -4,6 +4,7 @@ import usePublications from '../../../twilio/hooks/usePublications/usePublicatio
 import VideoTrack from '../VideoTrack/VideoTrack';
 import { IVideoTrack } from '../../../types';
 import { Participant, Track } from 'twilio-video';
+import { getRole } from '../../utils/twilio';
 
 interface ParticipantVideoProps {
   participant: Participant;
@@ -27,6 +28,7 @@ export default function ParticipantVideo({ participant, videoPriority, }: Partic
       track={track as IVideoTrack}
       priority={videoPriority}
       isLocal={isLocal}
+      reverse={!getRole(participant).match(/star|signer/)}
     />
     );
 }
