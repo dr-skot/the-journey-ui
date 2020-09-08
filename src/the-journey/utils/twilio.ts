@@ -166,7 +166,7 @@ export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|'
 
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
-export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
+export const defaultRoom = () => isDev() ? 'room' : 'room';
 
 export const getSigner = (room?: Room) =>
   Array.from(room?.participants.values() || [])

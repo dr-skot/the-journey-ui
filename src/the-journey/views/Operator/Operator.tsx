@@ -45,7 +45,7 @@ export default function Operator(props: OperatorProps = {}) {
 
   console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery, props });
 
-  const focusing = focusGroup.length && !forceGallery;
+  const focusing = focusGroup.length && !forceGallery && gallery.some(inGroup(focusGroup));
   const selector = focusing ? inGroup(focusGroup) : () => true;
   const groupIndexes = findIndexes(selector)(gallery);
   const selected = elements(groupIndexes)
