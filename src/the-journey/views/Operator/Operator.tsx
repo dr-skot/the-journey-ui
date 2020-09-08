@@ -42,8 +42,8 @@ export default function Operator(props: OperatorProps = {}) {
   const [{ focusGroup }] = sharedRoom;
   const { forceGallery, forceHotKeys, toggleFocus } = operatorControls;
 
-  // console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery, props });
-  // reportEqual({ prefix: 'Operator', appContext, sharedRoom, operatorControls, gallery, props });
+  console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery, props });
+  reportEqual({ prefix: 'Operator', appContext, sharedRoom, operatorControls, gallery, props });
 
   const focusing = focusGroup.length && !forceGallery;
   const selector = focusing ? inGroup(focusGroup) : () => true;
