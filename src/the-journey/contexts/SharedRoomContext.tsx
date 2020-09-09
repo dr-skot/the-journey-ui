@@ -152,3 +152,5 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
     {children}
   </SharedRoomContext.Provider>
 }
+
+export const useSharedRoomState = () => useContext(SharedRoomContext);

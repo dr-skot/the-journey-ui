@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { random, range } from 'lodash';
-import { codeToTime, timeToCode } from './foh';
+import { codeToTime, codeToTimeWithTZ, timeToCode, timeToCodeWithTZ, timezones } from './foh';
 
 const datesToTry = (n: number) =>
   range(0, n).map(_ => {
@@ -32,3 +32,26 @@ describe('timeToCode', () => {
     });
   });
 });
+
+describe('timeToCodeWithTZ', () => {
+  it('converts time + tz to lowercase string of < 9 letters', () => {
+    datesToTry(20).forEach(d => {
+      const code = timeToCodeWithTZ(d, random(0, timezones.length - 1));
+      console.log(code);
+      expect(code.length).toBeLessThan(9);
+      expect(code).toMatch(/^[a-z]+$/);
+    });
+  });
+  it('decodes to same time you put in (to the minute)', () => {
+    datesToTry(20).forEach(d => {
+      const inTime = new Date();
+      const inTZ = random(0, timezones.length - 1);
+      const code = timeToCodeWithTZ(inTime, inTZ);
+      const [outTime, outTZ] = codeToTimeWithTZ(code);
+      const format = (d: Date) => moment(d).format('YYYY MM DD h:mm');
+      expect(format(outTime)).toEqual(format(inTime));
+      expect(outTZ).toEqual(inTZ);
+    });
+  });
+});
+

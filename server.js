@@ -26,6 +26,7 @@ SUBSCRIBE_RULES = {
   gallery: () => [{ type: 'include', kind: 'video' }],
   focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
   audio: () => [{ type: 'include', kind: 'audio' }],
+  nothing: () => [{ type: 'exclude', all: true }],
 }
 
 app.use(express.static(path.join(__dirname, 'build')));

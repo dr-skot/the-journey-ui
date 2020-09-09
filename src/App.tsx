@@ -32,6 +32,8 @@ import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContex
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Chat from './the-journey/views/FOH/components/Chat/Chat';
 import MenuedView from './the-journey/views/Gallery/MenuedView';
+import SubscribeToStar from './the-journey/subscribers/SubscribeToStar';
+import SubscribeToNothing from './the-journey/subscribers/SubscribeToNothing';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -58,6 +60,12 @@ export default function App() {
                   <Route path="/foh/code" component={GetCode} />
                   <Route path="/foh/holding/:code?" component={FOHEntry} />
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
+                  <Route path="/star/unsub/:code?" render={(props) => (
+                    <>
+                      <SubscribeToNothing />
+                      <StarEntry { ...props } />
+                    </>
+                  )}/>
                   <Route path="/star/:code?" component={StarEntry} />
                   <Route path="/focus/:code?">
                     <AutoJoin role="lurker" />
@@ -83,10 +91,15 @@ export default function App() {
                   <Route path="/hybrid/:code?">
                     <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
                   </Route>
+                  <Route path="/pure/unsub/:code?" render={(props) => (
+                    <>
+                      <SubscribeToStar />
+                      <FrontDoor broadcastType="pure" { ...props } />
+                    </>
+                  )}/>
                   <Route path="/pure/:code?" render={(props) => (
                     <FrontDoor broadcastType="pure" { ...props } />
-                  )}>
-                  </Route>
+                  )}/>
                   <Route path="/show/:code?" component={FrontDoor} />
                   <Redirect to="/show" />
                 </Switch>

@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 import { createContext } from 'react';
-import { joinRoom, getLocalTracks, getIdentity } from '../utils/twilio';
+import { joinRoom, getLocalTracks, getIdentity, subscribe } from '../utils/twilio';
 import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
@@ -39,7 +39,7 @@ type AppContextValue = [AppState, EasyDispatch];
 export const AppContext = createContext([initialState, () => {}] as AppContextValue);
 
 type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
-  'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'setSinkId' | 'changeSetting'
+  'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'setSinkId' | 'changeSetting' | 'subscribe'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -119,6 +119,13 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'changeSetting':
       newState = { ...state, settings: settingsReducer(state.settings, payload) };
+      break;
+
+    case 'subscribe':
+      if (state.room) {
+        console.log('requesting subscription change', payload);
+        subscribe(state.room.name, state.room.localParticipant.identity, payload.profile, payload.focus);
+      }
       break;
 
   }

@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, styled, ThemeProvider } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+// import TimezonePicker from '../../components/TimezonePicker/TimezonePicker.txt';
 import { timeToCode } from '../../utils/foh';
 import { isDev } from '../../utils/react-help';
 
@@ -65,9 +66,13 @@ export default function GetCode() {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
+    resetCode();
+  };
+
+  const resetCode = () => {
     setCode('');
     setError('');
-  };
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -99,7 +104,9 @@ export default function GetCode() {
                 defaultValue={defaultTime()}
                 onChange={handleChange}
               />
-            </Item>
+                { /* <div><TimezonePicker id="timezone" onChange={resetCode} /></div> */ }
+
+              </Item>
                 {error && (
                   <Item>
                   <Typography variant="caption" className={classes.errorMessage}>
