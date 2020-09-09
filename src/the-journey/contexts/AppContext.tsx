@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useReducer } from 'react';
+import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 import { createContext } from 'react';
 import { joinRoom, getLocalTracks, getIdentity } from '../utils/twilio';
 import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
@@ -146,3 +146,5 @@ export default function AppContextProvider({ children }: ChildrenProps) {
     {children}
   </AppContext.Provider>
 }
+
+export function useAppContext() { return useContext(AppContext ) };

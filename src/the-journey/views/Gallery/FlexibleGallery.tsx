@@ -7,7 +7,7 @@ import { styled } from '@material-ui/core/styles';
 import Nobody from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
-import { reportEqual } from '../../utils/dev';
+// import { reportEqual } from '../../utils/dev';
 
 const Container = styled('div')(() => ({
   flex: '1 1 0',
@@ -40,8 +40,8 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
     return () => window.removeEventListener('resize', forceRender);
   })
 
-  console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
-  reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
+  // console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
+  // reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 

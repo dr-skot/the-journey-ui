@@ -1,31 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
-import { Participant, RemoteParticipant } from 'twilio-video';
-import { AppContext } from '../../contexts/AppContext';
-import { getTimestamp, sameIdentities } from '../../utils/twilio';
+import { useEffect, useState } from 'react';
+import { Participant } from 'twilio-video';
+import { useAppContext } from '../../contexts/AppContext';
+import { getIdentities, getTimestamp, sameIdentities } from '../../utils/twilio';
 import { sortBy } from 'lodash';
 import { cached } from '../../utils/react-help';
 
 export default function useParticipants(includeMe?: 'includeMe') {
-  const appContext = useContext(AppContext);
+  const appContext = useAppContext();
   const [{ room }] = appContext;
   const [participants, setParticipants] = useState(Array.from(room?.participants.values() || []));
 
+  console.log('participants', getIdentities(participants).join(', '));
+
   useEffect(() => {
-    console.log('useParticipants: room changed! updating')
-    setParticipants(Array.from(room?.participants.values() || []));
-    const participantConnected = (participant: RemoteParticipant) => {
-      console.log('useParticipants: new connection! updating')
-      setParticipants(Array.from(room?.participants.values() || []));
-    }
-    const participantDisconnected = (participant: RemoteParticipant) => {
-      console.log('useParticipants: somebody left! updating');
-      setParticipants(Array.from(room?.participants.values() || []));
-    }
-    room?.on('participantConnected', participantConnected);
-    room?.on('participantDisconnected', participantDisconnected);
+    console.log('new room!', JSON.stringify(room));
+    const update = () => setParticipants(Array.from(room?.participants.values() || []));
+    update();
+    room?.on('participantConnected', update);
+    room?.on('participantDisconnected', update);
     return () => {
-      room?.off('participantConnected', participantConnected);
-      room?.off('participantDisconnected', participantDisconnected);
+      room?.off('participantConnected', update);
+      room?.off('participantDisconnected', update);
     };
   }, [room]);
 
@@ -33,7 +28,7 @@ export default function useParticipants(includeMe?: 'includeMe') {
   const sorted = sortBy(everybody, getTimestamp);
   const final = cached('useParticipants').if(sameIdentities)(sorted) as Participant[];
 
-  console.log('useParticipants returning', final === sorted ? 'uncached' : 'cached', { final });
+  // console.log('useParticipants returning', final === sorted ? 'uncached' : 'cached', { final });
 
   return final
 }

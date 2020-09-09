@@ -10,7 +10,7 @@ export default function FocusGroup() {
   const [{ focusGroup }] = useContext(SharedRoomContext);
   const group = useGalleryParticipants({ withMuppets: true, withMe: true }).filter(inGroup(focusGroup));
 
-  console.log('FocusGroup view here. I think focus group is', focusGroup);
+  // console.log('FocusGroup view here. I think focus group is', focusGroup);
 
   const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
   return <FlexibleGallery participants={final} />

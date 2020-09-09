@@ -14,10 +14,9 @@ interface VideoTrackProps {
   track: IVideoTrack;
   isLocal?: boolean;
   priority?: Track.Priority | null;
-  reverse?: boolean;
 }
 
-export default function VideoTrack({ track, isLocal, priority, reverse = true }: VideoTrackProps) {
+export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null!);
   // const mediaStreamTrack = useMediaStreamTrack(track);
 
@@ -37,8 +36,8 @@ export default function VideoTrack({ track, isLocal, priority, reverse = true }:
     };
   }, [track, priority]);
 
-  // mirror unless asked not to
-  const style = reverse ? { transform: 'rotateY(180deg)' } : {};
+  // mirror self view
+  const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
 
   return <Video ref={ref} style={style} />;
 }

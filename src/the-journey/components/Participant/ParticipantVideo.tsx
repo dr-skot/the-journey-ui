@@ -28,7 +28,6 @@ export default function ParticipantVideo({ participant, videoPriority, }: Partic
       track={track as IVideoTrack}
       priority={videoPriority}
       isLocal={isLocal}
-      reverse={!getRole(participant).match(/star|signer/)}
     />
     );
 }

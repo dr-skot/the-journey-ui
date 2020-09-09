@@ -1,67 +1,52 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import EventEmitter from 'events';
-import useDominantSpeaker from '../../../twilio/hooks/useDominantSpeaker/useDominantSpeaker';
 import useParticipants from './useParticipants';
-import useVideoContext from '../useVideoContext';
+import { useAppContext } from '../../contexts/AppContext';
 
-jest.mock('../useVideoContext/useVideoContext');
-jest.mock('../useDominantSpeaker/useDominantSpeaker');
+jest.mock('../../contexts/AppContext');
 
-const mockUseDominantSpeaker = useDominantSpeaker as jest.Mock<any>;
-const mockedVideoContext = useVideoContext as jest.Mock<any>;
+const mockUseAppContext = useAppContext as jest.Mock;
 
 describe('the useParticipants hook', () => {
   let mockRoom: any;
+  const mockParticipants = [
+    { identity: 'guy|role|10' },
+    { identity: 'dude|role|12' },
+    { identity: 'lady|role|13' },
+    { identity: 'reconnector|role|09' },
+  ];
 
   beforeEach(() => {
     mockRoom = new EventEmitter();
+    mockRoom.localParticipant = { identity: 'me|audience|11'}
     mockRoom.participants = new Map([
-      [0, 'participant1'],
-      [1, 'participant2'],
+      [0, mockParticipants[0]],
+      [1, mockParticipants[1]],
     ]);
-    mockedVideoContext.mockImplementation(() => ({
-      room: mockRoom,
-    }));
+    mockUseAppContext.mockImplementation(() => ([{ room: mockRoom }]));
   });
 
   it('should return an array of mockParticipant.tracks by default', () => {
     const { result } = renderHook(useParticipants);
-    expect(result.current).toEqual(['participant1', 'participant2']);
+    expect(result.current).toEqual(mockParticipants.slice(0, 2));
   });
 
   it('should return respond to "participantConnected" events', async () => {
     const { result } = renderHook(useParticipants);
     act(() => {
-      mockRoom.emit('participantConnected', 'newParticipant');
+      mockRoom.participants.set(2, mockParticipants[2]);
+      mockRoom.emit('participantConnected', mockParticipants[2]);
     });
-    expect(result.current).toEqual(['participant1', 'participant2', 'newParticipant']);
+    expect(result.current).toEqual(mockParticipants.slice(0, 3));
   });
 
   it('should return respond to "participantDisconnected" events', async () => {
     const { result } = renderHook(useParticipants);
     act(() => {
-      mockRoom.emit('participantDisconnected', 'participant1');
+      mockRoom.participants.delete(0);
+      mockRoom.emit('participantDisconnected', mockParticipants[0]);
     });
-    expect(result.current).toEqual(['participant2']);
-  });
-
-  it('should reorder participants when the dominant speaker changes', () => {
-    mockRoom.participants = new Map([
-      [0, 'participant1'],
-      [1, 'participant2'],
-      [2, 'participant3'],
-    ]);
-    const { result, rerender } = renderHook(useParticipants);
-    expect(result.current).toEqual(['participant1', 'participant2', 'participant3']);
-    mockUseDominantSpeaker.mockImplementation(() => 'participant2');
-    rerender();
-    expect(result.current).toEqual(['participant2', 'participant1', 'participant3']);
-    mockUseDominantSpeaker.mockImplementation(() => 'participant3');
-    rerender();
-    expect(result.current).toEqual(['participant3', 'participant2', 'participant1']);
-    mockUseDominantSpeaker.mockImplementation(() => null);
-    rerender();
-    expect(result.current).toEqual(['participant3', 'participant2', 'participant1']);
+    expect(result.current).toEqual(mockParticipants.slice(1,2));
   });
 
   it('should clean up listeners on unmount', () => {
@@ -70,4 +55,29 @@ describe('the useParticipants hook', () => {
     expect(mockRoom.listenerCount('participantConnected')).toBe(0);
     expect(mockRoom.listenerCount('participantDisconnected')).toBe(0);
   });
+
+  it('should find participants in a new room', async () => {
+    mockUseAppContext.mockImplementation(() => [{ room: undefined }]);
+    const { result, rerender } = renderHook(useParticipants);
+    expect(result.current).toEqual([]);
+    mockUseAppContext.mockImplementation(() => [{ room: mockRoom }]);
+    rerender();
+    expect(result.current).toEqual(mockParticipants.slice(0, 2));
+  });
+
+  it('sorts participants by timestamp', () => {
+    const { result } = renderHook(useParticipants);
+    act(() => {
+      mockRoom.participants.set(2, mockParticipants[3]);
+      mockRoom.emit('participantConnected', mockParticipants[3]);
+    });
+    expect(result.current).toEqual([mockParticipants[3], ...mockParticipants.slice(0, 2)]);
+  });
+
+  it('includes the local participant (in timestamp order) when asked to', () => {
+    // @ts-ignore
+    const { result } = renderHook(useParticipants, { initialProps: 'includeMe' });
+    expect(result.current).toEqual([mockParticipants[0], mockRoom.localParticipant, mockParticipants[1]]);
+  });
+
 });

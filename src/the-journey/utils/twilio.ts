@@ -26,9 +26,10 @@ export function getToken(roomName: string, identity: string) {
 }
 
 export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}, tracks: LocalTrack[]) {
+  console.log('connecting with options', { ...DEFAULT_OPTIONS, ...options });
   return Video.connect(token, {
     ...DEFAULT_OPTIONS,
-    // ...options,
+    ...options,
     name: roomName
   }).then(room => {
     publishTracks(room, tracks);
@@ -196,10 +197,10 @@ export const setTrackPriorities = (room: Room, settings: PrioritySettings) => {
 export const getTimestamp = (p?: Participant) => p ? element(-1)(p.identity.split('|')) : '';
 
 export const sortedParticipants = (ps: Participant[]) => sortBy(ps, getTimestamp);
-export const getIdentities = (ps: Participant[]) => ps.map((p) => p.identity);
+export const getIdentities = (ps: Participant[]) => ps.map((p) => p?.identity); // TODO why are some ps null?
 export const sortedIdentities = (ps: Participant[]) => getIdentities(sortedParticipants(ps));
 
-export const inGroup = (group: string[]) => (p: Participant) => group.includes(p.identity);
+export const inGroup = (group: string[]) => (p: Participant) => group.includes(p?.identity);
 export const sameIdentities = (a: Participant[], b: Participant[]) =>
   isEqual(sortedIdentities(a), sortedIdentities(b));
 

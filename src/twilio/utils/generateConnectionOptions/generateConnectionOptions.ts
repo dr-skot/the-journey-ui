@@ -23,17 +23,18 @@ export default function generateConnectionOptions(settings: Settings) {
         maxTracks: Number(settings.maxTracks),
       },
     },
-    dominantSpeaker: true,
+    // dominantSpeaker: settings.dominantSpeaker,
     networkQuality: { local: 1, remote: 1 },
 
     // Comment this line if you are playing music.
-    maxAudioBitrate: Number(settings.maxAudioBitrate),
+    maxAudioBitrate: Number(settings.maxAudioBitrate) || undefined,
 
     // VP8 simulcast enables the media server in a Small Group or Group Room
     // to adapt your encoded video quality for each RemoteParticipant based on
     // their individual bandwidth constraints. This has no effect if you are
     // using Peer-to-Peer Rooms.
     preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
+    preferredAudioCodecs: ['opus'],
   };
 
   // For mobile browsers, limit the maximum incoming video bitrate to 2.5 Mbps.

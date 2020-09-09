@@ -6,11 +6,12 @@ import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import { getSigner, isRole } from '../../utils/twilio';
+import { getIdentities, getSigner, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
+import { Helmet } from 'react-helmet';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -51,10 +52,15 @@ export default function Broadcast({ type }: BroadcastProps) {
   const [{ room }] = useContext(AppContext);
   const [{ focusGroup }] = useContext(SharedRoomContext);
   const [split, setSplit] = useState(false);
-  const signer = useParticipants('includeMe').find(isRole('signer'));
+  const participants = useParticipants('includeMe');
+  const signer = participants.find(isRole('signer'));
   console.log('signer', { signer });
 
-  const newSplit = (type === 'pure' || type === 'hybrid') && focusGroup.length > 0;
+  // TODO guarantee no ghosts in focusGroup at the sour
+  const existant = getIdentities(participants);
+  const noGhosts = focusGroup.filter((identity) => existant.includes(identity));
+
+  const newSplit = (type === 'pure' || type === 'hybrid') && noGhosts.length > 0;
   const width = newSplit ? '50%' : '100%';
 
   if (newSplit !== split) setSplit(newSplit);
@@ -69,6 +75,7 @@ export default function Broadcast({ type }: BroadcastProps) {
 
   return (
     <Container>
+      <Helmet><title>The Journey</title></Helmet>
       <Main>
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>
