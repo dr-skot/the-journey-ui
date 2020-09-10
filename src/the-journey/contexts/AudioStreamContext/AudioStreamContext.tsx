@@ -1,10 +1,11 @@
 import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 import { isEqual } from 'lodash';
 import { Participant } from 'twilio-video';
-import useStreamNodes from './useStreamNodes';
 import useAudioOut from './useAudioOut';
 import { setDelay, setGain } from '../../utils/audio';
 import { cached } from '../../utils/react-help';
+import useNodeCreator from './useNodeCreator';
+import useAudioElementCreator from './useAudioElementCreator';
 
 type Identity = Participant.Identity;
 
@@ -15,7 +16,8 @@ interface AudioStreamContextValues {
   setGain: (gain: number) => void,
   setUnmutedGroup: (identities: string[]) => void,
   muteAll: boolean,
-  setMuteAll: (setState: React.SetStateAction<boolean>) => void;
+  setMuteAll: (setState: React.SetStateAction<boolean>) => void,
+  setFallback: (setting: boolean) => void,
 }
 
 const initialValues: AudioStreamContextValues = {
@@ -26,6 +28,7 @@ const initialValues: AudioStreamContextValues = {
   setUnmutedGroup: () => {},
   muteAll: false,
   setMuteAll: () => {},
+  setFallback: () => {},
 };
 
 export const AudioStreamContext = createContext(initialValues);
@@ -40,9 +43,11 @@ interface ProviderProps {
 
 export default function AudioStreamContextProvider({ children }: ProviderProps) {
   const [unmuted, setUnmuted] = useState<Identity[]>([]);
-  const [muteAll, setMuteAll] = useState<boolean>(false);
+  const [muteAll, setMuteAll] = useState(false);
+  const [fallback, setFallback] = useState(false);
   const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
-  const nodes = useStreamNodes();
+  const ambitiousUnmuteGroup = useNodeCreator();
+  const fallbackUnmuteGroup = useAudioElementCreator();
 
   const setUnmutedGroup = useCallback((group: Identity[]) => {
     setUnmuted((prev) => {
@@ -55,12 +60,11 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
   // connect up only the streams that are in the unmuted group
   useEffect(() => {
     console.log('unmuted changed with audioOut', audioOut);
-    if (!audioOut) return;
-    nodes.forEach(([identity, _, node]) => {
-      if (!muteAll && unmuted.includes(identity)) node.connect(audioOut.outputNode);
-      else node.disconnect();
-    });
-  }, [unmuted, muteAll, nodes, audioOut])
+    const methods = [fallbackUnmuteGroup, ambitiousUnmuteGroup]
+    const [activeMethod, inactiveMethod] = fallback ? methods : methods.reverse();
+    inactiveMethod([], true, audioOut);
+    activeMethod(unmuted, muteAll, audioOut);
+  }, [unmuted, muteAll, audioOut, fallback])
 
   const setTheGain = useCallback((gain: number) =>
     setGain(gain, audioOut),
@@ -81,7 +85,7 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
   console.log('AudioStreamContext.Provider rerender');
   // reportEqual({ setUnmutedGroup, getDelayTime, setDelayTime, getGain, setTheGain });
   const contextValues = cached('AudioStreamContext.value').ifEqual({
-    setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain, muteAll, setMuteAll
+    setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain, muteAll, setMuteAll, setFallback,
   }) as AudioStreamContextValues;
 
   return <AudioStreamContext.Provider value={contextValues}>

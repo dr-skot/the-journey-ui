@@ -1,6 +1,7 @@
 
 let delayNode;
 function init() {
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioContext = new AudioContext();
   navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then((stream) => {
@@ -15,6 +16,6 @@ function init() {
 }
 
 function setDelay(n) {
-  delayTime.delayTime.value = n;
+  delayNode.delayTime.value = n;
 }
 

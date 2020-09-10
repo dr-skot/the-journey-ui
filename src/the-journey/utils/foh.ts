@@ -1,25 +1,21 @@
-import moment, { Moment } from 'moment';
+import { DateTime } from 'luxon';
 
 export interface DoorPolicy { open: number, close: number };
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
 
-export type Time = Date | Moment
-
 const DEFAULT_DOOR_POLICY = { open: 30, close: 10 }
 
-export const diff = (curtain: Time, arrival: Time) =>
-  moment.duration(moment(curtain).diff(moment(arrival))).as('minutes');
-
-export const punctuality = (curtain: Time, time: Time, doorPolicy: DoorPolicy = DEFAULT_DOOR_POLICY) => {
-  const minutes = diff(curtain, time);
+export const punctuality = (curtain: DateTime, time: DateTime = DateTime.local(),
+                            doorPolicy: DoorPolicy = DEFAULT_DOOR_POLICY) => {
+  const minutes = curtain.diff(time).as('minutes');
   return minutes > doorPolicy.open ? 'early'
     : minutes < -doorPolicy.close ? 'too late'
     : minutes < 0 ? 'late' : 'on time';
 }
 
-export const formatTime = (time: Time) => ({
-  day: moment(time).format('dddd, MMMM D'),
-  time: moment(time).format('h:mma'),
+export const formatTime = (time: DateTime) => ({
+  day: time.toFormat('dddd, MMMM D'),
+  time: time.toFormat('h:mma'),
 });
 
 // this isn't meant to be cryptography, it just encodes a to-the-minute timestamp

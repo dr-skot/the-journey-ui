@@ -34,6 +34,8 @@ import Chat from './the-journey/views/FOH/components/Chat/Chat';
 import MenuedView from './the-journey/views/Gallery/MenuedView';
 import SubscribeToStar from './the-journey/subscribers/SubscribeToStar';
 import SubscribeToNothing from './the-journey/subscribers/SubscribeToNothing';
+import Testing from './the-journey/views/Testing/Testing';
+import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -55,6 +57,7 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+                  <Route path="/testing" component={Testing}/>
                   <Route path="/chat" component={Chat} />
                   <Route path="/rejected" component={Rejected} />
                   <Route path="/foh/code" component={GetCode} />
@@ -99,6 +102,9 @@ export default function App() {
                   )}/>
                   <Route path="/pure/:code?" render={(props) => (
                     <FrontDoor broadcastType="pure" { ...props } />
+                  )}/>
+                  <Route path="/fallback/:code?" render={(props) => (
+                    <><FallbackToAudioElements/><FrontDoor broadcastType={'millicast'} { ...props } /></>
                   )}/>
                   <Route path="/show/:code?" component={FrontDoor} />
                   <Redirect to="/show" />

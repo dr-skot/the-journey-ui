@@ -9,10 +9,10 @@ import Typography from '@material-ui/core/Typography';
 
 import { createMuiTheme, styled, ThemeProvider } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
-import moment from 'moment';
-// import TimezonePicker from '../../components/TimezonePicker/TimezonePicker.txt';
-import { timeToCode } from '../../utils/foh';
+import TimezonePicker from '../../components/TimezonePicker/TimezonePicker';
+import { timeToCodeWithTZ, timezones } from '../../utils/foh';
 import { isDev } from '../../utils/react-help';
+import { DateTime } from 'luxon';
 
 const Item = styled('div')(() => ({
   margin: '1em',
@@ -51,7 +51,7 @@ const theme = createMuiTheme({
 });
 
 function defaultTime() {
-  const result = moment().set('hour', 20).set('minutes', 0).format('YYYY-MM-DDTHH:mm');
+  const result = DateTime.local().set({ hour: 20 }).set({ minute: 0 }).toFormat("yyyy-MM-dd'T'hh:mm");
   console.log('defaultTime', result);
   return result;
 }
@@ -63,11 +63,14 @@ export default function GetCode() {
   const [, setInput] = useState('');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [timezone, setTimezone] = useState('');
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
     resetCode();
   };
+
+  const handleTimezoneChange = (tz: string) => setTimezone(tz);
 
   const resetCode = () => {
     setCode('');
@@ -79,10 +82,12 @@ export default function GetCode() {
     const form = event.target as HTMLFormElement;
     // @ts-ignore
     const input = form.elements['showtime'].value;
-    console.log(input);
-    const date = moment(input);
-    setCode(date.isValid() ? timeToCode(date.toDate()) : '');
-    setError(date.isValid() ? '' : 'Invalid Date');
+    const tzIndex = timezones.indexOf(timezone);
+    console.log(input, tzIndex);
+    console.log({ input, type: typeof input })
+    const date = DateTime.fromISO(input, { zone: timezone });
+      setCode(date.isValid ? timeToCodeWithTZ(date.toJSDate(), tzIndex) : '');
+    setError(date.isValid ? '' : 'Invalid Date');
   };
 
   function link(path: string) {
@@ -104,7 +109,7 @@ export default function GetCode() {
                 defaultValue={defaultTime()}
                 onChange={handleChange}
               />
-                { /* <div><TimezonePicker id="timezone" onChange={resetCode} /></div> */ }
+                <div><TimezonePicker id="timezone" onChange={handleTimezoneChange} /></div>
 
               </Item>
                 {error && (
