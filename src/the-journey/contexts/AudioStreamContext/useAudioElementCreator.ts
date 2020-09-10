@@ -45,7 +45,11 @@ export default function useAudioElementCreator() {
       Array.from(p.audioTracks.values())
         .map((pub) => pub.track)
         .filter((track) => !!track))) as RemoteAudioTrack[];
-    tracks.forEach((track) => document.body.appendChild(track.attach()));
+    tracks.forEach((track) => {
+      const audioElement = track.attach();
+      audioElement.volume = 0.5;
+      document.body.appendChild(audioElement);
+    });
     return () => {
       tracks.forEach((track) => {
         track.detach().forEach((el) => el.remove())
