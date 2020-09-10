@@ -32,6 +32,7 @@ export function connect(token: string, roomName: string, options: Video.ConnectO
     ...options,
     name: roomName
   }).then(room => {
+    window.addEventListener('beforeunload', () => room?.disconnect());
     publishTracks(room, tracks);
     return room
   });
