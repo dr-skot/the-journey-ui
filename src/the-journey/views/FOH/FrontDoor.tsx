@@ -28,10 +28,12 @@ export default function FrontDoor({ broadcastType = 'millicast', match }: Broadc
   const timezone = timezones[tzIndex] || localTZ;
   const punct = punctuality(curtain);
 
+  const lobby = `${code || defaultRoom()}`;
+
   if (punct === 'on time' || punct === 'late') {
     return roomStatus === 'connected'
       ? <Lobby broadcastType={broadcastType} />
-      : <SignIn roomName={code || defaultRoom()} />
+      : <SignIn roomName={lobby} />
   }
 
   const display = {

@@ -10,12 +10,9 @@ export default function useParticipants(includeMe?: 'includeMe') {
   const [{ room }] = appContext;
   const [participants, setParticipants] = useState(Array.from(room?.participants.values() || []));
 
-  console.log('participants', getIdentities(participants).join(', '));
-
   useEffect(() => {
-    console.log('new room!', JSON.stringify(room));
     const update = () => setParticipants(Array.from(room?.participants.values() || []));
-    update();
+    update(); // important! populate when room goes from undefined to an actual Room
     room?.on('participantConnected', update);
     room?.on('participantDisconnected', update);
     return () => {

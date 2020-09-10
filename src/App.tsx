@@ -36,6 +36,7 @@ import SubscribeToStar from './the-journey/subscribers/SubscribeToStar';
 import SubscribeToNothing from './the-journey/subscribers/SubscribeToNothing';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
+import Self from './the-journey/views/FOH/Self';
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -53,11 +54,13 @@ export default function App() {
       <CssBaseline />
       <AppContextProvider>
         <AudioStreamContextProvider>
+          <FallbackToAudioElements/>
           <SharedRoomContextProvider>
             <div style={{ height }}>
               <Router>
                 <Switch>
-                  <Route path="/testing" component={Testing}/>
+                  <Route path="/self" component={Self}/>
+                  <Route path="/testing/:code?" component={Testing}/>
                   <Route path="/chat" component={Chat} />
                   <Route path="/rejected" component={Rejected} />
                   <Route path="/foh/code" component={GetCode} />
@@ -104,10 +107,10 @@ export default function App() {
                     <FrontDoor broadcastType="pure" { ...props } />
                   )}/>
                   <Route path="/fallback/:code?" render={(props) => (
-                    <><FallbackToAudioElements/><FrontDoor broadcastType={'millicast'} { ...props } /></>
+                    <><FrontDoor broadcastType={'millicast'} { ...props } /></>
                   )}/>
                   <Route path="/show/:code?" component={FrontDoor} />
-                  <Redirect to="/show" />
+                  <Route path="/:code?" component={FrontDoor} />
                 </Switch>
               </Router>
             </div>

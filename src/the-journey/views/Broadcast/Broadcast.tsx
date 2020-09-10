@@ -6,12 +6,13 @@ import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import { getIdentities, getSigner, isRole } from '../../utils/twilio';
+import { getIdentities, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { Helmet } from 'react-helmet';
+import { Button } from '@material-ui/core';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
