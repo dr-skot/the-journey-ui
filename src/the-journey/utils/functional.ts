@@ -47,3 +47,11 @@ export function findIndexes<T>(predicate: (x: T, i: number) => boolean) {
   return (xs: T[]) =>
     xs.map((x, i) => i).filter((i) => predicate(xs[i], i));
 }
+
+
+export function remove(xs: any[], x: any) {
+  const i = xs.indexOf(x);
+  if (i === -1) return;
+  xs.splice(i, 1);
+}
+

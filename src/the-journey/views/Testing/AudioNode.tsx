@@ -1,18 +1,13 @@
 import { useEffect } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
 import useAudioContext from '../../contexts/AudioStreamContext/useAudioContext';
+import { remove } from '../../utils/functional';
 
 interface AudioTrackProps {
   track: IAudioTrack;
 }
 
 const nodes: AudioNode[] = [];
-
-function remove(xs: any[], x: any) {
-  const i = xs.indexOf(x);
-  if (i === -1) return;
-  xs.splice(i, 1);
-}
 
 export default function AudioNode({ track }: AudioTrackProps) {
   const audioContext = useAudioContext();

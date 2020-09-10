@@ -3,8 +3,12 @@ import { AudioOut } from '../../utils/audio';
 import { useEffect, useState } from 'react';
 import { getParticipants, inGroup } from '../../utils/twilio';
 import { useAppContext } from '../AppContext';
+import { remove } from '../../utils/functional';
 
 type Identity = Participant.Identity;
+
+// keep nodes here while in use so they don't get garbage-collected
+const nodeStore: AudioNode[] = [];
 
 function getNode(audioContext: AudioContext, track: RemoteAudioTrack) {
   const stream = new MediaStream([track.mediaStreamTrack])
@@ -54,8 +58,14 @@ export default function useNodeCreator() {
         .filter((node) => !!node)
       )
     );
-    nodes.forEach((node) => node.connect(audioOut.outputNode));
-    return () => { nodes.forEach((node) => node.disconnect()) }
+    nodes.forEach((node) => {
+      node.connect(audioOut.outputNode);
+      nodeStore.push(node);
+    });
+    return () => { nodes.forEach((node) => {
+      node.disconnect();
+      remove(nodeStore, node);
+    }) }
   }, [settings, participants]);
 
   return unmuteGroup;

@@ -52,6 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       display: 'flex',
       alignItems: 'center',
+      fontFamily: 'din alternate, din condensed, avenir next',
+      fontSize: '1.5rem',
     },
     infoRow: {
       display: 'flex',
