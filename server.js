@@ -47,7 +47,7 @@ app.get('/token', (req, res) => {
 
 // TODO implement this
 const isDev = () => !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-if (!isDev) {
+if (!isDev()) {
   app.use(function(req, res, next) {
     if (req.secure) { // request was via https, so do no special handling
       next();
