@@ -46,15 +46,16 @@ app.get('/token', (req, res) => {
 });
 
 // TODO implement this
-/*
-app.use (function (req, res, next) {
-  if (req.secure) { // request was via https, so do no special handling
-    next();
-  } else { // request was via http, so redirect to https
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-*/
+const isDev = () => !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+if (!isDev) {
+  app.use(function(req, res, next) {
+    if (req.secure) { // request was via https, so do no special handling
+      next();
+    } else { // request was via http, so redirect to https
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+}
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness

@@ -134,7 +134,7 @@ export default function Testing() {
   return (
     <div style={{margin: '2em'}}>
       <AutoJoin/>
-      <h1>Room {room?.name}: All Participants</h1>
+      <h1>Room "{room?.name}": all participants</h1>
       { participants.map((p) => p && <TestingParticipant key={p.identity} participant={p} />) }
     </div>
   );
