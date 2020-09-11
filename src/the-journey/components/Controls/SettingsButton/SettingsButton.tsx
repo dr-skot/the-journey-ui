@@ -19,14 +19,18 @@ export default function SettingsButton() {
   const classes = useStyles();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+
   return (
     <>
-    <Tooltip title="Settings" onClick={() => setSettingsOpen(true)} placement="top"
-             PopperProps={{ disablePortal: true }}>
-      <Fab className={classes.fab}>
-        <GearIcon />
-      </Fab>
-    </Tooltip>
+      <Tooltip
+        title={'Settings'}
+        placement="top"
+        PopperProps={{ disablePortal: true }}
+      >
+        <Fab className={classes.fab} onClick={() => setSettingsOpen(true)} disabled={settingsOpen}>
+          <GearIcon />
+        </Fab>
+      </Tooltip>
     <SettingsDialog
       open={settingsOpen}
       onClose={() => setSettingsOpen(false)}

@@ -39,7 +39,7 @@ export default function SettingsDialog({ open, onClose }: { open: boolean; onClo
     <Dialog open={open} onClose={onClose} classes={{ paper: classes.paper }}>
       <Tabs value={selectedTab} onChange={handleChange}>
         <Tab label="Devices" />
-        <Tab label="Settings" />
+        { /* <Tab label="Settings" /> */ }
       </Tabs>
       <DeviceSelector className={classes.container} hidden={selectedTab !== 0} />
       <ConnectionOptions className={classes.container} hidden={selectedTab !== 1} />
