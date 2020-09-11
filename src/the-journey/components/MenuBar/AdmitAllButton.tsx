@@ -18,7 +18,7 @@ export default function AdmitAllButton() {
     <Button
       style={{ margin: '0.5em' }}
       onClick={admitAll}
-      size="small" color="default" variant="contained">
+      size="small" color="primary" variant="contained">
       Admit All
     </Button>
   )

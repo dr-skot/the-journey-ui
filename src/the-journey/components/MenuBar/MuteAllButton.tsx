@@ -1,7 +1,4 @@
-import React, { useCallback, useContext } from 'react';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { getIdentities, isRole } from '../../utils/twilio';
+import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 
@@ -14,7 +11,7 @@ export default function MuteAllButton() {
     <Button
       style={{ margin: '0.5em' }}
       onClick={toggleMuteAll}
-      size="small" color="primary" variant="contained">
+      size="small" color="default" variant="contained">
       { muteAll ? 'Unmute' : 'Mute All' }
     </Button>
   )

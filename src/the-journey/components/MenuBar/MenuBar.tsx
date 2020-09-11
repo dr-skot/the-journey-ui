@@ -9,6 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleFullscreenButton from './ToggleFullScreenButton/ToggleFullScreenButton';
 import { getRole } from '../../utils/twilio';
 import AdmitAllButton from './AdmitAllButton';
+import UnadmitAllButton from './UnadmitAllButton';
 import MuteAllButton from './MuteAllButton';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -67,9 +68,9 @@ export default function MenuBar() {
         <Toolbar className={classes.toolbar}>
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
-            { role === 'foh' && <AdmitAllButton />}
             { role.match(/foh|operator/) && <MuteAllButton />}
+            { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
+            { role === 'foh' && <><AdmitAllButton /><UnadmitAllButton /></> }
             <ToggleFullscreenButton />
           </div>
         </Toolbar>
