@@ -17,12 +17,15 @@ export default function AudioNode({ track }: AudioTrackProps) {
     if (!audioContext) return;
     const newAC = new AudioContext() || audioContext
     console.log('yes, setting up node for', track.mediaStreamTrack);
+    track.mediaStreamTrack.enabled = true;
+    console.log('after enabled = true', track.mediaStreamTrack);
     const stream = new MediaStream([track.mediaStreamTrack])
     const node = newAC.createMediaStreamSource(stream);
     nodes.push(node);
     node.connect(newAC.destination);
     return () => {
       node.disconnect();
+      node.mediaStream.getAudioTracks().forEach(track => track.enabled = false);
       remove(nodes, node);
     }
   }, [audioContext]);
