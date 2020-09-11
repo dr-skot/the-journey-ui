@@ -5,13 +5,14 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack,
+  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack, CreateLocalTrackOptions,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
 import { element, unixTime } from './functional';
 import { isDev } from './react-help';
 import { sortBy, isEqual } from 'lodash';
+import { useCallback } from 'react';
 
 const DEFAULT_OPTIONS = {
   tracks: [],
@@ -42,6 +43,7 @@ type Priorities = Record<Track.Kind, Track.Priority>;
 
 
 function publishTracks(room: Room, tracks: LocalTrack[]) {
+  console.log('publishing tracks...');
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
 
@@ -209,3 +211,54 @@ export const getStar = (participants: Map<string, Participant>) =>
   Array.from(participants.values()).find(isRole('star'));
 
 
+
+//
+// local video toggle
+//`
+let localVideoTrack: LocalVideoTrack | undefined;
+let videoDeviceId: string | undefined;
+export function toggleVideoEnabled(room: Room | undefined, localTracks: (LocalVideoTrack | LocalAudioTrack)[]) {
+  const { localParticipant } = room || {};
+  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+
+  if (videoTrack) {
+    videoDeviceId = videoTrack.mediaStreamTrack.getSettings().deviceId;
+    const localTrackPublication = localParticipant?.unpublishTrack(videoTrack);
+    // TODO: remove when SDK implements this event. See: https://issues.corp.twilio.com/browse/JSDK-2592
+    localParticipant?.emit('trackUnpublished', localTrackPublication);
+    removeLocalVideoTrack(localTrackPublication?.track as LocalVideoTrack | undefined);
+    return Promise.resolve(localTracks.filter(t => t !== localTrackPublication?.track));
+  } else {
+     return getLocalVideoTrack({ deviceId: { exact: videoDeviceId } })
+       .then((track: LocalVideoTrack) => {
+         localParticipant?.publishTrack(track, { priority: 'low' });
+         return [...localTracks, track];
+       })
+       .catch((e: Error) => console.log('error gettingLocalVideoTrack', e));
+  }
+}
+
+function getLocalVideoTrack(newOptions?: CreateLocalTrackOptions) {
+  // In the DeviceSelector and FlipCameraButton components, a new video track is created,
+  // then the old track is unpublished and the new track is published. Unpublishing the old
+  // track and publishing the new track at the same time sometimes causes a conflict when the
+  // track name is 'camera', so here we append a timestamp to the track name to avoid the
+  // conflict.
+  const options: CreateLocalTrackOptions = {
+    ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
+    name: `camera-${Date.now()}`,
+    ...newOptions,
+  };
+
+  return Video.createLocalVideoTrack(options).then(newTrack => {
+    localVideoTrack = newTrack;
+    return newTrack;
+  });
+}
+
+function removeLocalVideoTrack(track: LocalVideoTrack | undefined = localVideoTrack) {
+  if (track) {
+    track.stop();
+    localVideoTrack = undefined;
+  }
+}
