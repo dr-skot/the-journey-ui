@@ -1,5 +1,5 @@
 import useMinOperatorControls, { KEYS } from './hooks/useMinOperatorControls';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
@@ -8,22 +8,11 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import { Helmet } from 'react-helmet';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import Facts from '../Min/Facts';
-import { Button } from '@material-ui/core';
-import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
+import WithFacts from '../Min/WithFacts';
 
-
-const Floater = styled('div')({
-  position: 'absolute',
-  top: 10,
-  left: 100,
-  textAlign: 'center',
-  zIndex: 10000000000000,
-});
 
 const Container = styled('div')({
   display: 'flex',
@@ -39,8 +28,6 @@ const Main = styled('div')({
   justifyContent: 'center',
   alignContent: 'center',
 });
-
-const EMPTY_ARRAY = Object.freeze([]);
 
 function MinOperatorView() {
   const sharedRoom = useContext(SharedRoomContext);
@@ -81,19 +68,16 @@ function MinOperatorView() {
     </Container>
   );
 }
+
+
 export default function MinOperator() {
-  const [justFacts, setJustFacts] = useState(false);
-  const [isFullScreen] = useFullScreenToggle();
 
   return (
     <>
       <SubscribeToAllVideo />
-       { justFacts ? <Facts /> : <MinOperatorView /> }
-      { !isFullScreen && <Floater>
-        <Button onClick={() => setJustFacts((prev) => !prev)} variant="contained" color="primary">
-          {justFacts ? 'view' : 'facts'}
-        </Button>
-      </Floater> }
+      <WithFacts>
+        <MinOperatorView />
+      </WithFacts>
     </>
   );
 }
