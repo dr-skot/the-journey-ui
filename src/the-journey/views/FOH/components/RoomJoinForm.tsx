@@ -48,8 +48,6 @@ export default function RoomJoinForm({ roomName, role = 'audience', subscribePro
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [username, setUsername] = useState<string>('');
-  // const localTracks = useLocalTracks();
-  // const tracks = [useLocalVideoTrack(), localTracks.localTracks[1]];
 
   // TODO autofill remembered identity
 
@@ -77,9 +75,9 @@ export default function RoomJoinForm({ roomName, role = 'audience', subscribePro
         type="submit"
         color="primary"
         variant="contained"
-        disabled={roomStatus === 'connecting'}
+        disabled={roomStatus === 'connecting' || username.trim().length === 0}
       >
-        Join Room
+        Enter
       </Button>
       { roomStatus === 'connecting' && <CircularProgress className={classes.loadingSpinner} /> }
     </form>

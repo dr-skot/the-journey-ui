@@ -75,9 +75,9 @@ export default function RoomJoinForm({ roomName, role = 'audience', subscribePro
         type="submit"
         color="primary"
         variant="contained"
-        disabled={roomStatus === 'connecting'}
+        disabled={roomStatus === 'connecting' || !username.trim() }
       >
-        Join Room
+        Enter
       </Button>
       { roomStatus === 'connecting' && <CircularProgress className={classes.loadingSpinner} /> }
     </form>
