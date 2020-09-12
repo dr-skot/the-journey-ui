@@ -5,7 +5,13 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack, CreateLocalTrackOptions, RemoteTrack,
+  LocalVideoTrack,
+  LocalAudioTrack,
+  Track,
+  LocalDataTrack,
+  CreateLocalTrackOptions,
+  RemoteTrack,
+  VideoBandwidthProfileOptions,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
@@ -13,6 +19,19 @@ import { element, unixTime } from './functional';
 import { isDev } from './react-help';
 import { sortBy, isEqual } from 'lodash';
 import { useCallback } from 'react';
+import { RenderDimensionValue } from '../contexts/settings/renderDimensions';
+
+// same as settings but everything's optional
+export interface SettingsAdjust {
+  trackSwitchOffMode?: VideoBandwidthProfileOptions['trackSwitchOffMode'];
+  dominantSpeakerPriority?: Track.Priority;
+  bandwidthProfileMode?: VideoBandwidthProfileOptions['mode'];
+  maxTracks?: string;
+  maxAudioBitrate?: string;
+  renderDimensionLow?: RenderDimensionValue;
+  renderDimensionStandard?: RenderDimensionValue;
+  renderDimensionHigh?: RenderDimensionValue;
+}
 
 const DEFAULT_OPTIONS = {
   tracks: [],

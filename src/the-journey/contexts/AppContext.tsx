@@ -78,7 +78,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       if (state.room) state.room.disconnect();
       console.log('joining with tracks', state.localTracks); // TODO allow payload tracks
       joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
-        {...generateConnectionOptions(state.settings), ...payload.options }, state.localTracks)
+        generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
