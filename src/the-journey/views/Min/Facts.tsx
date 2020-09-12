@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { getIdentities, getRole, getTimestamp, getUsername, joinOptions } from '../../utils/twilio';
 import { DateTime } from 'luxon';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
+import { RemoteAudioTrack, RemoteParticipant, RemoteTrackPublication, RemoteVideoTrack } from 'twilio-video';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import { styled } from '@material-ui/core';
+import { Button, styled } from '@material-ui/core';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-/*
+import { UnmuteButtons } from '../Testing/Testing';
+import VideoTrack from '../../components/VideoTrack/VideoTrack';
 
 const VideoWindow = styled('div')({
   display: 'inline-block',
@@ -34,7 +34,6 @@ export function VideoPlayer({ track }: VideoPlayerProps) {
         </>
     ) : <span>null track</span>;
 }
-*/
 
 export default function Facts() {
   const [{ room, localTracks }] = useAppContext();
@@ -129,7 +128,9 @@ function SubscribedTracks({ publisher, pubs }: SubscribedTracksProps) {
         const track = pub.track;
         return track ? (
           <>
-            { pub.kind === 'audio' ? '[audio]' : '[video]' }
+            { pub.kind === 'audio'
+              ? <UnmuteButtons track={track as RemoteAudioTrack}/>
+              : <VideoPlayer track={track as RemoteVideoTrack} /> }
             <pre key={publisher}>{JSON.stringify(pub, null, 1)}</pre>
           </>
         ) : '[null track]';

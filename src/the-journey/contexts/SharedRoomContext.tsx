@@ -17,6 +17,7 @@ interface SharedRoomState {
   focusGroup: Identity[],
   gain: number,
   delayTime: number,
+  muteAll: boolean,
 }
 type StateChanger = (changes: SharedRoomState) => void;
 type SharedRoomContextValue = [SharedRoomState, StateChanger];
@@ -29,6 +30,7 @@ export interface RoomStateChange {
   focusGroup?: Identity[],
   gain?: number,
   delayTime?: number;
+  muteAll?: boolean;
 }
 
 const initialState = {
@@ -38,6 +40,7 @@ const initialState = {
   focusGroup: [],
   gain: DEFAULT_GAIN,
   delayTime: DEFAULT_DELAY,
+  muteAll: false,
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
 const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];

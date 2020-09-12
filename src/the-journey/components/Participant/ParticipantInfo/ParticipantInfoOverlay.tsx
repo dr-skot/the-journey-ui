@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       display: 'flex',
       alignItems: 'center',
-      fontFamily: 'din alternate, din condensed, avenir next',
+      fontFamily: 'din alternate, din condensed, avenir next, roboto, arial',
       fontSize: '1.5rem',
     },
     infoRow: {

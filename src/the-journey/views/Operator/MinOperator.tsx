@@ -14,12 +14,13 @@ import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import Facts from '../Min/Facts';
 import { Button } from '@material-ui/core';
+import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 
 
 const Floater = styled('div')({
   position: 'absolute',
   top: 10,
-  width: '100%',
+  left: 100,
   textAlign: 'center',
   zIndex: 10000000000000,
 });
@@ -66,6 +67,7 @@ function MinOperatorView() {
 
   return (
     <Container>
+      <MenuBar/>
       <Main>
         <FlexibleGallery
           participants={final.participants}
@@ -81,16 +83,17 @@ function MinOperatorView() {
 }
 export default function MinOperator() {
   const [justFacts, setJustFacts] = useState(false);
+  const [isFullScreen] = useFullScreenToggle();
 
   return (
     <>
       <SubscribeToAllVideo />
        { justFacts ? <Facts /> : <MinOperatorView /> }
-      <Floater>
+      { !isFullScreen && <Floater>
         <Button onClick={() => setJustFacts((prev) => !prev)} variant="contained" color="primary">
           {justFacts ? 'view' : 'facts'}
         </Button>
-      </Floater>
+      </Floater> }
     </>
   );
 }

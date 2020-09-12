@@ -18,6 +18,11 @@ export default function AudioElement({ track }: AudioTrackProps) {
     function create() {
       audioEl.current = track.attach();
       audioEl.current.setAttribute('data-cy-audio-track-name', track.name);
+      audioEl.current.addEventListener('canplay', () => {
+        console.log('can play!');
+        const volumeSettable = audioEl.current as { volume: number };
+        volumeSettable.volume = 0.5
+      });
       document.body.appendChild(audioEl.current);
       setTimeout(() => {
         if (!audioEl.current?.paused) return;

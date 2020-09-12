@@ -1,27 +1,19 @@
 import React, { useCallback, useContext } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import MinusIcon from '@material-ui/icons/RemoveCircle';
-import PlusIcon from '@material-ui/icons/AddCircle';
+import { TextField } from '@material-ui/core';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 
 export default function GainControl() {
   const [{ gain }, changeSharedState] = useContext(SharedRoomContext);
 
-  const bumpGain = useCallback((bump: number) => {
+  const setGain = (e: any) => {
+    console.log('setGain', e.target.value);
     // @ts-ignore
-    changeSharedState({ gain: gain + bump });
-  }, [gain, changeSharedState])
+    changeSharedState({ gain: e.target.value });
+  }
 
   return (
-  <>
-    gain
-    <IconButton aria-label="decrease delay" onClick={() => bumpGain(-0.05)}>
-      <MinusIcon />
-    </IconButton>
-      {gain ? gain.toFixed(2) : 0}
-    <IconButton aria-label="increase delay" onClick={() => bumpGain(0.05)}>
-       <PlusIcon />
-    </IconButton>
-  </>
+    <TextField type="number" inputProps={{ min: 0, max: 1, step: 0.1 }} label="volume" variant="outlined" size="small"
+               value={gain} onChange={setGain}
+    />
   );
 }

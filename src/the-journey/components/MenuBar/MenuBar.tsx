@@ -11,6 +11,7 @@ import { getRole } from '../../utils/twilio';
 import AdmitAllButton from './AdmitAllButton';
 import UnadmitAllButton from './UnadmitAllButton';
 import MuteAllButton from './MuteAllButton';
+import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function MenuBar() {
   const classes = useStyles();
   const [{ room, roomStatus }] = useContext(AppContext);
+  const [isFullScreen] = useFullScreenToggle();
+
+  if (isFullScreen) return null;
 
   const role = getRole(room?.localParticipant) || '';
 
@@ -69,7 +73,7 @@ export default function MenuBar() {
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
             { role.match(/foh|operator/) && <MuteAllButton />}
-            { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/></> }
+            { role === 'operator' && roomStatus === 'connected' && <GainControl/> }
             { role === 'foh' && <><AdmitAllButton /><UnadmitAllButton /></> }
             <ToggleFullscreenButton />
           </div>
