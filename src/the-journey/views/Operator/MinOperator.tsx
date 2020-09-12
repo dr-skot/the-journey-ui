@@ -64,7 +64,6 @@ function MinOperatorView() {
           onClick={final.onClick}
         />
       </Main>
-      <FocusGroupAudio />
     </Container>
   );
 }

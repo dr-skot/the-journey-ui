@@ -41,6 +41,7 @@ import MinEntry from './the-journey/views/Min/MinEntry';
 import MinOperator from './the-journey/views/Operator/MinOperator';
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
+import MinGallery from './the-journey/views/Gallery/MinGallery';
 
 
 export function NameHelmet() {
@@ -76,6 +77,9 @@ export default function App() {
                   </Route>
                   <Route path="/min/focus">
                     <AutoJoin roomName="min" role="focus" /><MinFocusGroup />
+                  </Route>
+                  <Route path="/min/gallery">
+                    <AutoJoin roomName="min" role="lurker" /><MinGallery />
                   </Route>
                   <Route path="/min" component={MinEntry}/>
                   <Route path="/self" component={Self}/>
