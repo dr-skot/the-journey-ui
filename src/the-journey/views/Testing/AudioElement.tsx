@@ -5,7 +5,7 @@ interface AudioTrackProps {
   track: IAudioTrack;
 }
 
-export default function AudioTrack({ track }: AudioTrackProps) {
+export default function AudioElement({ track }: AudioTrackProps) {
   const audioEl = useRef<HTMLAudioElement>();
 
   useEffect(() => {

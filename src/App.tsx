@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
-import AppContextProvider from './the-journey/contexts/AppContext';
+import AppContextProvider, { useAppContext } from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import FixedGallery from './the-journey/views/Gallery/FixedGallery';
 import Operator from './the-journey/views/Operator/Operator';
@@ -37,6 +37,17 @@ import SubscribeToNothing from './the-journey/subscribers/SubscribeToNothing';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
 import Self from './the-journey/views/FOH/Self';
+import MinEntry from './the-journey/views/Min/MinEntry';
+import MinOperator from './the-journey/views/Operator/MinOperator';
+import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
+import { getUsername } from './the-journey/utils/twilio';
+
+
+export function NameHelmet() {
+  const [{ room }] = useAppContext();
+  const me = room?.localParticipant;
+  return <Helmet><title>{me ? `${getUsername(me.identity)} : ` : ''}The Journey</title></Helmet>
+}
 
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
@@ -53,12 +64,20 @@ export default function App() {
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <AppContextProvider>
+        <NameHelmet/>
         <AudioStreamContextProvider>
           <FallbackToAudioElements/>
           <SharedRoomContextProvider>
             <div style={{ height }}>
               <Router>
                 <Switch>
+                  <Route path="/min/operator">
+                    <AutoJoin roomName="min" role="operator" /><MinOperator />
+                  </Route>
+                  <Route path="/min/focus">
+                    <AutoJoin roomName="min" role="focus" /><MinFocusGroup />
+                  </Route>
+                  <Route path="/min" component={MinEntry}/>
                   <Route path="/self" component={Self}/>
                   <Route path="/testing/:code?" component={Testing}/>
                   <Route path="/chat" component={Chat} />
@@ -75,12 +94,10 @@ export default function App() {
                   <Route path="/star/:code?" component={StarEntry} />
                   <Route path="/focus/:code?">
                     <AutoJoin role="lurker" />
-                    <Helmet><title>Focus : The Journey</title></Helmet>
                     <MenuedView><FocusGroup /></MenuedView>
                   </Route>
                   <Route path="/lurk/:code?">
                     <AutoJoin role="lurker" />
-                    <Helmet><title>Lurker : The Journey</title></Helmet>
                     <Broadcast />
                   </Route>
                   <Route path="/muppets/:code?">
@@ -91,7 +108,6 @@ export default function App() {
                   </Route>
                   <Route path="/gallery/:code?">
                     <AutoJoin role="lurker" />
-                    <Helmet><title>Gallery : The Journey</title></Helmet>
                     <FixedGallery />
                   </Route>
                   <Route path="/hybrid/:code?">

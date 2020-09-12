@@ -22,16 +22,19 @@ export default function useGalleryParticipants({ withMuppets, withMe, inLobby }:
   const [{ room }] = useContext(AppContext);
   const [{ admitted, rejected }] = useContext(SharedRoomContext);
   const participants = useParticipants();
+  const me = room?.localParticipant;
 
-  console.log('useGalleryParticipants');
+  // console.log('useGalleryParticipants');
 
-  const allFolks = withMe && room ? [room.localParticipant, ...participants] : participants;
+  const allFolks = withMe && me ? [me, ...participants] : participants;
+
+  const justMe = (p: Participant) => p.identity === me?.identity;
 
   let gallery = allFolks.filter(
     and(
       isRole('audience'),
       not(inGroup(rejected)),
-      inLobby ? not(inGroup(admitted)) : inGroup(admitted)
+      inLobby ? (admitted ? not(inGroup(admitted)) : justMe) : inGroup(admitted)
     )
   );
 
@@ -40,7 +43,7 @@ export default function useGalleryParticipants({ withMuppets, withMe, inLobby }:
 
   const final = cached('useGalleryParticipants').if(sameIdentities)(gallery) as Participant[];
 
-  console.log('useGalleryParticipants returning', final === gallery ? 'uncached' : 'cached', { final });
+  // console.log('useGalleryParticipants returning', final === gallery ? 'uncached' : 'cached', { final });
 
   return gallery;
 }

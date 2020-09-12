@@ -11,7 +11,7 @@ import { prevIfEqual } from '../utils/react-help';
 type Identity = Participant.Identity;
 
 interface SharedRoomState {
-  admitted: Identity[],
+  admitted: Identity[] | undefined,
   rejected: Identity[],
   mutedInLobby: Identity[],
   focusGroup: Identity[],
@@ -32,7 +32,7 @@ export interface RoomStateChange {
 }
 
 const initialState = {
-  admitted: [],
+  admitted: undefined,
   rejected: [],
   mutedInLobby: [],
   focusGroup: [],

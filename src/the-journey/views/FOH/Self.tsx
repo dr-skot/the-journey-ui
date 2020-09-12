@@ -20,7 +20,7 @@ export default function Self({ match }: RouteComponentProps<CodeParam>) {
 
   return roomStatus === 'connected'
     ? <Thingy />
-    : <><Helmet><title>FOH : The Journey</title></Helmet><SignIn roomName={lobby} role="foh"/></>
+    : <SignIn roomName={lobby} role="foh"/>
 }
 
 function Thingy() {

@@ -2,12 +2,12 @@ import { useContext, useEffect } from 'react';
 import { useAppContext } from '../contexts/AppContext';
 import { SharedRoomContext } from '../contexts/SharedRoomContext';
 
-export default function SubscribeToFocusGroupAudio() {
+export default function SubscribeToFocusGroupVideoAndAudio() {
   const [{ room }, dispatch] = useAppContext();
   const [{ focusGroup }] = useContext(SharedRoomContext);
 
   useEffect(() =>
-      dispatch('subscribe', { profile: 'listen', focus: focusGroup }),
+      dispatch('subscribe', { profile: 'focus', focus: focusGroup }),
     [room, focusGroup]);
 
   return null;

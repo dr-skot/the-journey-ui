@@ -4,6 +4,7 @@ import { AppContext } from '../../contexts/AppContext';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { Redirect } from 'react-router-dom';
 import Holding from './Holding';
+import { inGroup } from '../../utils/twilio';
 
 interface LobbyProps {
   broadcastType: BroadcastType,
@@ -12,8 +13,8 @@ interface LobbyProps {
 export default function Lobby({ broadcastType }: LobbyProps) {
   const [{ room }] = useContext(AppContext);
   const [{ admitted, rejected }] = useContext(SharedRoomContext);
-  const { identity } = room?.localParticipant || {};
-  return (!identity || rejected.includes(identity)) ? <Redirect to="/rejected" />
-    : admitted.includes(identity) ? <Broadcast type={broadcastType} />
+  const me = room?.localParticipant;
+  return !me || inGroup(rejected)(me) ? <Redirect to="/rejected" />
+    : inGroup(admitted)(me) ? <Broadcast type={broadcastType} />
       : <Holding />;
 }

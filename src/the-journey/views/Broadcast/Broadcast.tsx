@@ -76,7 +76,6 @@ export default function Broadcast({ type }: BroadcastProps) {
 
   return (
     <Container>
-      <Helmet><title>The Journey</title></Helmet>
       <Main>
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>

@@ -34,7 +34,7 @@ export default function generateConnectionOptions(settings: Settings) {
     // their individual bandwidth constraints. This has no effect if you are
     // using Peer-to-Peer Rooms.
     preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-    preferredAudioCodecs: ['opus'],
+    // preferredAudioCodecs: ['opus'],
   };
 
   // For mobile browsers, limit the maximum incoming video bitrate to 2.5 Mbps.

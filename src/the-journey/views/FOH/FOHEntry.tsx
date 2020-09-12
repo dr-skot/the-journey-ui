@@ -19,5 +19,5 @@ export default function FOHEntry({ match }: RouteComponentProps<CodeParam>) {
 
   return roomStatus === 'connected'
     ? <Holding />
-    : <><Helmet><title>FOH : The Journey</title></Helmet><SignIn roomName={lobby} role="foh"/></>
+    : <SignIn roomName={lobby} role="foh"/>
 }

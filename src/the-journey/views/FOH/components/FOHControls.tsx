@@ -31,7 +31,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   const admit = () =>
     // @ts-ignore
-    changeSharedState({ admitted: [...admitted, participant.identity] });
+    changeSharedState({ admitted: [...(admitted || []), participant.identity] });
 
   return  (
     <>

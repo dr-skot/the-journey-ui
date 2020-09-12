@@ -41,11 +41,8 @@ export default function Holding() {
     setUnmutedGroup(getIdentities(group));
   }, [deps.gallery, deps.foh, deps.mutedInLobby]);
 
-  const title = isRole('foh')(room?.localParticipant) ? 'FOH' : 'Lobby'
-
   return (
     <MenuedView>
-      <Helmet><title>{title} : The Journey</title></Helmet>
       <Column style={{width: '50%'}}>
         <FlexibleGallery participants={gallery}/>
       </Column>

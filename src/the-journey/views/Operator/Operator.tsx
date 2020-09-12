@@ -65,7 +65,6 @@ export default function Operator(props: OperatorProps = {}) {
 
   return (
     <Container>
-      <Helmet><title>Operator : The Journey</title></Helmet>
       <MenuBar />
       <Main>
       <FlexibleGallery

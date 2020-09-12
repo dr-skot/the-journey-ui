@@ -47,7 +47,7 @@ export default function useAudioElementCreator() {
         .filter((track) => !!track))) as RemoteAudioTrack[];
     tracks.forEach((track) => {
       const audioElement = track.attach();
-      audioElement.volume = 0.5;
+      audioElement.volume = 0.5; // this seems to have no effect
       document.body.appendChild(audioElement);
     });
     return () => {

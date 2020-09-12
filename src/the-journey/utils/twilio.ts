@@ -26,8 +26,10 @@ export function getToken(roomName: string, identity: string) {
   return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
 }
 
+export let joinOptions: Video.ConnectOptions = {};
 export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}, tracks: LocalTrack[]) {
   console.log('connecting with options', { ...DEFAULT_OPTIONS, ...options });
+  joinOptions = { ...DEFAULT_OPTIONS, ...options };
   return Video.connect(token, {
     ...DEFAULT_OPTIONS,
     ...options,
@@ -114,9 +116,6 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
   return promise;
 }
 
-export function getPublications(participant: Participant) {
-  return Array.from(participant.tracks.values()) as (LocalTrackPublication | RemoteTrackPublication)[];
-}
 
 
 //
@@ -155,7 +154,7 @@ export const extractTracks = (publishers: Map<Sid, Map<Sid, RemoteAudioTrackPubl
 )
 
 
-export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer' | 'star'
+export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer' | 'star' | 'focus'
 
 export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
   `${username || type}|${type}|${unixTime()}`;
@@ -170,7 +169,7 @@ export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|'
 
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
-export const defaultRoom = () => isDev() ? 'room' : 'room';
+export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
 
 export const getSigner = (room?: Room) =>
   Array.from(room?.participants.values() || [])
@@ -203,7 +202,7 @@ export const sortedParticipants = (ps: Participant[]) => sortBy(ps, getTimestamp
 export const getIdentities = (ps: Participant[]) => ps.map((p) => p?.identity); // TODO why are some ps null?
 export const sortedIdentities = (ps: Participant[]) => getIdentities(sortedParticipants(ps));
 
-export const inGroup = (group: string[]) => (p: Participant) => group.includes(p?.identity);
+export const inGroup = (group: string[] = []) => (p: Participant) => group.includes(p?.identity);
 export const sameIdentities = (a: Participant[], b: Participant[]) =>
   isEqual(sortedIdentities(a), sortedIdentities(b));
 
