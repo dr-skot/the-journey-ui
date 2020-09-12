@@ -31,7 +31,7 @@ function MinFocusGroupView() {
 }
 
 export default function MinFocusGroup() {
-  const [justFacts, setJustFacts] = useState(true);
+  const [justFacts, setJustFacts] = useState(false);
 
   return (
     <>

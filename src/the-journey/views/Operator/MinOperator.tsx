@@ -81,7 +81,7 @@ function MinOperatorView() {
   );
 }
 export default function MinOperator() {
-  const [justFacts, setJustFacts] = useState(true);
+  const [justFacts, setJustFacts] = useState(false);
 
   return (
     <>

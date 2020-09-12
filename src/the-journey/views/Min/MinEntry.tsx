@@ -10,7 +10,7 @@ import { Floater } from '../Gallery/MinFocusGroup';
 export default function MinEntry() {
   const [{ roomStatus }] = useContext(AppContext);
   const roomName = 'min';
-  const [justFacts, setJustFacts] = useState(true);
+  const [justFacts, setJustFacts] = useState(false);
 
   return roomStatus === 'connected'
     ? (
