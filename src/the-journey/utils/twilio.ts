@@ -5,7 +5,7 @@ import Video, {
   RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
-  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack, CreateLocalTrackOptions,
+  LocalVideoTrack, LocalAudioTrack, Track, LocalDataTrack, CreateLocalTrackOptions, RemoteTrack,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { Sid } from 'twilio/lib/interfaces';
@@ -86,6 +86,15 @@ export function getTracks(room: Room, kind: TrackFilter = undefined) {
   });
   return tracks;
 }
+
+export function getSubscribedTracks(room: Room, kind: TrackFilter = undefined) {
+  const tracks: RemoteTrack[] = [];
+  room.participants.forEach(p => p.tracks.forEach(pub => {
+    if (pub.track && (!kind || pub.track.kind === kind)) tracks.push(pub.track);
+  }));
+  return tracks;
+}
+
 
 export function getLocalTracks() {
   return Video.createLocalTracks({

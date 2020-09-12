@@ -66,7 +66,6 @@ function MinOperatorView() {
 
   return (
     <Container>
-      <MenuBar />
       <Main>
         <FlexibleGallery
           participants={final.participants}

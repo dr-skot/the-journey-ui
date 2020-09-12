@@ -10,6 +10,7 @@ import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscrib
 import Facts from '../Min/Facts';
 import { Button } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
+import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 
 export const Floater = styled('div')({
   position: 'absolute',
@@ -32,14 +33,19 @@ function MinFocusGroupView() {
 
 export default function MinFocusGroup() {
   const [justFacts, setJustFacts] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   return (
     <>
       <SubscribeToFocusGroupVideoAndAudio/>
+      { !muted && <PlayAllSubscribedAudio/>}
       { justFacts ? <Facts /> : <MinFocusGroupView /> }
       <Floater>
         <Button onClick={() => setJustFacts((prev) => !prev)} variant="contained" color="primary">
           {justFacts ? 'view' : 'facts'}
+        </Button>
+        <Button onClick={() => setMuted((prev) => !prev)} variant="contained">
+          {muted ? 'unmute' : 'mute'}
         </Button>
       </Floater>
     </>
