@@ -7,7 +7,7 @@ import { styled } from '@material-ui/core/styles';
 import Nobody from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
-// import { reportEqual } from '../../utils/dev';
+import ResizeObserver from 'resize-observer-polyfill';
 
 const Container = styled('div')(() => ({
   flex: '1 1 0',
@@ -30,15 +30,28 @@ export interface FlexibleGalleryProps {
 export default function FlexibleGallery({ participants, fixedLength = 0, selection = [],
                                           hotKeys = '', onClick = () => {}, blanks
                          }: FlexibleGalleryProps) {
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-  const containerRef = (node: HTMLElement | null) => setContainer(node);
+  const [container, setContainer] = useState<HTMLElement | null>();
+  const containerRef = (node: HTMLElement | null) => setContainer(node)
+  const [, rerender] = useState(false);
+  const [resizeObserver] = useState(new ResizeObserver(() => {
+    console.log('resize observer');
+    rerender((prev) => !prev);
+  }));
+
+  console.log('flexible gallery render');
 
   // rerender on resize
   useEffect(() => {
-    const forceRender = () => setContainer(null);
+    const forceRender = () => rerender((prev) => !prev);
     window.addEventListener('resize', forceRender);
     return () => window.removeEventListener('resize', forceRender);
-  })
+  }, [])
+
+  useEffect(() => {
+    if (!container) return;
+    resizeObserver.observe(container);
+    return () => resizeObserver.unobserve(container);
+  }, [container])
 
   // console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
   // reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
