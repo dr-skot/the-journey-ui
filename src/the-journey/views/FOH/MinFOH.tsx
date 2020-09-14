@@ -7,10 +7,11 @@ import useMeetup from '../../hooks/useMeetup';
 import WithFacts from '../Min/WithFacts';
 import MenuedView from '../Gallery/MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
+import { ROOM_NAME } from '../../../App';
 
 export default function MinFOH() {
   const [{ roomStatus }] = useAppContext();
-  const roomName = 'min';
+  const roomName = ROOM_NAME;
 
   return roomStatus === 'connected'
     ? <FOHView />

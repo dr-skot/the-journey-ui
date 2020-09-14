@@ -9,12 +9,13 @@ import useMeetup from '../../hooks/useMeetup';
 import Meetup from '../FOH/Meetup';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import { inGroup } from '../../utils/twilio';
+import { ROOM_NAME } from '../../../App';
 
 export default function MinEntry() {
   const [{ room, roomStatus }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
   const { meetup } = useMeetup();
-  const roomName = 'min';
+  const roomName = ROOM_NAME;
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
 
