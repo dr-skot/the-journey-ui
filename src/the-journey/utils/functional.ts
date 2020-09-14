@@ -16,9 +16,16 @@ export const propsEqual = (prop: string) => (a: Record<string, any>) =>
 export const arrayFixedLength = (n: number) => (xs: any[]) =>
   range(0, n).map((i) => xs[i]);
 
+// TODO implement general functions with user-supplied predicate
+// const includesBy => (pred) => (xs) => (x) => xs.some(pred);
+// const toggleMembershipBy => (pred) => (xs) => (x) => includesBy(pred)(xs)(x) ? xs.filter(not(pred)) : [...xs, x];
+
+export const includesEqual = (xs: any[]) => (x: any) => xs.some((xx) => isEqual(xx, x));
+
 // add or remove an element from an array, depending on whether it's there or not
+// uses isEqual for comparison
 export const toggleMembership = (xs: any[]) => (x: any) =>
-  xs.includes(x) ? xs.filter(xx => xx !== x) : [...xs, x];
+  includesEqual(xs)(x) ? xs.filter(xx => !isEqual(xx, x)) : [...xs, x];
 
 export const constrain = (a: number, b: number) => (n: number) => Math.max(a, Math.min(b, n));
 

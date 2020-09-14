@@ -11,6 +11,7 @@ import ParticipantVideoWindow from '../../components/Participant/ParticipantVide
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
+import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -74,6 +75,7 @@ export default function Broadcast({ type }: BroadcastProps) {
 
   return (
     <Container>
+      <SubscribeToFocusGroupAudio/>
       <Main>
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>

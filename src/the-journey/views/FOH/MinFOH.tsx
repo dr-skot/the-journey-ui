@@ -17,9 +17,16 @@ export default function MinFOH() {
     : <SignIn roomName={roomName} role="foh"/>;
 }
 
+
 function FOHView() {
   const { meetup } = useMeetup();
-  return meetup ? <Meetup group={meetup} /> : <FOHGallery />;
+  // TODO should PlayAllSubscribedAudio live in App.jsx?
+  return (
+    <>
+      <PlayAllSubscribedAudio />
+      { meetup ? <Meetup group={meetup} /> : <FOHGallery /> }
+    </>
+  );
 }
 
 function FOHGallery() {
@@ -31,7 +38,6 @@ function FOHGallery() {
 
   return (
     <WithFacts>
-      <PlayAllSubscribedAudio/>
       <MenuedView>
         <Gallery />
       </MenuedView>

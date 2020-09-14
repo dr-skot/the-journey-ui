@@ -1,11 +1,13 @@
-import useParticipants from '../../hooks/useParticipants/useParticipants';
+import React, { useEffect } from 'react';
+import { sortBy } from 'lodash';
+import { Participant } from 'twilio-video';
 import { inGroup } from '../../utils/twilio';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import { useAppContext } from '../../contexts/AppContext';
 import MenuedView from '../Gallery/MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Chat from './components/Chat/Chat';
 import Controls from '../../components/Controls/Controls';
-import React from 'react';
-import { Participant } from 'twilio-video';
 type Identity = Participant.Identity;
 
 interface MeetupProps {
@@ -14,7 +16,16 @@ interface MeetupProps {
 
 // TODO audience sees controls, foh sees menu
 export default function Meetup({ group }: MeetupProps) {
-  const meeters = useParticipants().filter(inGroup(group));
+  const [, dispatch] = useAppContext();
+  const meeters = sortBy(
+    useParticipants('includeMe').filter(inGroup(group)),
+    (p) => group.indexOf(p.identity)
+  );
+
+  useEffect(() =>
+      dispatch('subscribe', { profile: 'focus', focus: group }),
+    [group]);
+
   return (
     <MenuedView>
       <FlexibleGallery participants={meeters}/>
@@ -23,3 +34,4 @@ export default function Meetup({ group }: MeetupProps) {
     </MenuedView>
   );
 }
+

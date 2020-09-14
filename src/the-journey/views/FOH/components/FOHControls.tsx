@@ -1,36 +1,44 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { isEqual } from 'lodash';
 import { Button } from '@material-ui/core';
-import { AppContext } from '../../../contexts/AppContext';
-import { inGroup, isRole } from '../../../utils/twilio';
-import { Participant, RemoteAudioTrack } from 'twilio-video';
-import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
-import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
-import useRemoteTracks from '../../../hooks/useRemoteTracks';
 import VerifiedIcon from '@material-ui/icons/CheckCircle';
 import { toggleMembership } from '../../../utils/functional';
+import { Participant, RemoteAudioTrack } from 'twilio-video';
+import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
+import { inGroup, isRole } from '../../../utils/twilio';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
+import useRemoteTracks from '../../../hooks/useRemoteTracks';
 
 interface FOHControlsProps {
   participant: Participant;
 }
 
 export default function FOHControls({ participant }: FOHControlsProps) {
-  const [{ room }, dispatch] = useContext(AppContext);
-  const [{ admitted, rejected }, changeSharedState] =  useContext(SharedRoomContext);
+  const [{ room }, dispatch] = useAppContext();
+  const [{ admitted, rejected, meetups }, changeSharedState] =  useSharedRoomState();
   const audioTracks = useRemoteTracks('audio');
   if (!isRole('foh')(room?.localParticipant) || isRole('foh')(participant)) return null;
 
-  const audioTrack = audioTracks[participant.identity]?.[0] as RemoteAudioTrack;
+  const fohIdentity = room?.localParticipant.identity || '';
+  const { identity } = participant;
+
+  const inMeeting = meetups.some((group) => isEqual(group, [identity, fohIdentity]));
+
+  const audioTrack = audioTracks[identity]?.[0] as RemoteAudioTrack;
 
   const toggleMute = () => dispatch('subscribe', {
-    profile: 'gallery', focus: audioTrack ? [] : [participant.identity]});
+    profile: 'gallery', focus: audioTrack ? [] : [identity]});
 
   const reject = () =>
-    changeSharedState({ rejected: [...rejected, participant.identity] });
+    changeSharedState({ rejected: [...rejected, identity] });
 
   const toggleApproved = () =>
-    changeSharedState({ admitted: toggleMembership(admitted || [])(participant.identity) });
+    changeSharedState({ admitted: toggleMembership(admitted || [])(identity) });
 
-  const startMeetup = () => {};
+  const toggleMeeting = () => {
+    changeSharedState({ meetups: toggleMembership(meetups)([identity, fohIdentity]) });
+  };
 
   const approved = inGroup(admitted)(participant);
 
@@ -40,7 +48,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
       <span onClick={toggleMute}><AudioLevelIndicator audioTrack={audioTrack} background="white" /></span>
     </div>
       <div style={{ width: '100%', textAlign: 'right' }}>
-        <Button onClick={startMeetup}>meeting</Button>
+        <Button onClick={toggleMeeting}>{`${inMeeting ? 'end' : 'start'} meeting`}</Button>
       </div>
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
