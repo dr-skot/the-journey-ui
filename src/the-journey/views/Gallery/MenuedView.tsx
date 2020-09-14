@@ -22,13 +22,16 @@ const Main = styled('div')({
   alignContent: 'center',
 });
 
-interface MenuedViewProps { children: ReactNode }
+interface MenuedViewProps {
+  menuExtras?: ReactNode,
+  children: ReactNode
+}
 
-export default function MenuedView({ children }: MenuedViewProps) {
+export default function MenuedView({ menuExtras, children }: MenuedViewProps) {
 
   return (
     <Container>
-      <MenuBar/>
+      <MenuBar extras={menuExtras} />
       <Main>
         {children}
       </Main>

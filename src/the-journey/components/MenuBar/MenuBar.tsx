@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppContext } from '../../contexts/AppContext';
 import DelayControl from './DelayControl';
@@ -58,7 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function MenuBar() {
+interface MenuBarProps {
+  extras?: ReactNode,
+}
+export default function MenuBar({ extras }: MenuBarProps) {
   const classes = useStyles();
   const [{ room, roomStatus }] = useContext(AppContext);
   const [isFullScreen] = useFullScreenToggle();
@@ -72,7 +75,8 @@ export default function MenuBar() {
         <Toolbar className={classes.toolbar}>
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { role === 'operator' && roomStatus === 'connected' && <GainControl/> }
+            { extras }
+            { role === 'operator' && roomStatus === 'connected' && <><GainControl/><MuteAllButton/></> }
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

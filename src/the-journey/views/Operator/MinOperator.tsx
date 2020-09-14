@@ -12,6 +12,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Min/WithFacts';
+import { Button } from '@material-ui/core';
 
 
 const Container = styled('div')({
@@ -35,6 +36,18 @@ function MinOperatorView() {
   const gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();
 
+  // TODO consolidaate this with MinGallery
+  const [hideBlanks, setHideBlanks] = useState(false);
+  const menuExtras = (
+    <Button
+      onClick={() => setHideBlanks((prev) => !prev)}
+      style={{ margin: '0.5em' }}
+      size="small" color="default" variant="contained"
+    >
+      {`${hideBlanks ? 'show' : 'hide'} blanks`}
+    </Button>
+  )
+
   const [{ focusGroup }] = sharedRoom;
   const { toggleFocus } = operatorControls;
 
@@ -43,7 +56,7 @@ function MinOperatorView() {
   const galleryProps = {
     participants: gallery,
     selection: focusGroup,
-    fixedLength: GALLERY_SIZE,
+    fixedLength: hideBlanks ? undefined : GALLERY_SIZE,
     hotKeys: KEYS,
     onClick: toggleFocus,
   };
@@ -54,7 +67,7 @@ function MinOperatorView() {
 
   return (
     <Container>
-      <MenuBar/>
+      <MenuBar extras={menuExtras}/>
       <Main>
         <FlexibleGallery
           participants={final.participants}

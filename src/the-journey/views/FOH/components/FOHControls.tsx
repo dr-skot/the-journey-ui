@@ -30,6 +30,8 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   const toggleApproved = () =>
     changeSharedState({ admitted: toggleMembership(admitted || [])(participant.identity) });
 
+  const startMeetup = () => {};
+
   const approved = inGroup(admitted)(participant);
 
   return  (
@@ -37,6 +39,9 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     <div style={{ width: '100%', textAlign: 'right' }}>
       <span onClick={toggleMute}><AudioLevelIndicator audioTrack={audioTrack} background="white" /></span>
     </div>
+      <div style={{ width: '100%', textAlign: 'right' }}>
+        <Button onClick={startMeetup}>meeting</Button>
+      </div>
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
         <Button
