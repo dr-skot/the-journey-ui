@@ -1,22 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
-import FlexibleGallery from './FlexibleGallery';
-import { inGroup, sameIdentities } from '../../utils/twilio';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
-import { cached } from '../../utils/react-help';
+import React from 'react';
+import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
+import { cached } from '../../utils/react-help';
+import { inGroup, sameIdentities } from '../../utils/twilio';
+import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import SubscribeToFocusGroupVideoAndAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
+import SubscribeToFocusGroupVideoAndAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAudio';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
+import FlexibleGallery from './FlexibleGallery';
 import MenuedView from './MenuedView';
 import WithFacts from '../Min/WithFacts';
 
 function MinFocusGroupView() {
-  const [{ focusGroup }] = useContext(SharedRoomContext);
-  const group = useParticipants().filter(inGroup(focusGroup));
+  const [{ focusGroup }] = useSharedRoomState();
+  const group = sortBy(
+    useParticipants().filter(inGroup(focusGroup)),
+    (p) => focusGroup.indexOf(p.identity)
+  );
   useRerenderOnTrackSubscribed();
-
-  // TODO preserve focus group order
 
   const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
   return <MenuedView><FlexibleGallery participants={final} /></MenuedView>

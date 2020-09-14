@@ -7,7 +7,6 @@ import { styled } from '@material-ui/core/styles';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
-import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
