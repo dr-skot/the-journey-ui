@@ -1,15 +1,12 @@
-/*
-import { useContext, useEffect } from 'react';
-import { AppContext } from '../../contexts/AppContext';
- */
+import { useEffect } from 'react';
+import { useAppContext } from '../contexts/AppContext';
 
 export default function SubscribeToAllAudio() {
-  /*
-  const [{ room }, dispatch] = useContext(AppContext);
+  const [{ room }, dispatch] = useAppContext();
 
   useEffect(() =>
     dispatch('subscribe', { profile: 'audio' }),
     [room]);
-   */
+
   return null;
 }

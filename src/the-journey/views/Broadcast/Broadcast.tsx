@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SelfView from '../../components/Controls/SelfView';
 import { AppContext } from '../../contexts/AppContext';
-import Millicast from './Millicast';
+import Millicast from './Millicast2';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
@@ -12,6 +12,7 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
+import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,
@@ -76,6 +77,7 @@ export default function Broadcast({ type }: BroadcastProps) {
   return (
     <Container>
       <SubscribeToFocusGroupAudio/>
+      <FocusGroupAudio/>
       <Main>
         { split && <Column style={{ width }}><FocusGroup/></Column> }
         <Column style={{ width }}>
@@ -84,8 +86,7 @@ export default function Broadcast({ type }: BroadcastProps) {
         </Column>
       </Main>
       {signer && <SignerWindow><ParticipantVideoWindow participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
-      {isRole('audience')(room?.localParticipant) && <><SelfView /><Controls /></>}
-      <FocusGroupAudio/>
+      {isRole('audience')(room?.localParticipant) && <Controls />}
     </Container>
   );
 }

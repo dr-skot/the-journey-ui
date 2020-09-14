@@ -11,6 +11,7 @@ import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudi
 import FlexibleGallery from './FlexibleGallery';
 import MenuedView from './MenuedView';
 import WithFacts from '../Min/WithFacts';
+import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 
 function MinFocusGroupView() {
   const [{ focusGroup }] = useSharedRoomState();
@@ -28,7 +29,7 @@ export default function MinFocusGroup() {
   return (
     <>
       <SubscribeToFocusGroupVideoAndAudio/>
-      <PlayAllSubscribedAudio/>
+      <FocusGroupAudio/>
       <WithFacts>
         <MinFocusGroupView />
       </WithFacts>

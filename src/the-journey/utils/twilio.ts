@@ -110,6 +110,11 @@ export function getSubscribedTracks(room: Room, kind: TrackFilter = undefined) {
   return tracks;
 }
 
+export function getAudioPublisherIdentities(room: Room) {
+  return Array.from(room.participants.values())
+    .filter((p) => p.audioTracks.size > 0)
+    .map((p) => p.identity);
+}
 
 export function getLocalTracks() {
   return Video.createLocalTracks({

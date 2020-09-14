@@ -10,6 +10,8 @@ import AudioNode from './AudioNode';
 import AutoJoin from '../../components/AutoJoin';
 import useAudioContext from '../../contexts/AudioStreamContext/useAudioContext';
 import AudioNodeOrElement from './AudioNodeOrElement';
+import { ROOM_NAME } from '../../../App';
+import SubscribeToAllAudio from '../../subscribers/SubscribeToAllAudio';
 
 let globalRoom: Room | undefined;
 
@@ -80,7 +82,8 @@ export default function Testing() {
 
   return (
     <div style={{margin: '2em'}}>
-      <AutoJoin/>
+      <AutoJoin roomName={ROOM_NAME}/>
+      <SubscribeToAllAudio/>
       <h1>Room "{room?.name}": all participants</h1>
       { participants.map((p) => p && <TestingParticipant key={p.identity} participant={p} />) }
     </div>
