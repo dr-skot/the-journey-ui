@@ -3,7 +3,7 @@ import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
 import { cached } from '../../utils/react-help';
 import { inGroup, sameIdentities } from '../../utils/twilio';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useSharedRoomState } from '../../contexts/SharedRoomStateContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import SubscribeToFocusGroupVideoAndAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAudio';

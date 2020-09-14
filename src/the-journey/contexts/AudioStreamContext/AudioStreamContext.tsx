@@ -6,6 +6,7 @@ import { setDelay, setGain } from '../../utils/audio';
 import { cached } from '../../utils/react-help';
 import useNodeCreator from './useNodeCreator';
 import useAudioElementCreator from './useAudioElementCreator';
+import { useSharedRoomState } from '../SharedRoomStateContext';
 
 type Identity = Participant.Identity;
 
@@ -43,11 +44,11 @@ interface ProviderProps {
 
 export default function AudioStreamContextProvider({ children }: ProviderProps) {
   const [unmuted, setUnmuted] = useState<Identity[]>([]);
-  const [muteAll, setMuteAll] = useState(false);
   const [fallback, setFallback] = useState(false);
   const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
   const ambitiousUnmuteGroup = useNodeCreator();
   const fallbackUnmuteGroup = useAudioElementCreator();
+  const [{ gain, delayTime, muteAll }] = useSharedRoomState();
 
   const setUnmutedGroup = useCallback((group: Identity[]) => {
     setUnmuted((prev) => {
@@ -66,26 +67,14 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
     activeMethod(unmuted, muteAll, audioOut);
   }, [unmuted, muteAll, audioOut, fallback])
 
-  const setTheGain = useCallback((gain: number) =>
-    setGain(gain, audioOut),
-    [audioOut]);
-
-  const getGain = useCallback(() =>
-    audioOut?.gainNode.gain.value || 1,
-    [audioOut]);
-
-  const setDelayTime = useCallback((delayTime: number) =>
-      setDelay(delayTime, audioOut),
-    [audioOut]);
-
-  const getDelayTime = useCallback(() =>
-      audioOut?.delayNode.delayTime.value || 0,
-    [audioOut]);
+  // keep gain and delay in sync
+  useEffect(() => { setGain(gain, audioOut) }, [gain]);
+  useEffect(() => { setDelay(delayTime, audioOut) }, [delayTime]);
 
   console.log('AudioStreamContext.Provider rerender');
   // reportEqual({ setUnmutedGroup, getDelayTime, setDelayTime, getGain, setTheGain });
   const contextValues = cached('AudioStreamContext.value').ifEqual({
-    setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain, muteAll, setMuteAll, setFallback,
+    setUnmutedGroup, setFallback,
   }) as AudioStreamContextValues;
 
   return <AudioStreamContext.Provider value={contextValues}>

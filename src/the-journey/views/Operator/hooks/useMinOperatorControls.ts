@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useReducer, useState } from 'react'
 import useGalleryParticipants, { MuppetOption } from '../../Gallery/hooks/useGalleryParticipants';
 import { Participant } from 'twilio-video';
 import { isEqual } from 'lodash';
-import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../../contexts/SharedRoomStateContext';
 import { toggleMembership } from '../../../utils/functional';
 import { cached } from '../../../utils/react-help';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
@@ -20,7 +20,7 @@ interface OperatorData {
 
 export default function useMinOperatorControls({ withMuppets }: MuppetOption = {}) {
   let participants = useParticipants().filter(isRole('audience'));
-  const [{ focusGroup }, setSharedState] = useContext(SharedRoomContext);
+  const [{ focusGroup }, setSharedState] = useContext(SharedRoomStateContext);
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
 

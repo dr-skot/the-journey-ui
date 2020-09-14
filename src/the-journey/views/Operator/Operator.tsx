@@ -5,7 +5,7 @@ import MenuBar from '../../components/MenuBar/MenuBar';
 import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import { styled } from '@material-ui/core/styles';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
 import { inGroup } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import { elements, findIndexes } from '../../utils/functional';
@@ -36,7 +36,7 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 export default function Operator(props: OperatorProps = {}) {
   const { withMuppets } = props;
-  const sharedRoom = useContext(SharedRoomContext);
+  const sharedRoom = useContext(SharedRoomStateContext);
   const operatorControls = useOperatorControls({ withMuppets });
   const gallery = useGalleryParticipants({ withMuppets });
 

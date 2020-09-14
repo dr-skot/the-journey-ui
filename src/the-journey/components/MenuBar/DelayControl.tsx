@@ -2,12 +2,12 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import MinusIcon from '@material-ui/icons/RemoveCircle';
 import PlusIcon from '@material-ui/icons/AddCircle';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
 
 const valence = (x: number) => (x < 0 ? -1 : 1);
 
 export default function DelayControl() {
-  const [{ delayTime }, changeSharedState] = useContext(SharedRoomContext);
+  const [{ delayTime }, changeSharedState] = useContext(SharedRoomStateContext);
 
   const bumpDelayTime = useCallback((bump: number) => {
     changeSharedState({ delayTime: delayTime + bump });

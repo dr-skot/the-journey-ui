@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
 
 export default function MuteAllButton() {
-  const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomContext);
+  const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomStateContext);
 
   const toggleMuteAll = () => {
     if (mutedInLobby.length) changeSharedState({ mutedInLobby: [] })

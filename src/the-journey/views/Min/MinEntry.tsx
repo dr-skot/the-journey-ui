@@ -7,19 +7,20 @@ import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudi
 import WithFacts from './WithFacts';
 import useMeetup from '../../hooks/useMeetup';
 import Meetup from '../FOH/Meetup';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useSharedRoomState } from '../../contexts/SharedRoomStateContext';
 import { inGroup } from '../../utils/twilio';
 import { ROOM_NAME } from '../../../App';
 
 export default function MinEntry() {
-  const [{ room, roomStatus }] = useAppContext();
+  const [{ room }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
   const { meetup } = useMeetup();
   const roomName = ROOM_NAME;
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
 
-  return roomStatus === 'connected'
+  console.log('will I have to sign in? room =', room);
+  return room
     ? (
       <>
         <PlayAllSubscribedAudio/>

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { getIdentities, isRole } from '../../utils/twilio';
 import { Button } from '@material-ui/core';
 
 export default function AdmitAllButton() {
-  const  [, changeSharedState] =  useContext(SharedRoomContext)
+  const  [, changeSharedState] =  useContext(SharedRoomStateContext)
   const audience = useParticipants().filter(isRole('audience'));
 
   function admitAll() {

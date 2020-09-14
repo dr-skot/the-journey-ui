@@ -4,7 +4,7 @@ import { Participant } from 'twilio-video';
 import { getLocalDataTrack } from '../utils/twilio';
 import { tryToParse } from '../utils/functional';
 import { isEqual } from 'lodash';
-import { AudioStreamContext, DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
+import { DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
 import { AppContext } from './AppContext';
 import { prevIfEqual } from '../utils/react-help';
 
@@ -22,7 +22,7 @@ interface SharedRoomState {
   meetups: Group[];
 }
 type StateChanger = (changes: Partial<SharedRoomState>) => void;
-type SharedRoomContextValue = [SharedRoomState, StateChanger];
+type SharedRoomStateContextValue = [SharedRoomState, StateChanger];
 
 const initialState = {
   admitted: undefined,
@@ -35,9 +35,9 @@ const initialState = {
   meetups: [],
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
-const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];
+const initalContextValue: SharedRoomStateContextValue = [initialState, initialStateChanger];
 
-export const SharedRoomContext = createContext(initalContextValue);
+export const SharedRoomStateContext = createContext(initalContextValue);
 
 interface QueuedMessage {
   to: Identity | 'all',
@@ -49,11 +49,10 @@ interface ProviderProps {
   children: ReactNode,
 }
 
-export default function SharedRoomContextProvider({ children }: ProviderProps) {
+export default function SharedRoomStateProvider({ children }: ProviderProps) {
   const [{ room }] = useContext(AppContext);
   const [queue, setQueue] = useState<QueuedMessage[]>([]);
   const [sharedState, setSharedState] = useState<SharedRoomState>(initialState);
-  const { setGain, setDelayTime } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
   // queue messages
@@ -133,19 +132,13 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
     sendMessage({ to: 'all', payload: { sharedStateUpdate: changes }});
   }, [sendMessage, setSharedState, sendMessage]);
 
-  // wire gain and delayTime to the audio streams
-  useEffect(() => { setGain(sharedState.gain) },
-    [sharedState.gain, setGain]);
-  useEffect(() => { setDelayTime(sharedState.delayTime) },
-    [sharedState.delayTime, setDelayTime]);
-
   // console.log('SharedRoomContext.Provider rerender');
   // reportEqual({ sharedState, changeState });
   const providerValue = prevIfEqual('SharedRoomContext.value', [sharedState, changeState]);
 
-  return <SharedRoomContext.Provider value={providerValue as SharedRoomContextValue}>
+  return <SharedRoomStateContext.Provider value={providerValue as SharedRoomStateContextValue}>
     {children}
-  </SharedRoomContext.Provider>
+  </SharedRoomStateContext.Provider>
 }
 
-export const useSharedRoomState = () => useContext(SharedRoomContext);
+export const useSharedRoomState = () => useContext(SharedRoomStateContext);

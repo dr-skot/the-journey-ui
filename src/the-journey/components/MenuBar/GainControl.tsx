@@ -1,9 +1,9 @@
 import React, { useCallback, useContext } from 'react';
 import { TextField } from '@material-ui/core';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
 
 export default function GainControl() {
-  const [{ gain }, changeSharedState] = useContext(SharedRoomContext);
+  const [{ gain }, changeSharedState] = useContext(SharedRoomStateContext);
 
   const setGain = (e: any) => {
     console.log('setGain', e.target.value);

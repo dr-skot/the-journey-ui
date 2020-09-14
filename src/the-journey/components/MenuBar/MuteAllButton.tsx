@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useSharedRoomState } from '../../contexts/SharedRoomStateContext';
 
 export default function MuteAllButton() {
   const [{ muteAll }, setSharedState] = useSharedRoomState();
