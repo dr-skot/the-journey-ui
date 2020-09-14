@@ -13,7 +13,9 @@ export default function useFullScreenToggle() {
   }, []);
 
   const toggleFullScreen = useCallback(() => {
-    isFullScreen ? fscreen.exitFullscreen() : fscreen.requestFullscreen(document.documentElement);
+    isFullScreen
+      ? fscreen.exitFullscreen()
+      : fscreen.requestFullscreen(document.documentElement);
   }, [isFullScreen]);
 
   return [isFullScreen, toggleFullScreen] as const;

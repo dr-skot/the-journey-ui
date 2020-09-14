@@ -17,8 +17,9 @@ const Container = styled('div')(() => ({
 }))
 
 export default function Millicast() {
-  const [isFullScreen, toggleFullScreen] = useFullScreenToggle();
-  useEffect(() => { if (!isFullScreen) toggleFullScreen() }, []);
+  useEffect(() => {
+    document.documentElement.requestFullscreen().catch((e) => console.log('fullscreen error', e));
+  }, []);
 
   return (
     <>
