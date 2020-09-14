@@ -9,7 +9,7 @@ import Controls from '../../components/Controls/Controls';
 import { getIdentities, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
@@ -51,7 +51,7 @@ interface BroadcastProps {
 
 export default function Broadcast({ type }: BroadcastProps) {
   const [{ room }] = useContext(AppContext);
-  const [{ focusGroup }] = useContext(SharedRoomStateContext);
+  const [{ focusGroup }] = useContext(SharedRoomContext);
   const [split, setSplit] = useState(false);
   const participants = useParticipants('includeMe');
   const signer = participants.find(isRole('signer'));

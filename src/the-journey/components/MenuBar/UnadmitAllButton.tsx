@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { Button } from '@material-ui/core';
 
 export default function UnadmitAllButton() {
-  const  [, changeSharedState] =  useContext(SharedRoomStateContext);
+  const  [, changeSharedState] =  useContext(SharedRoomContext);
 
   function unadmitAll() {
     console.log('changing admitted to', []);

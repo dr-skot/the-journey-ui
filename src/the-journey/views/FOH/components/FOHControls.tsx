@@ -7,7 +7,7 @@ import { Participant, RemoteAudioTrack } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 import { inGroup, isRole } from '../../../utils/twilio';
 import { useAppContext } from '../../../contexts/AppContext';
-import { useSharedRoomState } from '../../../contexts/SharedRoomStateContext';
+import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
 
 interface FOHControlsProps {

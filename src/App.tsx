@@ -29,7 +29,7 @@ import FOHEntry from './the-journey/views/FOH/FOHEntry';
 import CaptioningEntry from './the-journey/views/Broadcast/components/CaptioningEntry';
 import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
-import SharedRoomStateProvider from './the-journey/contexts/SharedRoomStateContext';
+import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Chat from './the-journey/views/FOH/components/Chat/Chat';
 import MenuedView from './the-journey/views/Gallery/MenuedView';
 import SubscribeToStar from './the-journey/subscribers/SubscribeToStar';
@@ -68,9 +68,9 @@ export default function App() {
       <CssBaseline />
       <AppContextProvider>
         <NameHelmet/>
-          <SharedRoomStateProvider>
-            <AudioStreamContextProvider>
-              <FallbackToAudioElements/>
+        <AudioStreamContextProvider>
+          <FallbackToAudioElements/>
+          <SharedRoomContextProvider>
             <div style={{ height }}>
               <Router>
                 <Switch>
@@ -137,8 +137,8 @@ export default function App() {
                 </Switch>
               </Router>
             </div>
-            </AudioStreamContextProvider>
-          </SharedRoomStateProvider>
+          </SharedRoomContextProvider>
+        </AudioStreamContextProvider>
       </AppContextProvider>
     </MuiThemeProvider>
   );

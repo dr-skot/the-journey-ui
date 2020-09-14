@@ -1,4 +1,4 @@
-import { useSharedRoomState } from '../contexts/SharedRoomStateContext';
+import { useSharedRoomState } from '../contexts/SharedRoomContext';
 import { useAppContext } from '../contexts/AppContext';
 
 export default function useMeetup() {

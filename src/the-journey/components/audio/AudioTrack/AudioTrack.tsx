@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
-import { useSharedRoomState } from '../../../contexts/SharedRoomStateContext';
+import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import { constrain } from '../../../utils/functional';
 
 interface AudioTrackProps {

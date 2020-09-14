@@ -6,7 +6,7 @@ import { GALLERY_SIZE } from '../FixedGallery';
 import { getTimestamp, inGroup, isRole, sameIdentities } from '../../../utils/twilio';
 import { and, not } from '../../../utils/functional';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
-import { SharedRoomStateContext } from '../../../contexts/SharedRoomStateContext';
+import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 import { cached, prevIfEqual } from '../../../utils/react-help';
 import { Participant, RemoteParticipant } from 'twilio-video';
 
@@ -20,7 +20,7 @@ export interface MuppetOption {
 
 export default function useGalleryParticipants({ withMuppets, withMe, inLobby }: MuppetOption = {}) {
   const [{ room }] = useContext(AppContext);
-  const [{ admitted, rejected }] = useContext(SharedRoomStateContext);
+  const [{ admitted, rejected }] = useContext(SharedRoomContext);
   const participants = useParticipants();
   const me = room?.localParticipant;
 

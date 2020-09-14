@@ -4,7 +4,7 @@ import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGaller
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FixedGallery';
 import { styled } from '@material-ui/core/styles';
-import { SharedRoomStateContext } from '../../contexts/SharedRoomStateContext';
+import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
@@ -30,7 +30,7 @@ const Main = styled('div')({
 });
 
 function MinOperatorView() {
-  const sharedRoom = useContext(SharedRoomStateContext);
+  const sharedRoom = useContext(SharedRoomContext);
   const operatorControls = useMinOperatorControls();
   const gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();
