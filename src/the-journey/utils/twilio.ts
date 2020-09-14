@@ -31,7 +31,7 @@ export interface SettingsAdjust {
 
 const DEFAULT_OPTIONS = {
   tracks: [],
-  // automaticSubscription: false,
+  automaticSubscription: false,
 }
 
 export function getToken(roomName: string, identity: string) {

@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, CircularProgress, TextField } from '@material-ui/core';
 import { AppContext } from '../../../contexts/AppContext';
 import { UserRole, SubscribeProfile } from '../../../utils/twilio';
+import { Settings } from '../../../contexts/settings/settingsReducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,9 +38,10 @@ interface RoomJoinFormProps {
   roomName: string,
   role?: UserRole,
   subscribeProfile?: SubscribeProfile,
+  options?: Partial<Settings>
 }
 
-export default function RoomJoinForm({ roomName, role = 'audience', subscribeProfile = 'data-only' }: RoomJoinFormProps) {
+export default function RoomJoinForm({ roomName, role = 'audience', subscribeProfile = 'data-only', options }: RoomJoinFormProps) {
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const [username, setUsername] = useState<string>('');
@@ -52,7 +54,7 @@ export default function RoomJoinForm({ roomName, role = 'audience', subscribePro
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch('joinRoom', { roomName, role, username: username, subscribeProfile });
+    dispatch('joinRoom', { roomName, role, username: username, subscribeProfile, options });
   };
 
   return (

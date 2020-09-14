@@ -12,6 +12,7 @@ import ToggleFullscreenButton from '../../components/MenuBar/ToggleFullScreenBut
 import SettingsButton from '../../components/MenuBar/SettingsButton/SettingsButton';
 import { defaultRoom, UserRole } from '../../utils/twilio';
 import Video from 'twilio-video';
+import { Settings } from '../../contexts/settings/settingsReducer';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SignInBarProps {
   roomName?: string,
   role?: UserRole,
-  options?: Video.ConnectOptions,
+  options?: Partial<Settings>,
 }
 
 export default function SignInBar({ roomName = defaultRoom(), role = 'audience', options }: SignInBarProps) {

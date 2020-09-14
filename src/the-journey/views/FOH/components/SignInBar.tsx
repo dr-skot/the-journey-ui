@@ -11,6 +11,7 @@ import LocalAudioLevelIndicator from '../../../components/MenuBar/DeviceSelector
 import ToggleFullscreenButton from '../../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import SettingsButton from '../../../components/MenuBar/SettingsButton/SettingsButton';
 import { defaultRoom, UserRole } from '../../../utils/twilio';
+import { Settings } from '../../../contexts/settings/settingsReducer';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,9 +36,10 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SignInBarProps {
   roomName?: string,
   role?: UserRole,
+  options?: Partial<Settings>
 }
 
-export default function SignInBar({ roomName = defaultRoom(), role = 'audience' }: SignInBarProps) {
+export default function SignInBar({ roomName = defaultRoom(), role = 'audience', options }: SignInBarProps) {
   const classes = useStyles();
   const [{ roomStatus }] = useContext(AppContext)
 
@@ -48,7 +50,7 @@ export default function SignInBar({ roomName = defaultRoom(), role = 'audience' 
     <AppBar className={classes.container} position="fixed">
       <Toolbar className={classes.toolbar}>
         { roomStatus === 'disconnected'
-          ? <RoomJoinForm roomName={roomName} role={role} subscribeProfile={subscribeProfile} />
+          ? <RoomJoinForm roomName={roomName} role={role} subscribeProfile={subscribeProfile} options={options} />
           : <h3>The Journey</h3> }
         <div className={classes.rightButtonContainer}>
           <FlipCameraButton />

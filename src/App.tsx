@@ -80,7 +80,7 @@ export default function App() {
                     <AutoJoin roomName="min" role="focus" /><MinFocusGroup />
                   </Route>
                   <Route path="/min/gallery">
-                    <AutoJoin roomName="min" role="lurker" /><MinGallery />
+                    <AutoJoin roomName="min" role="lurker" options={{ maxTracks: '32' }} /><MinGallery />
                   </Route>
                   <Route path="/min/foh" component={MinFOH}/>
                   <Route path="/min" component={MinEntry}/>
