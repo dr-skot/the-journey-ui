@@ -19,6 +19,7 @@ export default function MinEntry() {
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
 
+  console.log('MinEntry will I get in?', { room, roomStatus });
   return roomStatus === 'connected'
     ? (
       <>
