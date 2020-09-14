@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import SelfView from '../../components/Controls/SelfView';
 import { AppContext } from '../../contexts/AppContext';
-import Millicast from './Millicast';
+import Millicast from './Millicast2';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
