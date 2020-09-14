@@ -33,10 +33,6 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
   const [container, setContainer] = useState<HTMLElement | null>();
   const containerRef = (node: HTMLElement | null) => setContainer(node)
   const [, rerender] = useState(false);
-  const [resizeObserver] = useState(new ResizeObserver(() => {
-    console.log('resize observer');
-    rerender((prev) => !prev);
-  }));
 
   console.log('flexible gallery render');
 
@@ -44,14 +40,21 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
   useEffect(() => {
     const forceRender = () => rerender((prev) => !prev);
     window.addEventListener('resize', forceRender);
-    return () => window.removeEventListener('resize', forceRender);
+    window.addEventListener('fullscreenchange', forceRender);
+    return () => {
+      window.removeEventListener('resize', forceRender);
+      window.removeEventListener('fullscreenchange', forceRender);
+    }
   }, [])
 
+  // I don't trust resize observer
+  /*
   useEffect(() => {
     if (!container) return;
     resizeObserver.observe(container);
     return () => resizeObserver.unobserve(container);
   }, [container])
+   */
 
   // console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
   // reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
