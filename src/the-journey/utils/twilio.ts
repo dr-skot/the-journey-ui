@@ -215,7 +215,7 @@ export const sortedParticipants = (ps: Participant[]) => sortBy(ps, getTimestamp
 export const getIdentities = (ps: Participant[]) => ps.map((p) => p?.identity); // TODO why are some ps null?
 export const sortedIdentities = (ps: Participant[]) => getIdentities(sortedParticipants(ps));
 
-export const inGroup = (group: string[] = []) => (p: Participant) => group.includes(p?.identity);
+export const inGroup = (group: string[] = []) => (p?: Participant) => !!p && group.includes(p.identity);
 export const sameIdentities = (a: Participant[], b: Participant[]) =>
   isEqual(sortedIdentities(a), sortedIdentities(b));
 
