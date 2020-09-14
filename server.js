@@ -23,7 +23,10 @@ SUBSCRIBE_RULES = {
     { type: 'include', kind: 'data' },
   ],
   listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
-  gallery: () => [{ type: 'include', kind: 'video' }],
+  gallery: (eavesdrop) => [
+    { type: 'include', kind: 'video' },
+    ...eavesdrop.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
+  ],
   focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
   audio: () => [{ type: 'include', kind: 'audio' }],
   nothing: () => [{ type: 'exclude', all: true }],

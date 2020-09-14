@@ -10,7 +10,6 @@ export default function AdmitAllButton() {
 
   function admitAll() {
     console.log('changing admitted to', getIdentities(audience));
-    // @ts-ignore
     changeSharedState({ admitted: getIdentities(audience) });
   }
 

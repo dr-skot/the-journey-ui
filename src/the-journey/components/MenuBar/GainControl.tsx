@@ -7,7 +7,6 @@ export default function GainControl() {
 
   const setGain = (e: any) => {
     console.log('setGain', e.target.value);
-    // @ts-ignore
     changeSharedState({ gain: e.target.value });
   }
 

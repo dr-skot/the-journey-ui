@@ -72,9 +72,7 @@ export default function MenuBar() {
         <Toolbar className={classes.toolbar}>
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
-            { role.match(/foh|operator/) && <MuteAllButton />}
             { role === 'operator' && roomStatus === 'connected' && <GainControl/> }
-            { role === 'foh' && <><AdmitAllButton /><UnadmitAllButton /></> }
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

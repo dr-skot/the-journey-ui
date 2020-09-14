@@ -2,10 +2,9 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React, { ChangeEvent, FormEvent, useContext, useState } from 'react';
-import { SubscribeProfile } from '../../hooks/useTrackSubscriber';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppContext } from '../../contexts/AppContext';
-import { UserRole } from '../../utils/twilio';
+import { UserRole, SubscribeProfile } from '../../utils/twilio';
 import Video from 'twilio-video';
 
 const useStyles = makeStyles((theme: Theme) =>

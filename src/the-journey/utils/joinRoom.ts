@@ -1,5 +1,5 @@
 import Video from 'twilio-video';
-import { SubscribeProfile } from '../hooks/useTrackSubscriber';
+import { SubscribeProfile } from './twilio';
 
 function getToken(roomName: string, identity: string) {
   const headers = new window.Headers();

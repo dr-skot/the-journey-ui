@@ -24,13 +24,11 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
 
   const toggleFocus = useCallback((participant: Participant) => {
     console.log('toggleFocus', { focusGroup, identitiy: participant.identity });
-    // @ts-ignore
     setSharedState({ focusGroup: toggleMembership(focusGroup)(participant.identity) });
   },
     [focusGroup, setSharedState]);
 
   const clearFocus = useCallback(() =>
-    // @ts-ignore
     setSharedState({ focusGroup: [] }),
     [setSharedState]);
 

@@ -2,36 +2,35 @@ import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { AppContext } from '../../../contexts/AppContext';
 import { inGroup, isRole } from '../../../utils/twilio';
-import { Participant } from 'twilio-video';
+import { Participant, RemoteAudioTrack } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
-import { toggleMembership } from '../../../utils/functional';
 import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
+import useRemoteTracks from '../../../hooks/useRemoteTracks';
+import VerifiedIcon from '@material-ui/icons/CheckCircle';
+import { toggleMembership } from '../../../utils/functional';
 
 interface FOHControlsProps {
   participant: Participant;
 }
 
-// TODO deal with all this @ts-ignore, and maybe SharedRoomContext needs a reducer
 export default function FOHControls({ participant }: FOHControlsProps) {
-  const [{ room }] = useContext(AppContext);
-  const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomContext)
+  const [{ room }, dispatch] = useContext(AppContext);
+  const [{ admitted, rejected }, changeSharedState] =  useContext(SharedRoomContext);
+  const audioTracks = useRemoteTracks('audio');
   if (!isRole('foh')(room?.localParticipant) || isRole('foh')(participant)) return null;
 
-  const audioTrack = inGroup(mutedInLobby)(participant)
-    ? null
-    : participant.audioTracks.values().next().value?.track;
+  const audioTrack = audioTracks[participant.identity]?.[0] as RemoteAudioTrack;
 
-  const toggleMute = () =>
-    // @ts-ignore
-    changeSharedState({ mutedInLobby: toggleMembership(mutedInLobby)(participant.identity) });
+  const toggleMute = () => dispatch('subscribe', {
+    profile: 'gallery', focus: audioTrack ? [] : [participant.identity]});
 
   const reject = () =>
-    // @ts-ignore
     changeSharedState({ rejected: [...rejected, participant.identity] });
 
-  const admit = () =>
-    // @ts-ignore
-    changeSharedState({ admitted: [...(admitted || []), participant.identity] });
+  const toggleApproved = () =>
+    changeSharedState({ admitted: toggleMembership(admitted || [])(participant.identity) });
+
+  const approved = inGroup(admitted)(participant);
 
   return  (
     <>
@@ -41,16 +40,19 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
         <Button
-          onClick={reject}
-          size="small" color="secondary" variant="contained">
-          Reject
+          onClick={toggleApproved}
+          size="small" variant="contained"
+          style={approved ? { color: 'white', background: 'green' } : {}}
+          endIcon={approved ? <VerifiedIcon style={{ color: 'white', border: 'none' }}/> : null}
+        >
+          { approved ? 'Approved' : 'Approve' }
         </Button>
       </div>
       <div>
         <Button
-          onClick={admit}
-          size="small" color="default" variant="contained">
-          Admit
+          onClick={reject}
+          size="small" color="secondary" variant="contained">
+          Reject
         </Button>
       </div>
     </div>

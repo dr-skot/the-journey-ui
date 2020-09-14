@@ -11,8 +11,6 @@ import ParticipantVideoWindow from '../../components/Participant/ParticipantVide
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { Helmet } from 'react-helmet';
-import { Button } from '@material-ui/core';
 
 const SIGNER_WINDOW_SIZE = {
   width: 16 * 20,

@@ -3,8 +3,6 @@ import useVideoContext from './useVideoContext';
 
 const TIMEOUT_DELAY = 5000;
 
-export type SubscribeProfile = 'data-only' | 'listen' | 'audio' | 'focus' | 'gallery' | 'listen' | 'none'
-
 export default function useTrackSubscriber() {
   const { room: currentRoom } = useVideoContext();
 

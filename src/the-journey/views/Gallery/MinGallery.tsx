@@ -7,7 +7,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { isRole } from '../../utils/twilio';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 
-function Gallery() {
+export function Gallery() {
   const participants = useParticipants().filter(isRole('audience'));
   return <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE} blanks="black"/>;
 }

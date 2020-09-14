@@ -9,6 +9,7 @@ import { AppContext } from './AppContext';
 import { prevIfEqual } from '../utils/react-help';
 
 type Identity = Participant.Identity;
+export type Group = Identity[];
 
 interface SharedRoomState {
   admitted: Identity[] | undefined,
@@ -18,20 +19,10 @@ interface SharedRoomState {
   gain: number,
   delayTime: number,
   muteAll: boolean,
+  meetups: Group[];
 }
-type StateChanger = (changes: SharedRoomState) => void;
+type StateChanger = (changes: Partial<SharedRoomState>) => void;
 type SharedRoomContextValue = [SharedRoomState, StateChanger];
-
-// a separate type for partial states, to make typescript happy
-export interface RoomStateChange {
-  admitted?: Identity[],
-  rejected?: Identity[],
-  mutedInLobby?: Identity[],
-  focusGroup?: Identity[],
-  gain?: number,
-  delayTime?: number;
-  muteAll?: boolean;
-}
 
 const initialState = {
   admitted: undefined,
@@ -41,6 +32,7 @@ const initialState = {
   gain: DEFAULT_GAIN,
   delayTime: DEFAULT_DELAY,
   muteAll: false,
+  meetups: [],
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
 const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];
@@ -50,7 +42,7 @@ export const SharedRoomContext = createContext(initalContextValue);
 interface QueuedMessage {
   to: Identity | 'all',
   attempt?: number,
-  payload: { request: 'sharedState' } | { sharedStateUpdate: RoomStateChange },
+  payload: { request: 'sharedState' } | { sharedStateUpdate: Partial<SharedRoomState> },
 }
 
 interface ProviderProps {
@@ -133,7 +125,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
     }
   }, [room, sendMessage]);
 
-  const changeState: StateChanger = useCallback((changes: RoomStateChange) => {
+  const changeState = useCallback((changes: Partial<SharedRoomState>) => {
     setSharedState((prev) => {
       const newState = { ...prev, ...changes };
       return isEqual(prev, changes) ? prev : newState;

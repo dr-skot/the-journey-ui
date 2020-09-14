@@ -1,8 +1,6 @@
 import Video, {
   Room,
   Participant,
-  RemoteAudioTrackPublication,
-  RemoteTrackPublication,
   LocalTrackPublication,
   LocalTrack,
   LocalVideoTrack,
@@ -14,11 +12,9 @@ import Video, {
   VideoBandwidthProfileOptions,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
-import { Sid } from 'twilio/lib/interfaces';
 import { element, unixTime } from './functional';
 import { isDev } from './react-help';
 import { sortBy, isEqual } from 'lodash';
-import { useCallback } from 'react';
 import { RenderDimensionValue } from '../contexts/settings/renderDimensions';
 
 // same as settings but everything's optional
@@ -131,7 +127,7 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
     .map((pub) => pub.track)
     .find((track) => !!track.send);
   if (existingTrack) return Promise.resolve(existingTrack);
-  const promise = new Promise<LocalDataTrack>((resolve, reject) => {
+  const promise = new Promise<LocalDataTrack>((resolve) => {
     function handlePublished(pub: LocalTrackPublication) {
       if (pub.kind === 'data') {
         me.off('trackPublished', handlePublished);
@@ -149,8 +145,7 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
 //
 // SUBSCRIBING
 //
-
-export type SubscribeProfile = 'audio' | 'data-only' | 'focus' | 'gallery' | 'listen' | 'none'
+export type SubscribeProfile = 'data-only' | 'audio' | 'focus' | 'gallery' | 'listen' | 'nothing'
 const TIMEOUT_DELAY = 5000;
 
 export function subscribe(room: string, participantId: string, policy: string = 'data_only', focus: string[] = []) {
@@ -175,11 +170,6 @@ export function subscribe(room: string, participantId: string, policy: string = 
     .finally(() => clearTimeout(timeoutId));
 }
 
-export const extractTracks = (publishers: Map<Sid, Map<Sid, RemoteAudioTrackPublication>>) => (
-  Array.from(publishers.values())
-    .flatMap((publications) => Array.from(publications.values()))
-    .map(publication => publication.track)
-)
 
 
 export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'signer' | 'star' | 'focus'
@@ -198,11 +188,6 @@ export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|'
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
 export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
-
-export const getSigner = (room?: Room) =>
-  Array.from(room?.participants.values() || [])
-    .find(isRole('signer'));
-
 
 interface PrioritySettings {
   video: Track.Priority,
@@ -233,11 +218,6 @@ export const sortedIdentities = (ps: Participant[]) => getIdentities(sortedParti
 export const inGroup = (group: string[] = []) => (p: Participant) => group.includes(p?.identity);
 export const sameIdentities = (a: Participant[], b: Participant[]) =>
   isEqual(sortedIdentities(a), sortedIdentities(b));
-
-export const getStar = (participants: Map<string, Participant>) =>
-  Array.from(participants.values()).find(isRole('star'));
-
-
 
 //
 // local video toggle

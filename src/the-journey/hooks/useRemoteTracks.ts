@@ -1,30 +1,33 @@
 import { useEffect, useState, useCallback } from 'react';
-import { RemoteParticipant, RemoteTrack } from 'twilio-video';
+import { Participant, RemoteParticipant, RemoteTrack, RemoteTrackPublication } from 'twilio-video';
 import useParticipants from './useParticipants/useParticipants';
-import useVideoContext from './useVideoContext';
+import { useAppContext } from '../contexts/AppContext';
+import { SubscribedTrackKind } from 'twilio/lib/rest/video/v1/room/roomParticipant/roomParticipantSubscribedTrack';
 
-interface ParticipantTracks {
-  participant: RemoteParticipant,
-  tracks: RemoteTrack[],
+type ParticipantTracks = Record<Participant.Identity, RemoteTrack[]>;
+
+const getTracks = (participants: RemoteParticipant[], kind: SubscribedTrackKind) => {
+  const tracks: ParticipantTracks = {};
+  participants.forEach((p) => {
+    const collection: Map<string, RemoteTrackPublication> = kind === 'audio' ? p.audioTracks
+      : kind === 'video' ? p.videoTracks
+        : kind === 'data' ? p.dataTracks
+          : p.tracks;
+    if (collection.size > 0) {
+      tracks[p.identity] =
+        Array.from(collection.values()).map(pub => pub.track).filter(track => !!track) as RemoteTrack[];
+    }
+  });
+  return tracks;
 }
 
-const getTracks = (participants: RemoteParticipant[]) => participants.map((p) => ({
-  participant: p,
-  tracks: Array.from(p.tracks.values()).map(p => p.track) as RemoteTrack[],
-}));
-
-export function justTracks(kind: string, participantTracks: ParticipantTracks[]) {
-  return participantTracks.flatMap(pt => pt.tracks).filter(track => track?.kind === kind);
-};
-
-export default function useRemoteTracks() {
-  const { room } = useVideoContext();
+export default function useRemoteTracks(kind: SubscribedTrackKind) {
+  const [{ room }] = useAppContext();
   const participants = useParticipants();
-  const [tracks, setTracks] = useState<ParticipantTracks[]>([]);
+  const [tracks, setTracks] = useState<ParticipantTracks>({});
 
-  const resetTracks = (
-    useCallback(() => setTracks(getTracks(participants as RemoteParticipant[])), [participants])
-  );
+  const resetTracks = useCallback(() =>
+    setTracks(getTracks(participants as RemoteParticipant[], kind)), [participants]);
 
   useEffect(resetTracks, [participants]);
 

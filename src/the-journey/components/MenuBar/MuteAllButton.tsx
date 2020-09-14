@@ -7,7 +7,6 @@ export default function MuteAllButton() {
   const [{ muteAll }, setSharedState] = useSharedRoomState();
 
   function toggleMuteAll() {
-    // @ts-ignore
     setSharedState({ muteAll: !muteAll });
   }
 

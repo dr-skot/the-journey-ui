@@ -7,7 +7,6 @@ export default function MuteAllButton() {
   const  [{ admitted, rejected, mutedInLobby }, changeSharedState] =  useContext(SharedRoomContext);
 
   const toggleMuteAll = () => {
-    // @ts-ignore
     if (mutedInLobby.length) changeSharedState({ mutedInLobby: [] })
   }
 

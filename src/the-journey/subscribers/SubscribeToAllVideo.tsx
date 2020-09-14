@@ -1,11 +1,15 @@
 import { useAppContext } from '../contexts/AppContext';
 import { useEffect } from 'react';
+import { Participant } from 'twilio-video';
 
-export default function SubscribeToAllVideo() {
+interface SubscribeToAllVideoProps {
+  listen?: Participant.Identity[]
+}
+export default function SubscribeToAllVideo({ listen }: SubscribeToAllVideoProps) {
   const [{ room }, dispatch] = useAppContext();
 
   useEffect(() =>
-    dispatch('subscribe', { profile: 'gallery' }),
+    dispatch('subscribe', { profile: 'gallery', focus: listen }),
     [room]);
   return null;
 }
