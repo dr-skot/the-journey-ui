@@ -25,7 +25,7 @@ function MinFocusGroupView() {
 
   const menuExtras = (
     <>
-      Audio: ${safer ? 'subscribed to all' : 'as needed'}
+      Audio: {safer ? 'subscribed to all' : 'as needed'}
     <Button
       onClick={() => setSafer((prev) => !prev)}
       style={{ margin: '0.5em' }}
@@ -40,7 +40,7 @@ function MinFocusGroupView() {
 
   const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
   return (
-    <MenuedView>
+    <MenuedView menuExtras={menuExtras}>
       { safer ? <SubscribeToFocusGroupVideoAndAllAudio/> : <SubscribeToFocusGroupVideoAndAudio/> }
       <FlexibleGallery participants={final} />
     </MenuedView>

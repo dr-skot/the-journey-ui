@@ -28,8 +28,8 @@ const SUBSCRIBE_RULES = {
 
   focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
   'focus-safer': (publishers) => [
-    { type: 'include', kind: 'video' },
-    ...publishers.map((p) => ({ type: 'include', publisher: p, kind: 'audio' }))
+    { type: 'include', kind: 'audio' },
+    ...publishers.map((p) => ({ type: 'include', publisher: p, kind: 'video' }))
   ],
 
   gallery: (eavesdrop) => [

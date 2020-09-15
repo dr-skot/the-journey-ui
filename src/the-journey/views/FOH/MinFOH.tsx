@@ -15,7 +15,7 @@ export default function MinFOH() {
 
   return roomStatus === 'connected'
     ? <FOHView />
-    : <SignIn roomName={roomName} role="foh" options={{ maxTracks: '32' }} />;
+    : <SignIn roomName={roomName} role="foh" options={{ maxTracks: '0' }} />;
 }
 
 

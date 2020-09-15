@@ -29,15 +29,39 @@ const Main = styled('div')({
   alignContent: 'center',
 });
 
+const half = (n: number) => Math.ceil(n / 2);
+
 function MinOperatorView() {
   const sharedRoom = useContext(SharedRoomContext);
   const operatorControls = useMinOperatorControls();
-  const gallery = useParticipants().filter(isRole('audience'));
+  let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();
 
   // TODO consolidaate this with MinGallery
   const [hideBlanks, setHideBlanks] = useState(false);
+  const [twoPage, setTwoPage] = useState(false);
+  const [page, setPage] = useState(1);
+  // const [halfSubscribe, setHalfSubscribe] = useState(false);
+
+
   const menuExtras = (
+    <>
+      { twoPage && (
+        <Button
+          onClick={() => setPage((prev) => prev === 1 ? 2 : 1)}
+          style={{ margin: '0.5em' }}
+          size="small" color="default" variant="contained"
+        >
+          {`${page === 2 ? 'page 1' : 'page 2'}`}
+        </Button>
+      ) }
+      <Button
+        onClick={() => setTwoPage((prev) => !prev)}
+        style={{ margin: '0.5em' }}
+        size="small" color="default" variant="contained"
+      >
+        {`${twoPage ? 'one page' : 'two pages'}`}
+      </Button>
     <Button
       onClick={() => setHideBlanks((prev) => !prev)}
       style={{ margin: '0.5em' }}
@@ -45,6 +69,7 @@ function MinOperatorView() {
     >
       {`${hideBlanks ? 'show' : 'hide'} blanks`}
     </Button>
+      </>
   )
 
   const [{ focusGroup }] = sharedRoom;
@@ -52,11 +77,17 @@ function MinOperatorView() {
 
   console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery });
 
+
+  const mid = half(gallery.length);
+  if (twoPage) {
+    gallery = page === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
+  }
+
   const galleryProps = {
     participants: gallery,
     selection: focusGroup,
-    fixedLength: hideBlanks ? undefined : GALLERY_SIZE,
-    hotKeys: KEYS,
+    fixedLength: hideBlanks ? undefined : twoPage ? half(GALLERY_SIZE) : GALLERY_SIZE,
+    hotKeys: twoPage ? (page === 1 ? KEYS.slice(0, mid) : KEYS.slice(mid)) : KEYS,
     onClick: toggleFocus,
   };
 

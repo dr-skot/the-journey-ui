@@ -75,13 +75,13 @@ export default function App() {
               <Router>
                 <Switch>
                   <Route path="/min/operator">
-                    <AutoJoin roomName={ROOM_NAME} role="operator" options={{ maxTracks: '32' }} /><MinOperator />
+                    <AutoJoin roomName={ROOM_NAME} role="operator" options={{ maxTracks: '0' }} /><MinOperator />
                   </Route>
                   <Route path="/min/focus">
                     <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
                   </Route>
                   <Route path="/min/gallery">
-                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '32' }} /><MinGallery />
+                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><MinGallery />
                   </Route>
                   <Route path="/min/foh" component={MinFOH}/>
                   <Route path="/min" component={MinEntry}/>
