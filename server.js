@@ -17,17 +17,26 @@ const base64 = (string) => Buffer.from(string, 'utf-8').toString('base64');
 
 function noop() {}
 
-SUBSCRIBE_RULES = {
+const SUBSCRIBE_RULES = {
   basic: () => [
     { type: 'exclude', all: true },
     { type: 'include', kind: 'data' },
   ],
-  listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
+
+  listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, kind: 'audio' })),
+  watch: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, kind: 'video' })),
+
+  focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
+  'focus-safer': (publishers) => [
+    { type: 'include', kind: 'video' },
+    ...publishers.map((p) => ({ type: 'include', publisher: p, kind: 'audio' }))
+  ],
+
   gallery: (eavesdrop) => [
     { type: 'include', kind: 'video' },
     ...eavesdrop.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
   ],
-  focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
+
   audio: () => [{ type: 'include', kind: 'audio' }],
   nothing: () => [{ type: 'exclude', all: true }],
 }
