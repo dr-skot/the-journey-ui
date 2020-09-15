@@ -43,6 +43,7 @@ import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
 import MinGallery from './the-journey/views/Gallery/MinGallery';
 import MinFOH from './the-journey/views/FOH/MinFOH';
+import BlindOperator from './the-journey/views/Operator/BlindOperator';
 
 export const ROOM_NAME = 'min2';
 
@@ -74,6 +75,9 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+                  <Route path="/min/blindop">
+                    <AutoJoin roomName={ROOM_NAME} role="operator" /><BlindOperator />
+                  </Route>
                   <Route path="/min/operator">
                     <AutoJoin roomName={ROOM_NAME} role="operator" options={{ maxTracks: '0' }} /><MinOperator />
                   </Route>
