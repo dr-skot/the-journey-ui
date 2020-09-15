@@ -44,13 +44,24 @@
 <script src="adapter-latest.js"></script>
 <!-- autoplay = muted autoplay-->
 <div id="container">
-    <video id="vid" width="100%" autoPlay playsInline></video>
+    <video id="vid" width="100%" playsInline></video>
     <button onClick="playVideo()">play video</button>
 </div>
 
 <script>
+  let globalTrack;
+
+
     function playVideo() {
-      document.getElementById('vid').play();
+      const vidWin = document.getElementById('vid');
+      console.log("going to try to play", vidWin);
+      if (vidWin) {
+        console.log('attaching srcObject', globalTrack.streams[0]);
+        vidWin.srcObject = globalTrack.streams[0];
+        vidWin.controls  = true;
+      }
+      console.log('after I did things to it', vidWin);
+      // vidWin.play();
     }
 
 
@@ -99,21 +110,10 @@
     //Listen for track once it starts playing.
     pc.ontrack = function (event) {
       console.debug("pc::onAddStream", event);
+      console.log('I got streams', event);
+      console.log('I got track', event.track);
       //Play it
-      let vidWin = document.getElementsByTagName('video')[0];
-      if (vidWin) {
-        vidWin.addEventListener('canplay', () => {
-          console.log('I can play!');
-          vidWin.play();
-        });
-        vidWin.srcObject = event.streams[0];
-        vidWin.controls  = false;
-        vidWin.onClick = (e) => {
-          console.log('I got clicked', e);
-          e.preventDefault();
-          e.stopPropagation();
-        };
-      }
+      globalTrack = event;
     };
 
     console.log('connecting to: ', url + '?token=' + jwt);//token

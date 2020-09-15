@@ -4,9 +4,9 @@ import { useAppContext } from '../contexts/AppContext';
 export default function SubscribeToAllAudio() {
   const [{ room }, dispatch] = useAppContext();
 
-  useEffect(() =>
-    dispatch('subscribe', { profile: 'audio' }),
-    [room]);
+  useEffect(() => {
+      if (room) dispatch('subscribe', { profile: 'audio' });
+    },[room, dispatch]);
 
   return null;
 }

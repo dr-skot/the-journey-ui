@@ -6,9 +6,9 @@ export default function SubscribeToFocusGroupAudio() {
   const [{ room }, dispatch] = useAppContext();
   const [{ focusGroup }] = useContext(SharedRoomContext);
 
-  useEffect(() =>
-      dispatch('subscribe', { profile: 'listen', focus: focusGroup }),
-    [room, focusGroup]);
+  useEffect(() => {
+      if (room) dispatch('subscribe', { profile: 'listen', focus: focusGroup });
+    },[room, focusGroup, dispatch]);
 
   return null;
 }

@@ -7,8 +7,9 @@ export default function SubscribeToStar() {
   const [{ room }, dispatch] = useAppContext();
   const stars = useParticipants().filter(isRole('star'));
 
-  useEffect(() =>
-      dispatch('subscribe', { profile: 'focus', focus: getIdentities(stars) }),
-    [room, stars]);
+  useEffect(() => {
+    if (room) dispatch('subscribe', { profile: 'focus', focus: getIdentities(stars) })
+  }, [room, stars, dispatch]);
+
   return null;
 }

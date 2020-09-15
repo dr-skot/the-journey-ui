@@ -8,8 +8,9 @@ interface SubscribeToAllVideoProps {
 export default function SubscribeToAllVideo({ listen }: SubscribeToAllVideoProps) {
   const [{ room }, dispatch] = useAppContext();
 
-  useEffect(() =>
-    dispatch('subscribe', { profile: 'gallery', focus: listen }),
-    [room, listen]);
+  useEffect(() => {
+    if (room) dispatch('subscribe', { profile: 'gallery', focus: listen });
+    }, [room, listen, dispatch]);
+
   return null;
 }

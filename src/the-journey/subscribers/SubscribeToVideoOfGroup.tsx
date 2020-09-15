@@ -9,8 +9,9 @@ export default function SubscribeToVideoOfGroup({ group }: SubscribeToAllVideoPr
   const [{ room }, dispatch] = useAppContext();
 
   console.log('subscribe to video of group', group);
-  useEffect(() =>
-    dispatch('subscribe', { profile: 'watch', focus: group }),
-    [room, group]);
+  useEffect(() => {
+      dispatch('subscribe', { profile: 'watch', focus: group })
+    }, [room, group, dispatch]);
+
   return null;
 }
