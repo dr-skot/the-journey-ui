@@ -49,7 +49,7 @@ function BlindOperatorView() {
     onClick: toggleFocus,
   };
 
-  const final = cached('Operator.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
+  const final = cached('BlindOperator.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
 
   console.log('BlindOperator passing', final === galleryProps ? 'cached' : 'uncached', 'gallery props', { final });
 

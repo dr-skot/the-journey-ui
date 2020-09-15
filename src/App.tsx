@@ -44,6 +44,7 @@ import { getUsername } from './the-journey/utils/twilio';
 import MinGallery from './the-journey/views/Gallery/MinGallery';
 import MinFOH from './the-journey/views/FOH/MinFOH';
 import BlindOperator from './the-journey/views/Operator/BlindOperator';
+import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 
 export const ROOM_NAME = 'min2';
 
@@ -85,7 +86,7 @@ export default function App() {
                     <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
                   </Route>
                   <Route path="/min/gallery">
-                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><MinGallery />
+                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><HalfGallery />
                   </Route>
                   <Route path="/min/foh" component={MinFOH}/>
                   <Route path="/min" component={MinEntry}/>
