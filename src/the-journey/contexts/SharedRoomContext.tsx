@@ -53,7 +53,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
   const [{ room }] = useContext(AppContext);
   const [queue, setQueue] = useState<QueuedMessage[]>([]);
   const [sharedState, setSharedState] = useState<SharedRoomState>(initialState);
-  const { setGain, setDelayTime } = useContext(AudioStreamContext);
+  const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
   // queue messages
@@ -138,6 +138,8 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
     [sharedState.gain, setGain]);
   useEffect(() => { setDelayTime(sharedState.delayTime) },
     [sharedState.delayTime, setDelayTime]);
+  useEffect(() => { setMuteAll(sharedState.muteAll) },
+    [sharedState.muteAll, setMuteAll]);
 
   // console.log('SharedRoomContext.Provider rerender');
   // reportEqual({ sharedState, changeState });

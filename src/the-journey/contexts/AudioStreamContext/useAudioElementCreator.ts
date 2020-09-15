@@ -3,6 +3,7 @@ import { AudioOut } from '../../utils/audio';
 import { useEffect, useState } from 'react';
 import { getParticipants, inGroup } from '../../utils/twilio';
 import { useAppContext } from '../AppContext';
+import { constrain } from '../../utils/functional';
 
 type Identity = Participant.Identity;
 
@@ -40,14 +41,20 @@ export default function useAudioElementCreator() {
 
   // when settings or participant list change, detach old elements, generate new ones
   useEffect(() => {
-    const { muteAll, unmuteGroup } = settings;
+    const { muteAll, unmuteGroup, audioOut } = settings;
+    const gain = audioOut?.gainNode?.gain.value || 1;
+    const volume = constrain(0, 1)(gain);
     const tracks = muteAll ? [] : participants.filter(inGroup(unmuteGroup)).flatMap((p) => (
       Array.from(p.audioTracks.values())
         .map((pub) => pub.track)
         .filter((track) => !!track))) as RemoteAudioTrack[];
     tracks.forEach((track) => {
       const audioElement = track.attach();
-      audioElement.volume = 0.5; // this seems to have no effect
+      audioElement.addEventListener('canplay', () => {
+        const volumeSettable = audioElement as { volume: number };
+        console.log('AudioTrack setting volume at creation to', volume);
+        volumeSettable.volume = volume;
+      });
       document.body.appendChild(audioElement);
     });
     return () => {

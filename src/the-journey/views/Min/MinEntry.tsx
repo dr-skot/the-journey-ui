@@ -23,7 +23,6 @@ export default function MinEntry() {
   return roomStatus === 'connected'
     ? (
       <>
-        <PlayAllSubscribedAudio/>
         { meetup
           ? <Meetup group={meetup}/>
           : <WithFacts><Broadcast type="millicast"/></WithFacts>

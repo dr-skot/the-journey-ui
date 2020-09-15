@@ -18,8 +18,8 @@ export default function AudioTrack({ track }: AudioTrackProps) {
     audioEl.current.setAttribute('data-cy-audio-track-name', track.name);
     audioEl.current.addEventListener('canplay', () => {
       const volumeSettable = audioEl.current as { volume: number };
-      console.log('AudioTrack setting volume at creation to', gain);
-      volumeSettable.volume = volume;
+      console.log('AudioTrack setting volume at creation to', 0.1);
+      volumeSettable.volume = 0.1;
     });
     document.body.appendChild(audioEl.current);
     return () => track.detach().forEach(el => el.remove());

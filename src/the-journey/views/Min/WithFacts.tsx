@@ -6,7 +6,7 @@ import Facts from './Facts';
 const Floater = styled('div')({
   position: 'absolute',
   top: 10,
-  left: '50%',
+  left: '25%',
   zIndex: 10000000000000,
 });
 
