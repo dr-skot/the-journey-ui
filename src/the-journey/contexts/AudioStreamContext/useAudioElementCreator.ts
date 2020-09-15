@@ -11,12 +11,14 @@ interface Settings {
   muteAll: boolean,
   audioOut?: AudioOut,
   unmuteGroup: Identity[],
+  gain: number,
 }
 
 const initialSettings: Settings = {
   muteAll: false,
   audioOut: undefined,
   unmuteGroup: [],
+  gain: 1,
 }
 
 export default function useAudioElementCreator() {
@@ -35,14 +37,13 @@ export default function useAudioElementCreator() {
   }, [room])
 
   // reset settings when unmute group changes
-  function unmuteGroup(unmuteGroup: Identity[], muteAll: boolean, audioOut?: AudioOut) {
-    setSettings({ muteAll, audioOut, unmuteGroup } as Settings);
+  function unmuteGroup(unmuteGroup: Identity[], muteAll: boolean, audioOut?: AudioOut, gain?: number) {
+    setSettings({ muteAll, audioOut, unmuteGroup, gain: gain || settings.gain } as Settings);
   }
 
   // when settings or participant list change, detach old elements, generate new ones
   useEffect(() => {
-    const { muteAll, unmuteGroup, audioOut } = settings;
-    const gain = audioOut?.gainNode?.gain.value || 1;
+    const { muteAll, unmuteGroup, audioOut, gain } = settings;
     const volume = constrain(0, 1)(gain);
     const tracks = muteAll ? [] : participants.filter(inGroup(unmuteGroup)).flatMap((p) => (
       Array.from(p.audioTracks.values())

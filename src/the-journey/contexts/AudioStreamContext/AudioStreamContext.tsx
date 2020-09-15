@@ -2,7 +2,7 @@ import React, { createContext, ReactNode, useCallback, useEffect, useState } fro
 import { isEqual } from 'lodash';
 import { Participant } from 'twilio-video';
 import useAudioOut from './useAudioOut';
-import { setDelay, setGain } from '../../utils/audio';
+import { setDelay, setGain, setDocumentVolume } from '../../utils/audio';
 import { cached } from '../../utils/react-help';
 import useNodeCreator from './useNodeCreator';
 import useAudioElementCreator from './useAudioElementCreator';
@@ -44,6 +44,7 @@ interface ProviderProps {
 export default function AudioStreamContextProvider({ children }: ProviderProps) {
   const [unmuted, setUnmuted] = useState<Identity[]>([]);
   const [muteAll, setMuteAll] = useState(false);
+  const [gainValue, setGainValue] = useState(DEFAULT_GAIN);
   const [fallback, setFallback] = useState(false);
   const audioOut = useAudioOut(MAX_STREAMS, DEFAULT_GAIN, DEFAULT_DELAY);
   const ambitiousUnmuteGroup = useNodeCreator();
@@ -62,13 +63,15 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
     console.log('unmuted changed with audioOut', audioOut);
     const methods = [fallbackUnmuteGroup, ambitiousUnmuteGroup]
     const [activeMethod, inactiveMethod] = fallback ? methods : methods.reverse();
-    inactiveMethod([], true, audioOut);
-    activeMethod(unmuted, muteAll, audioOut);
+    inactiveMethod([], true, audioOut, gainValue);
+    activeMethod(unmuted, muteAll, audioOut, gainValue);
   }, [unmuted, muteAll, audioOut, fallback])
 
-  const setTheGain = useCallback((gain: number) =>
-    setGain(gain, audioOut),
-    [audioOut]);
+  const setTheGain = useCallback((gain: number) => {
+    setGainValue(gain);
+    setGain(gain, audioOut);
+    setDocumentVolume(gain);
+  },[audioOut]);
 
   const getGain = useCallback(() =>
     audioOut?.gainNode.gain.value || 1,
