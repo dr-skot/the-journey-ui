@@ -22,6 +22,12 @@
             display: inline-flex;
         }
 
+        button {
+            position: absolute;
+            left: 100px;
+            top: 100px;
+        }
+
         #container {
             position: fixed;
             bottom: 0;
@@ -38,10 +44,16 @@
 <script src="adapter-latest.js"></script>
 <!-- autoplay = muted autoplay-->
 <div id="container">
-    <video width="100%" autoPlay playsInline></video>
+    <video id="vid" width="100%" autoPlay playsInline></video>
+    <button onClick="playVideo()">play video</button>
 </div>
 
 <script>
+    function playVideo() {
+      document.getElementById('vid').play();
+    }
+
+
   let accountId  = 'Wu3EU2';
   let streamName = 'keidk0k0';
 
@@ -51,8 +63,10 @@
   let url;// path to Millicast Server - Returned from API
   let jwt;//authorization token - Returned from API
 
-  const apiPath  = 'https://director.millicast.com/api/director/subscribe';
-  const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
+  const apiPath  = '/millicast/subscribe';
+  const turnUrl  = '/millicast/turn';
+  // const apiPath  = 'https://director.millicast.com/api/director/subscribe';
+  // const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
   //Ice Servers:
   let iceServers = [];
 
@@ -88,6 +102,10 @@
       //Play it
       let vidWin = document.getElementsByTagName('video')[0];
       if (vidWin) {
+        vidWin.addEventListener('canplay', () => {
+          console.log('I can play!');
+          vidWin.play();
+        });
         vidWin.srcObject = event.streams[0];
         vidWin.controls  = false;
         vidWin.onClick = (e) => {
@@ -269,6 +287,7 @@
       }
       xhr.open("POST", apiPath, true);
       xhr.setRequestHeader("Content-Type", "application/json");
+      console.log('sending', {streamAccountId: accountId, streamName: streamName, unauthorizedSubscribe: true});
       xhr.send(JSON.stringify({streamAccountId: accountId, streamName: streamName, unauthorizedSubscribe: true}));
     });
   }

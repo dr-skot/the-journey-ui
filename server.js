@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const Twilio = require('twilio');
 const AccessToken = require('twilio').jwt.AccessToken;
@@ -14,6 +15,7 @@ const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
 
 const base64 = (string) => Buffer.from(string, 'utf-8').toString('base64');
+
 
 function noop() {}
 
@@ -132,6 +134,28 @@ app.get('/participants/:room', (req, res) => {
   // TODO find out what's the right way to handle this
     // .catch(error => { console.log(json); res.end(error.body.read()); });
 })
+
+app.put('/millicast/turn', (req, res) => {
+  const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
+  fetch(turnUrl, { method: 'put' }).then(response => {
+    res.end(response.body.read());
+  })
+});
+
+//support parsing of application/json type post data
+app.use(bodyParser.json());
+
+app.post('/millicast/subscribe', (req, res) => {
+  const apiPath  = 'https://director.millicast.com/api/director/subscribe';
+  console.log('got post request with body', JSON.stringify(req.body));
+  fetch(apiPath, {
+    method: 'post',
+    body: JSON.stringify(req.body),
+    headers: { 'Content-Type': 'application/json' },
+  }).then(response => {
+     res.end(response.body.read());
+  });
+});
 
 app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))
