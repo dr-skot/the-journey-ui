@@ -3,13 +3,13 @@ import { styled } from '@material-ui/core';
 import { connectToStream, isConnecting } from './millicast-helper';
 import { useAppContext } from '../../contexts/AppContext';
 
-const Container = styled('div')(() => ({
+const Container = styled( 'div')(() => ({
   position: 'absolute',
   height: '100%',
   width: '100%'
 }))
 
-const Millicast = React.memo(() => {
+const Millicast =() => {
   const [{ room }] = useAppContext();
   const videoRef = (element: HTMLVideoElement) => {
     console.log('ref callback with element', element, 'room', room);
@@ -23,7 +23,7 @@ const Millicast = React.memo(() => {
              width="100%" height="100%" ref={videoRef} autoPlay playsInline id="millicast"/>
     </Container>
   );
-});
+};
 Millicast.whyDidYouRender = true;
 
 export default Millicast;

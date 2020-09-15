@@ -151,8 +151,10 @@ function getICEServers() {
     let xhr                = new XMLHttpRequest();
     xhr.onreadystatechange = function (evt) {
       if (xhr.readyState == 4) {
-        let res = JSON.parse(xhr.responseText), a;
-        // console.log('getICEServers::status:', xhr.status, ' response: ', xhr.responseText);
+        let res, a;
+        try { res = JSON.parse(xhr.responseText); }
+        catch (e) { console.log('JSON couldnt parse', xhr.responseText, e); }
+        console.log('getICEServers::status:', xhr.status, ' response: ', xhr.responseText);
         switch (xhr.status) {
           case 200:
             //returns array.
