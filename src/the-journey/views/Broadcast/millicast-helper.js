@@ -22,8 +22,8 @@ function connect(videoElement) {
         connect();
       })
       .catch(e => {
-        // console.log('api error: ', e);
-        alert("Error: The API encountered an error ", e);
+        console.log('api error: ', e);
+        //alert("Error: The API encountered an error ", e);
       });
     return;
   }

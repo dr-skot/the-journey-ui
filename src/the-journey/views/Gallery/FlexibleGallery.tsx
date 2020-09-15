@@ -7,7 +7,6 @@ import { styled } from '@material-ui/core/styles';
 import Nobody from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
-import ResizeObserver from 'resize-observer-polyfill';
 
 const Container = styled('div')(() => ({
   flex: '1 1 0',

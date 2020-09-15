@@ -7,8 +7,8 @@ import { getTimestamp, inGroup, isRole, sameIdentities } from '../../../utils/tw
 import { and, not } from '../../../utils/functional';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
-import { cached, prevIfEqual } from '../../../utils/react-help';
-import { Participant, RemoteParticipant } from 'twilio-video';
+import { cached } from '../../../utils/react-help';
+import { Participant } from 'twilio-video';
 
 // TODO sort by entry time
 
@@ -45,5 +45,5 @@ export default function useGalleryParticipants({ withMuppets, withMe, inLobby }:
 
   // console.log('useGalleryParticipants returning', final === gallery ? 'uncached' : 'cached', { final });
 
-  return gallery;
+  return final;
 }
