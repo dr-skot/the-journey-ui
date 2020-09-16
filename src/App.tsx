@@ -34,7 +34,7 @@ import MinOperator from './the-journey/views/Operator/MinOperator';
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
 import MinFOH from './the-journey/views/FOH/MinFOH';
-import BlindOperator from './the-journey/views/Operator/BlindOperator';
+import BlindOperator from './the-journey/views/Operator/BlindOperator2';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import { isDev } from './the-journey/utils/react-help';
 import WithFacts from './the-journey/views/Min/WithFacts';
