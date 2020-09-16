@@ -6,6 +6,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { muppetImage } from '../Muppet';
 import { getUsername } from '../../../utils/twilio';
 import FOHControls from '../../../views/FOH/components/FOHControls';
+import MuteInFocusGroupButton from './MuteInFocusGroupButton/MuteInFocusGroupButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,10 +73,11 @@ interface ParticipantInfoProps {
   selectedIndex: number;
   hotKey?: string;
   foh?: boolean;
+  mutable?: boolean;
 }
 
 export default function ParticipantInfoOverlay({
-    participant, onClick = () => {}, selectedIndex, children, width, height, hotKey,
+    participant, onClick = () => {}, selectedIndex, children, width, height, hotKey, mutable
   }: ParticipantInfoProps) {
   const classes = useStyles();
 
@@ -100,6 +102,7 @@ export default function ParticipantInfoOverlay({
           </h4>
         </div>
         <div>
+          { mutable && <MuteInFocusGroupButton identity={participant.identity} /> }
           <FOHControls participant={participant} />
           {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
           {hotKey && <KeyIcon keyName={hotKey} />}

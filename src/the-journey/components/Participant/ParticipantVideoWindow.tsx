@@ -10,6 +10,7 @@ interface ParticipantProps {
   height?: number,
   selectedIndex?: number;
   hotKey?: string;
+  mutable?: boolean,
 }
 
 export default function ParticipantVideoWindow({
@@ -19,9 +20,10 @@ export default function ParticipantVideoWindow({
   width,
   height,
   hotKey,
+  mutable,
 }: ParticipantProps) {
   return (
-    <ParticipantInfoOverlay {...{ participant, onClick, width, height, selectedIndex, hotKey }}>
+    <ParticipantInfoOverlay {...{ participant, onClick, width, height, selectedIndex, hotKey, mutable }}>
       <ParticipantVideo participant={participant} />
     </ParticipantInfoOverlay>
   );

@@ -64,6 +64,7 @@ function BlindOperatorView() {
           fixedLength={final.fixedLength}
           hotKeys={final.hotKeys}
           onClick={final.onClick}
+          muteControls={true}
         />
       </Main>
     </Container>

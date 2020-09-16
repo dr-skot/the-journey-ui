@@ -45,7 +45,7 @@ export default function Controls() {
   return (
     <div className={clsx(classes.container, { showControls })}>
       <ToggleAudioButton disabled={isReconnecting} />
-      <ToggleVideoButton disabled={isReconnecting} />
+      { /* <ToggleVideoButton disabled={isReconnecting} /> */ }
       <SettingsButton />
     </div>
   );

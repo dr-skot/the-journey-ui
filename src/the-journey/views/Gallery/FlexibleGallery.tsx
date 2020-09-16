@@ -24,10 +24,11 @@ export interface FlexibleGalleryProps {
   hotKeys?: string;
   onClick?: (participant: IParticipant, e: MouseEvent) => void;
   blanks?: 'black' | undefined,
+  muteControls?: boolean,
 }
 
 export default function FlexibleGallery({ participants, fixedLength = 0, selection = [],
-                                          hotKeys = '', onClick = () => {}, blanks
+                                          hotKeys = '', onClick = () => {}, blanks, muteControls
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>();
   const containerRef = (node: HTMLElement | null) => setContainer(node)
@@ -76,6 +77,7 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
           width={boxSize.width}
           height={boxSize.height}
           onClick={(e) => onClick(participant, e as unknown as MouseEvent)}
+          mutable={muteControls}
         />
         ) : <Nobody width={boxSize.width} height={boxSize.height} index={i}
                     key={listKey('nobody', i)} blanks={blanks} />
