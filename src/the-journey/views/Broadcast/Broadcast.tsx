@@ -5,7 +5,7 @@ import Millicast from './Millicast';
 import FocusGroup from '../Gallery/FocusGroup';
 import Stage from './Stage';
 import Controls from '../../components/Controls/Controls';
-import { getIdentities, isRole } from '../../utils/twilio';
+import { getIdentities, inGroup, isRole } from '../../utils/twilio';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
@@ -55,7 +55,7 @@ export default function Broadcast({ type }: BroadcastProps) {
   const signer = participants.find(isRole('signer'));
   console.log('signer', { signer });
 
-  // TODO guarantee no ghosts in focusGroup at the sour
+  // TODO guarantee no ghosts in focusGroup at the source
   const existant = getIdentities(participants);
   const noGhosts = focusGroup.filter((identity) => existant.includes(identity));
 
@@ -71,6 +71,18 @@ export default function Broadcast({ type }: BroadcastProps) {
     window.dispatchEvent(ev); // fire 'resize' event!
   }, [split]);
 
+  // change video priority when entering and leaving the focus group
+  useEffect(() => {
+    if (!room) return;
+    const me = room.localParticipant;
+    const priority = inGroup(focusGroup)(me) ? 'high' : 'low';
+    const videoTrackPub = me.videoTracks.values().next()?.value;
+    if (!videoTrackPub) return;
+    if (videoTrackPub.priority !== priority) {
+      console.log('changing my video priority to', priority);
+      videoTrackPub.setPriority(priority);
+    }
+  }, [focusGroup, room]);
 
   return (
     <Container>
