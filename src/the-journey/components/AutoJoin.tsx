@@ -8,12 +8,11 @@ interface AutoJoinProps {
   roomName?: string,
   username?: string,
   role?: UserRole,
-  profile?: SubscribeProfile,
   options?: SettingsAdjust,
   children?: any,
 }
 
-const AutoJoin = React.memo(({ roomName, username, role = 'lurker', profile = 'gallery', options,
+const AutoJoin = React.memo(({ roomName, username, role = 'lurker', options,
                                    children }: AutoJoinProps) => {
   const [{ roomStatus }, dispatch] = useContext(AppContext);
   const match = useRouteMatch() as match<{ code?: string }>;
@@ -23,7 +22,7 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', profile = 'g
     if (['connected', 'connecting'].includes(roomStatus)) return;
 
     dispatch('joinRoom', {
-      roomName: roomNameReally, role: role, username, subscriberProfile: profile, options
+      roomName: roomNameReally, role: role, username, options
     });
     // eslint-disable-next-line
   }, [roomStatus]);

@@ -44,14 +44,11 @@ export default function SignInBar({ roomName = defaultRoom(), role = 'audience',
   const classes = useStyles();
   const [{ roomStatus }] = useContext(AppContext)
 
-  // TODO is this right? review subscribing
-  const subscribeProfile = 'data-only';
-
   return (
     <AppBar className={classes.container} position="fixed">
       <Toolbar className={classes.toolbar}>
         { roomStatus === 'disconnected'
-          ? <RoomJoinForm roomName={roomName} role={role} subscribeProfile={subscribeProfile} options={options} />
+          ? <RoomJoinForm roomName={roomName} role={role} options={options} />
           : <h3>The Journey</h3> }
         <div className={classes.rightButtonContainer}>
           <FlipCameraButton />

@@ -3,9 +3,8 @@ import { styled } from '@material-ui/core';
 
 const ClickBlocker = styled('div')(() => ({
   position: 'absolute',
-  top: '20vh',
-  height: '60vh',
-  width: '100%',
+  height: '90vh',
+  width: '90vw',
   background: 'transparent',
 }));
 

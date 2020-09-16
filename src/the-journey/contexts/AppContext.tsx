@@ -6,9 +6,6 @@ import { initialSettings, Settings, settingsReducer } from './settings/settingsR
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { prevIfEqual } from '../utils/react-help';
 
-// TODO maintain participants as an array
-// TODO maintain track arrays as well, based on events
-
 interface AppState {
   error?: TwilioError,
 
@@ -52,7 +49,7 @@ type EasyDispatch = (action: ReducerAction, payload?: any) => void;
 
 const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, request: ReducerRequest) => {
   const { action, payload, dispatch } = request;
-  console.log('action', action, 'payload', payload);
+  // console.log('action', action, 'payload', payload);
   let newState = state;
 
   switch (action) {
@@ -76,7 +73,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
-      console.log('joining with tracks', state.localTracks); // TODO allow payload tracks
+      // console.log('joining with tracks', state.localTracks); // TODO allow payload tracks
       joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
@@ -129,7 +126,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'subscribe':
       if (state.room) {
-        console.log('requesting subscription change', payload);
+        // console.log('requesting subscription change', payload);
         subscribe(state.room.name, state.room.localParticipant.identity, payload.profile, payload.focus);
       }
       break;

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
-import { inGroup } from '../../utils/twilio';
+import { inGroup, isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { useAppContext } from '../../contexts/AppContext';
 import MenuedView from '../Gallery/MenuedView';
@@ -20,7 +20,7 @@ export default function Meetup({ group }: MeetupProps) {
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const meeters = sortBy(
     useParticipants('includeMe').filter(inGroup(group)),
-    (p) => group.indexOf(p.identity)
+    (p) => isRole('foh')(p) ? 1 : 0
   );
 
   useEffect(() => {

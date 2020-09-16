@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import { useAppContext } from '../../contexts/AppContext';
 import SignIn from './SignIn';
 import Broadcast from '../Broadcast/Broadcast';
-import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 import WithFacts from './WithFacts';
 import useMeetup from '../../hooks/useMeetup';
 import Meetup from '../FOH/Meetup';
@@ -11,7 +10,10 @@ import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import { inGroup } from '../../utils/twilio';
 import { ROOM_NAME } from '../../../App';
 
-export default function MinEntry() {
+interface MinEntryProps {
+  withFacts: boolean,
+}
+export default function MinEntry({ withFacts }: MinEntryProps) {
   const [{ room, roomStatus }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
   const { meetup } = useMeetup();
@@ -19,13 +21,17 @@ export default function MinEntry() {
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
 
-  console.log('MinEntry will I get in?', { room, roomStatus });
+  console.log('MinEntry', { withFacts });
+  if (withFacts) console.log('doing a broadcast with facts');
+
   return roomStatus === 'connected'
     ? (
       <>
         { meetup
           ? <Meetup group={meetup}/>
-          : <WithFacts><Broadcast type="millicast"/></WithFacts>
+          : withFacts
+            ? <WithFacts><Broadcast type="millicast"/></WithFacts>
+            : <Broadcast type="millicast"/>
         }
       </>
     )

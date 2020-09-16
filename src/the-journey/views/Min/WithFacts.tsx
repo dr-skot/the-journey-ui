@@ -24,6 +24,8 @@ export default function WithFacts({ children }: WithFactsProps) {
   const [justFacts, setJustFacts] = useState(false);
   const [isFullScreen] = useFullScreenToggle();
 
+  console.log('with facts!');
+
   return (
     <>
       { justFacts ? <Facts/> : children }

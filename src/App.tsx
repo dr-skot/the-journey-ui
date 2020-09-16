@@ -20,33 +20,26 @@ import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
 // import FocusGroupAudioElements from './the-journey/components/audio/FocusGroupAudioElements';
 // import FocusGroupElementNodes from './the-journey/components/audio/FocusGroupElementNodes';
-import FocusGroup from './the-journey/views/Gallery/FocusGroup';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
-import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Rejected from './the-journey/views/FOH/Rejected';
-import FOHEntry from './the-journey/views/FOH/FOHEntry';
 import CaptioningEntry from './the-journey/views/Broadcast/components/CaptioningEntry';
-import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Chat from './the-journey/views/FOH/components/Chat/Chat';
-import MenuedView from './the-journey/views/Gallery/MenuedView';
-import SubscribeToStar from './the-journey/subscribers/SubscribeToStar';
-import SubscribeToNothing from './the-journey/subscribers/SubscribeToNothing';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
-import Self from './the-journey/views/FOH/Self';
 import MinEntry from './the-journey/views/Min/MinEntry';
 import MinOperator from './the-journey/views/Operator/MinOperator';
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
-import MinGallery from './the-journey/views/Gallery/MinGallery';
 import MinFOH from './the-journey/views/FOH/MinFOH';
 import BlindOperator from './the-journey/views/Operator/BlindOperator';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
+import { isDev } from './the-journey/utils/react-help';
+import WithFacts from './the-journey/views/Min/WithFacts';
 
-export const ROOM_NAME = 'min2';
+export const ROOM_NAME = isDev() ? 'min-dev' : 'min2';
 
 export function NameHelmet() {
   const [{ room }] = useAppContext();
@@ -88,57 +81,21 @@ export default function App() {
                   <Route path="/min/gallery">
                     <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><HalfGallery />
                   </Route>
+                  <Route path="/min/lurk">
+                    <AutoJoin roomName={ROOM_NAME} role="lurker" />
+                    <WithFacts><Broadcast type="millicast"/></WithFacts>
+                  </Route>
                   <Route path="/min/foh" component={MinFOH}/>
                   <Route path="/min" component={MinEntry}/>
-                  <Route path="/self" component={Self}/>
+                  <Route path="/min/facts">
+                    { console.log('/min/facts') }
+                    <MinEntry withFacts />
+                  </Route>
                   <Route path="/testing/:code?" component={Testing}/>
                   <Route path="/chat" component={Chat} />
                   <Route path="/rejected" component={Rejected} />
                   <Route path="/foh/code" component={GetCode} />
-                  <Route path="/foh/holding/:code?" component={FOHEntry} />
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
-                  <Route path="/star/unsub/:code?" render={(props) => (
-                    <>
-                      <SubscribeToNothing />
-                      <StarEntry { ...props } />
-                    </>
-                  )}/>
-                  <Route path="/star/:code?" component={StarEntry} />
-                  <Route path="/focus/:code?">
-                    <AutoJoin role="lurker" />
-                    <MenuedView><FocusGroup /></MenuedView>
-                  </Route>
-                  <Route path="/lurk/:code?">
-                    <AutoJoin role="lurker" />
-                    <Broadcast />
-                  </Route>
-                  <Route path="/muppets/:code?">
-                    <AutoJoin role="operator" /><Operator withMuppets={true} />
-                  </Route>
-                  <Route path="/operator/:code?">
-                    <AutoJoin role="operator" /><Operator />
-                  </Route>
-                  <Route path="/gallery/:code?">
-                    <AutoJoin role="lurker" />
-                    <FixedGallery />
-                  </Route>
-                  <Route path="/hybrid/:code?">
-                    <AutoJoin role="audience" /><Broadcast type={'hybrid'} />
-                  </Route>
-                  <Route path="/pure/unsub/:code?" render={(props) => (
-                    <>
-                      <SubscribeToStar />
-                      <FrontDoor broadcastType="pure" { ...props } />
-                    </>
-                  )}/>
-                  <Route path="/pure/:code?" render={(props) => (
-                    <FrontDoor broadcastType="pure" { ...props } />
-                  )}/>
-                  <Route path="/fallback/:code?" render={(props) => (
-                    <><FrontDoor broadcastType={'millicast'} { ...props } /></>
-                  )}/>
-                  <Route path="/show/:code?" component={FrontDoor} />
-                  <Route path="/:code?" component={FrontDoor} />
                 </Switch>
               </Router>
             </div>

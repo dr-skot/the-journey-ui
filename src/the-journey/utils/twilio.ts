@@ -110,12 +110,6 @@ export function getSubscribedTracks(room: Room, kind: TrackFilter = undefined) {
   return tracks;
 }
 
-export function getAudioPublisherIdentities(room: Room) {
-  return Array.from(room.participants.values())
-    .filter((p) => p.audioTracks.size > 0)
-    .map((p) => p.identity);
-}
-
 export function getLocalTracks() {
   return Video.createLocalTracks({
     video: {
@@ -193,26 +187,6 @@ export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|'
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
 export const defaultRoom = () => isDev() ? 'dev-room' : 'room';
-
-interface PrioritySettings {
-  video: Track.Priority,
-  audio: Track.Priority,
-}
-export const setTrackPriorities = (room: Room, settings: PrioritySettings) => {
-  const participant = room.localParticipant
-  console.log('setting priorities...');
-  participant.videoTracks.forEach(pub => {
-    console.log('setting video priority', settings.video, 'for', participant.identity);
-    // @ts-ignore
-    pub.setPriority(settings.video);
-  });
-  participant.audioTracks.forEach(pub => {
-    console.log('setting audio priority', settings.video, 'for', participant.identity);
-      // @ts-ignore
-    pub.setPriority(settings.audio);
-  });
-}
-
 
 export const getTimestamp = (p?: Participant) => p ? element(-1)(p.identity.split('|')) : '';
 
