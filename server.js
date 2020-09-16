@@ -27,6 +27,7 @@ const SUBSCRIBE_RULES = {
 
   listen: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, kind: 'audio' })),
   watch: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p, kind: 'video' })),
+  spy: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
 
   focus: (publishers) => publishers.map((p) => ({ type: 'include', publisher: p })),
   'focus-safer': (publishers) => [

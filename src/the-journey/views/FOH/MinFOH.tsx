@@ -34,8 +34,8 @@ function FOHGallery() {
   const [, dispatch] = useAppContext();
 
   // initialize by subscribing to gallery
-  // FOH controls may punch in to audio feeds
-  useEffect(() => dispatch('subscribe', { profile: 'gallery' }), [])
+  // FOH controls may punch in to audio and video feeds
+  useEffect(() => dispatch('subscribe', { profile: 'data-only' }), [])
 
   return (
     <WithFacts>

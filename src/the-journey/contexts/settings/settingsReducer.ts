@@ -23,9 +23,9 @@ export interface SettingsAction {
 export const initialSettings: Settings = {
   trackSwitchOffMode: undefined,
   dominantSpeakerPriority: 'standard',
-  bandwidthProfileMode: 'collaboration',
+  bandwidthProfileMode: 'grid',
   maxTracks: isMobile ? '5' : '10',
-  maxAudioBitrate: '16000', // TODO disable this for star
+  maxAudioBitrate: '16000',
   renderDimensionLow: 'low',
   renderDimensionStandard: '960p',
   renderDimensionHigh: 'wide1080p',
