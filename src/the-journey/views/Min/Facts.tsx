@@ -12,6 +12,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UnmuteButtons } from '../Testing/Testing';
 import VideoTrack from '../../components/VideoTrack/VideoTrack';
+import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 
 const VideoWindow = styled('div')({
   display: 'inline-block',
@@ -37,6 +38,7 @@ export function VideoPlayer({ track }: VideoPlayerProps) {
 
 export default function Facts() {
   const [{ room, localTracks }] = useAppContext();
+  const sharedRoomState = useSharedRoomState();
   const participants = useParticipants();
   useRerenderOnTrackSubscribed();
 
@@ -69,6 +71,18 @@ export default function Facts() {
         I see {participants.length} other participants in the room:
         {' ' + getIdentities(participants).map(getUsername).join(', ')}
       </h3>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <h3>Room State Variables</h3>
+        </AccordionSummary>
+        <AccordionDetails style={{flexDirection: 'column'}}>
+          <pre>{ JSON.stringify(sharedRoomState, null, 1) }</pre>
+        </AccordionDetails>
+      </Accordion>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
