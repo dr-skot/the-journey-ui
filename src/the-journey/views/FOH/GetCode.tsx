@@ -59,7 +59,7 @@ function defaultTime() {
   return result;
 }
 
-const BASE_URL = isDev() ? 'http://localhost:3000' : `https://${window.location.hostname}`;
+const BASE_URL = isDev() ? 'http://localhost:3000' : 'https://thejourney-show.com' //`https://${window.location.hostname}`;
 
 export default function GetCode() {
   const classes = useStyles();
