@@ -9,6 +9,8 @@ const useStyles = makeStyles(() => createStyles({
   }
 }));
 
+export type Blanks = 'outline' | 'muppet' | 'nothing' | undefined;
+
 const PALETTE = ['#EFE2F4', '#D2D3F3', '#E1DAF4', '#C4CBF2'];
 const paletteColor = (i: number) => PALETTE[i % PALETTE.length];
 
@@ -16,7 +18,7 @@ interface NobodyProps {
   width: number;
   height: number;
   index: number;
-  blanks?: 'black' | undefined
+  blanks?: Blanks;
 }
 
 export default function Nobody({ width, height, index, blanks }: NobodyProps) {
@@ -25,10 +27,10 @@ export default function Nobody({ width, height, index, blanks }: NobodyProps) {
   return (
     <div className={classes.nobody} style={{
       width, height,
-      backgroundColor: blanks ? '' : paletteColor(index),
-       border: blanks ? '' : '0.5px solid black',
+      backgroundColor: blanks === 'muppet' ? paletteColor(index) : '',
+      border: blanks === 'nothing' ? '' : '0.5px solid black',
     }}>
-      { !blanks &&
+      { blanks === 'muppet' &&
         <div style={{ width, height, backgroundImage: image, opacity: '25%', backgroundSize: 'cover' }} /> }
     </div>
   )

@@ -4,7 +4,7 @@ import { Participant as IParticipant } from 'twilio-video';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
 import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
-import Nobody from './components/Nobody';
+import Nobody, { Blanks } from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
 
@@ -23,7 +23,7 @@ export interface FlexibleGalleryProps {
   fixedLength?: number;
   hotKeys?: string;
   onClick?: (participant: IParticipant, e: MouseEvent) => void;
-  blanks?: 'black' | undefined,
+  blanks?: Blanks,
   muteControls?: boolean,
 }
 

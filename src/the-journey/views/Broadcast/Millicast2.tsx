@@ -21,7 +21,7 @@ export default function Millicast() {
     console.log('got player', { player, content, frame });
     if (player) {
       player.muted = false;
-      if (!isFullscreen) toggleFullscreen();
+      // if (!isFullscreen) toggleFullscreen();
       setV(player);
     }
   }
@@ -29,9 +29,9 @@ export default function Millicast() {
   const unmuteAndFullscreen = () => {
     console.log({ v });
     if (v) {
-      console.log('unmuting and fullscreening', { isFullscreen });
+      console.log('unmuting and fullscreening', { v, isFullscreen });
       v.muted = false;
-      if (!isFullscreen) toggleFullscreen();
+      // if (!isFullscreen) toggleFullscreen();
     }
   }
 

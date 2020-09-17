@@ -15,7 +15,7 @@ export function Gallery({ hideBlanks }: GalleryProps) {
   const participants = useParticipants().filter(isRole('audience'));
   return <FlexibleGallery participants={participants}
                           fixedLength={hideBlanks ? undefined : GALLERY_SIZE}
-                          blanks="black"/>;
+                          blanks="nothing"/>;
 }
 
 export default function MinGallery() {

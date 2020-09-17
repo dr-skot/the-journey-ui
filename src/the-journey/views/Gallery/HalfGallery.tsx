@@ -106,7 +106,7 @@ function HalfGalleryView() {
           fixedLength={final.fixedLength}
           hotKeys={final.hotKeys}
           onClick={final.onClick}
-          blanks="black"
+          blanks="nothing"
         />
       </Main>
     </Container>

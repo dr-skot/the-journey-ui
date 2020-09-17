@@ -30,7 +30,7 @@ export default function FixedGallery() {
     <Container>
       <MenuBar/>
       <Main>
-        <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE} blanks="black"/>
+        <FlexibleGallery participants={participants} fixedLength={GALLERY_SIZE} blanks="outline"/>
       </Main>
     </Container>
   );
