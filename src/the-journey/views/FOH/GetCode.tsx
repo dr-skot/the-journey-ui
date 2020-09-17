@@ -42,6 +42,9 @@ const useStyles = makeStyles({
       marginRight: '0.4em',
     },
   },
+  h4: {
+    marginBottom: 0,
+  }
 });
 
 const theme = createMuiTheme({
@@ -103,65 +106,45 @@ export default function GetCode() {
             <Grid container alignItems="center" direction="column">
               <Item>
                 <h3>Enter Showtime:</h3>
-              <TextField
-                id="showtime"
-                type="datetime-local"
-                defaultValue={defaultTime()}
-                onChange={handleChange}
-              />
+                <TextField
+                  id="showtime"
+                  type="datetime-local"
+                  defaultValue={defaultTime()}
+                  onChange={handleChange}
+                />
                 <div><TimezonePicker id="timezone" onChange={handleTimezoneChange} /></div>
-
-              </Item>
-                {error && (
+                </Item>
+                { error && (
                   <Item>
-                  <Typography variant="caption" className={classes.errorMessage}>
-                    <ErrorOutlineIcon />
-                    {error}
-                  </Typography>
+                    <Typography variant="caption" className={classes.errorMessage}>
+                      <ErrorOutlineIcon />
+                      {error}
+                    </Typography>
                   </Item>
                 )}
-          <Item>
-              <Button type="submit" color="primary" variant="contained">
-                Get Code
-              </Button>
-          </Item>
-              { code &&
-                <>
-              <Item>
-                <h4>
-                  Show code
-                </h4>
-                <Typography>
-                  {code}
-                </Typography>
-                  <h4>
-                    Show
-                  </h4>
-                  <Typography>
-                    {link('show')}
-                  </Typography>
-                <h4>
-                  Front of House
-                </h4>
-                <Typography>
-                  {link('foh/holding')}
-                </Typography>
-                <h4>
-                  Operator
-                </h4>
-                <Typography>
-                  {link('operator')}
-                </Typography>
-                <h4>
-                  Gallery
-                </h4>
-                <Typography>
-                  {link('gallery')}
-                </Typography>
+                <Item>
+                  <Button type="submit" color="primary" variant="contained">
+                    Get Code
+                  </Button>
                 </Item>
-              </>
-              }
-            </Grid>
+                { code && <>
+                    <Item>
+                      <h4 className={classes.h4}>Show code</h4>
+                      <Typography>{code}</Typography>
+
+                      <h4 className={classes.h4}>Audience entry</h4>
+                      <Typography>{link('entry')}</Typography>
+
+                      <h4 className={classes.h4}>Front of House</h4>
+                      <Typography>{link('foh')}</Typography>
+
+                      <h4 className={classes.h4}>Lurk</h4>
+                      <Typography>
+                        {link('lurk')}
+                      </Typography>
+                    </Item>
+                  </> }
+              </Grid>
           </Paper>
         </Grid>
       </form>

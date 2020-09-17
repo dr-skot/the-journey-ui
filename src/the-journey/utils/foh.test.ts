@@ -1,6 +1,15 @@
 import moment from 'moment';
 import { random, range } from 'lodash';
-import { codeToTime, codeToTimeWithTZ, timeToCode, timeToCodeWithTZ, timezones } from './foh';
+import {
+  codeToTime,
+  codeToTimeWithTZ,
+  spinChar, tailSpin,
+  timeToCode,
+  timeToCodeWithTZ,
+  timezones,
+  unSpinChar,
+  unTailSpin,
+} from './foh';
 
 const datesToTry = (n: number) =>
   range(0, n).map(_ => {
@@ -17,7 +26,6 @@ describe('timeToCode', () => {
   it('converts time to lowercase string of < 7 letters', () => {
     datesToTry(20).forEach(d => {
       const code = timeToCode(d);
-      console.log(code);
       expect(code.length).toBeLessThan(7);
       expect(code).toMatch(/^[a-z]+$/);
     });
@@ -37,7 +45,6 @@ describe('timeToCodeWithTZ', () => {
   it('converts time + tz to lowercase string of < 9 letters', () => {
     datesToTry(20).forEach(d => {
       const code = timeToCodeWithTZ(d, random(0, timezones.length - 1));
-      console.log(code);
       expect(code.length).toBeLessThan(9);
       expect(code).toMatch(/^[a-z]+$/);
     });
@@ -55,3 +62,32 @@ describe('timeToCodeWithTZ', () => {
   });
 });
 
+describe('spinChar', () => {
+  it('uses the value of seed to spin the char, given a field of letters', () => {
+    expect(spinChar('abc')('a')('b')).toBe('c');
+    expect(spinChar('abc')('b')('b')).toBe('a');
+    expect(spinChar('abc')('c')('a')).toBe('a');
+  });
+});
+
+describe('unSpinChar', () => {
+  it('reverses the spin', () => {
+    const spin = spinChar('abc');
+    const unspin = unSpinChar('abc');
+    expect(unspin('a')(spin('a')('b'))).toBe('b');
+    expect(unspin('b')(spin('b')('b'))).toBe('b');
+    expect(unspin('c')(spin('c')('a'))).toBe('a');
+  });
+});
+
+describe('unTailSpin',() => {
+  it('reverses tailSpin', () => {
+    const field = 'abcdefgh';
+    const codes = range(0, 20).map(() =>
+      range(0, 5).map(() => field[random(0, field.length - 1)]).join('')
+    );
+    codes.forEach((code) => {
+      expect(unTailSpin(field)(tailSpin(field)(code))).toBe(code);
+    })
+  })
+})

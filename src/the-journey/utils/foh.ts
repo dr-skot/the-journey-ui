@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { mod } from './functional';
 
 export interface DoorPolicy { open: number, close: number };
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
@@ -50,11 +51,21 @@ export const spinChar = (field = 'abcdefghijklmnopqrstuvwxyz') => (seed: string)
   const offset = field.indexOf(seed);
   const value = field.indexOf(char);
   if (value < 0 || offset < 0) return char;
-  return field[(offset + value + 1) % field.length];
+  return field[(value + offset + 1) % field.length];
+};
+
+export const unSpinChar = (field = 'abcdefghijklmnopqrstuvwxyz') => (seed: string) => (char: string) => {
+  const offset = field.indexOf(seed);
+  const value = field.indexOf(char);
+  if (value < 0 || offset < 0) return char;
+  return field[mod(value - offset - 1, field.length)];
 };
 
 export const spin = (field?: string) => (seed: string) =>  (target: string) =>
   target.split('').map(spinChar(field)(seed)).join('');
+
+export const unspin = (field?: string) => (seed: string) =>  (target: string) =>
+  target.split('').map(unSpinChar(field)(seed)).join('');
 
 export const tailSpin = (field?: string) => (target: string) => {
   if (target.length < 2) return target;
@@ -62,15 +73,22 @@ export const tailSpin = (field?: string) => (target: string) => {
   return `${spin(field)(tail)(target.slice(0, -1))}${tail}`;
 }
 
+export const unTailSpin = (field?: string) => (target: string) => {
+  if (target.length < 2) return target;
+  const tail = target[target.length - 1];
+  return `${unspin(field)(tail)(target.slice(0, -1))}${tail}`;
+}
+
 export const timeToCodeWithTZ = (time: Date, tz: number) => {
   if (tz < 0 || tz >= timezones.length) throw new Error('Invalid timezone index');
   let prefix = tz.toString(26);
   if (prefix.length < 2) prefix = '0' + prefix;
-  return base26ToLetters(prefix) + timeToCode(time);
+  return tailSpin()(base26ToLetters(prefix) + timeToCode(time));
 }
 
 export const codeToTimeWithTZ = (code: string) => {
- const [prefix, suffix] = [code.slice(0, 2), code.slice(2)];
+  const trueCode = unTailSpin()(code)
+ const [prefix, suffix] = [trueCode.slice(0, 2), trueCode.slice(2)];
  const tz = parseInt(lettersToBase26(prefix), 26);
  const time = codeToTime(suffix);
  return [time, tz] as [Date, number];

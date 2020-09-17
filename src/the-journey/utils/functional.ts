@@ -64,3 +64,4 @@ export function remove(xs: any[], x: any) {
   xs.splice(i, 1);
 }
 
+export const mod = (n: number, m: number) => ((n % m) + m) % m;
