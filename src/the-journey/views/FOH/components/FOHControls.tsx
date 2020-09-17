@@ -69,7 +69,12 @@ export default function FOHControls({ participant }: FOHControlsProps) {
         ) }
     </div>
       <div style={{ width: '100%', textAlign: 'right' }}>
-        <Button onClick={toggleMeeting}>{`${inMeeting ? 'end' : 'start'} meeting`}</Button>
+        <Button
+          onClick={toggleMeeting}
+          size="small" variant="contained"
+        >
+          {`${inMeeting ? 'end' : 'start'} meeting`}
+        </Button>
       </div>
     <div style={{ opacity: '90%' }}>
       <div style={{ float: 'right' }}>
