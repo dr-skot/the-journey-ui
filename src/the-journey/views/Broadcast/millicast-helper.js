@@ -7,8 +7,10 @@ let streamName = 'keidk0k0';
 let url;// path to Millicast Server - Returned from API
 let jwt;//authorization token - Returned from API
 
-const apiPath  = 'https://director.millicast.com/api/director/subscribe';
-const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
+// const apiPath  = 'https://director.millicast.com/api/director/subscribe';
+// const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
+const apiPath  = '/millicast/subscribe';
+const turnUrl  = '/millicast/turn';
 //Ice Servers:
 let iceServers = [];
 
