@@ -91,11 +91,33 @@ export default function App() {
                     { console.log('/min/facts') }
                     <MinEntry withFacts />
                   </Route>
-                  <Route path="/testing/:code?" component={Testing}/>
-                  <Route path="/chat" component={Chat} />
+
+                  <Route path="/entry/:code?" component={MinEntry}/>
                   <Route path="/rejected" component={Rejected} />
-                  <Route path="/foh/code" component={GetCode} />
+
+                  <Route path="/code" component={GetCode} />
+                  <Route path="/foh/:code?" component={MinFOH}/>
+
+                  <Route path="/operator/:code?">
+                    <AutoJoin roomName={ROOM_NAME} role="operator" /><BlindOperator />
+                  </Route>
+                  <Route path="/focus/:code?">
+                    <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
+                  </Route>
+                  <Route path="/gallery/:code?">
+                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><HalfGallery />
+                  </Route>
+
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
+
+                  <Route path="/lurk/:code?">
+                    <AutoJoin roomName={ROOM_NAME} role="lurker" />
+                    <WithFacts><Broadcast type="millicast"/></WithFacts>
+                  </Route>
+
+                  <Route path="/testing/:code?" component={Testing}/>
+                  <Route path="/" component={MinEntry} />
+
                 </Switch>
               </Router>
             </div>
