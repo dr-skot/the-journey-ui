@@ -72,9 +72,6 @@ export default function App() {
                   <Route path="/min/blindop">
                     <AutoJoin roomName={ROOM_NAME} role="operator" /><BlindOperator />
                   </Route>
-                  <Route path="/min/operator">
-                    <AutoJoin roomName={ROOM_NAME} role="operator" options={{ maxTracks: '0' }} /><MinOperator />
-                  </Route>
                   <Route path="/min/focus">
                     <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
                   </Route>
@@ -105,7 +102,7 @@ export default function App() {
                     <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
                   </Route>
                   <Route path="/gallery/:code?">
-                    <AutoJoin roomName={ROOM_NAME} role="lurker" options={{ maxTracks: '0' }} /><HalfGallery />
+                    <AutoJoin roomName={ROOM_NAME} role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
                   </Route>
 
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
