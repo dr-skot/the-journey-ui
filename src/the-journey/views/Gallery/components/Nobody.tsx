@@ -6,7 +6,6 @@ const useStyles = makeStyles(() => createStyles({
   nobody: {
     width: '100%',
     height: '100%',
-    border: '0.5px solid black',
   }
 }));
 
@@ -24,7 +23,11 @@ export default function Nobody({ width, height, index, blanks }: NobodyProps) {
   const classes = useStyles();
   const image = `url(${muppetImageForIdx(index + 1)})`; // muppets start at 1 not 0
   return (
-    <div className={classes.nobody} style={{ width, height, backgroundColor: blanks ? '' : paletteColor(index) }}>
+    <div className={classes.nobody} style={{
+      width, height,
+      backgroundColor: blanks ? '' : paletteColor(index),
+       border: blanks ? '' : '0.5px solid black',
+    }}>
       { !blanks &&
         <div style={{ width, height, backgroundImage: image, opacity: '25%', backgroundSize: 'cover' }} /> }
     </div>
