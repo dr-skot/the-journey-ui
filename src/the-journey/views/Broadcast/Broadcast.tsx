@@ -12,7 +12,7 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 
-const SIGNER_WINDOW_SIZE = {
+const SIGN_LANGUAGE_WINDOW_SIZE = {
   width: 16 * 20,
   height: 9 * 20,
 }
@@ -33,11 +33,11 @@ const Column = styled('div')(() => ({
   flex: '1 1 0',
 }));
 
-const SignerWindow = styled('div')(() => ({
+const SignLanguageWindow = styled('div')(() => ({
   position: 'absolute',
   bottom: 70,
   right: 10,
-  width: SIGNER_WINDOW_SIZE.width,
+  width: SIGN_LANGUAGE_WINDOW_SIZE.width,
 }));
 
 
@@ -52,8 +52,8 @@ export default function Broadcast({ type }: BroadcastProps) {
   const [{ focusGroup }] = useContext(SharedRoomContext);
   const [split, setSplit] = useState(false);
   const participants = useParticipants('includeMe');
-  const signer = participants.find(isRole('signer'));
-  console.log('signer', { signer });
+  const signInterpreter = participants.find(isRole('sign-interpreter'));
+  console.log('sign-interpreter', { signInterpreter });
 
   // TODO guarantee no ghosts in focusGroup at the source
   const existant = getIdentities(participants);
@@ -95,7 +95,7 @@ export default function Broadcast({ type }: BroadcastProps) {
           { type === 'pure' ? <Stage/> : <Millicast/> }
         </Column>
       </Main>
-      {signer && <SignerWindow><ParticipantVideoWindow participant={signer} { ...SIGNER_WINDOW_SIZE } /></SignerWindow>}
+      {signInterpreter && <SignLanguageWindow><ParticipantVideoWindow participant={signInterpreter} { ...SIGN_LANGUAGE_WINDOW_SIZE } /></SignLanguageWindow>}
       {isRole('audience')(room?.localParticipant) && <Controls />}
     </Container>
   );

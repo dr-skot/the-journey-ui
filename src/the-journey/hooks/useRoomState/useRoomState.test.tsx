@@ -2,24 +2,20 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import EventEmitter from 'events';
 import { Room } from 'twilio-video';
 import useRoomState from './useRoomState';
-import useVideoContext from '../../../the-journey/hooks/useVideoContext';
+import { useAppContext } from '../../contexts/AppContext';
 
-jest.mock('../useVideoContext/useVideoContext');
+jest.mock('../../contexts/AppContext');
 
-const mockedVideoContext = useVideoContext as jest.Mock<any>;
+const mockedAppContext = useAppContext as jest.Mock<any>;
 
 describe('the useRoomState hook', () => {
   let mockRoom: Room;
 
   beforeEach(() => {
     mockRoom = new EventEmitter() as Room;
-    mockedVideoContext.mockImplementation(() => ({
+    mockedAppContext.mockImplementation(() => [{
       room: mockRoom,
-      isConnecting: false,
-      localTracks: [],
-      onError: () => {},
-      onDisconnect: () => {},
-    }));
+    }]);
   });
 
   it('should return "disconnected" by default', () => {
@@ -69,13 +65,9 @@ describe('the useRoomState hook', () => {
     act(() => {
       mockRoom = new EventEmitter() as Room;
       mockRoom.state = 'connected';
-      mockedVideoContext.mockImplementation(() => ({
+      mockedAppContext.mockImplementation(() => [{
         room: mockRoom,
-        isConnecting: false,
-        localTracks: [],
-        onError: () => {},
-        onDisconnect: () => {},
-      }));
+      }]);
     });
 
     rerender();
@@ -92,13 +84,9 @@ describe('the useRoomState hook', () => {
 
     act(() => {
       mockRoom = new EventEmitter() as Room;
-      mockedVideoContext.mockImplementation(() => ({
+      mockedAppContext.mockImplementation(() => [{
         room: mockRoom,
-        isConnecting: false,
-        localTracks: [],
-        onError: () => {},
-        onDisconnect: () => {},
-      }));
+      }]);
     });
 
     rerender();

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import Controls from './Controls';
 import useIsUserActive from './useIsUserActive/useIsUserActive';
-import useRoomState from '../../../twilio/hooks/useRoomState/useRoomState';
+import useRoomState from '../../hooks/useRoomState/useRoomState';
 
 jest.mock('./useIsUserActive/useIsUserActive');
 jest.mock('../../hooks/useRoomState/useRoomState');

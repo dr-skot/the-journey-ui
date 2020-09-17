@@ -4,7 +4,7 @@ import { initialSettings } from '../../../contexts/settings/settingsReducer';
 import { Select, TextField } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import { useAppState } from '../../../../twilio/state';
-import useRoomState from '../../../../twilio/hooks/useRoomState/useRoomState';
+import useRoomState from '../../../hooks/useRoomState/useRoomState';
 
 jest.mock('../../../hooks/useRoomState/useRoomState');
 jest.mock('../../../state');

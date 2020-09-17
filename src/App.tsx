@@ -38,6 +38,7 @@ import BlindOperator from './the-journey/views/Operator/BlindOperator2';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import { isDev } from './the-journey/utils/react-help';
 import WithFacts from './the-journey/views/Min/WithFacts';
+import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 
 export const ROOM_NAME = isDev() ? 'min-dev' : 'min2';
 
@@ -66,6 +67,7 @@ export default function App() {
         <AudioStreamContextProvider>
           <FallbackToAudioElements/>
           <SharedRoomContextProvider>
+            <ReconnectingNotification />
             <div style={{ height }}>
               <Router>
                 <Switch>
@@ -126,8 +128,6 @@ export default function App() {
 
 
 }
- /* <ReconnectingNotification /> */
-
 
 /*
 const VideoAppFull = React.memo(({ view }: VideoAppProps) => {

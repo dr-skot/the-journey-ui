@@ -15,9 +15,65 @@ const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
 
 const base64 = (string) => Buffer.from(string, 'utf-8').toString('base64');
-
-
 function noop() {}
+
+// support json body in post requests
+app.use(bodyParser.json());
+
+
+//
+// http -> https forwarding
+//
+
+const isDev = () => !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+if (!isDev()) {
+
+  // Enable reverse proxy support in Express. This causes the
+  // the "X-Forwarded-Proto" header field to be trusted so its
+  // value can be used to determine the protocol. See
+  // http://expressjs.com/api#app-settings for more details.
+  app.enable('trust proxy');
+
+  // Add a handler to inspect the req.secure flag (see
+  // http://expressjs.com/api#req.secure). This allows us
+  // to know whether the request was via http or https.
+  app.use(function(req, res, next) {
+    if (req.secure) {
+      // request was via https, so do no special handling
+      next();
+    } else {
+      // request was via http, so redirect to https
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+}
+
+
+//
+// twilio room-join token
+//
+
+app.use(express.static(path.join(__dirname, 'build')));
+const port = process.env.PORT || 8081;
+
+app.get('/token', (req, res) => {
+  console.log('token requested');
+  const { identity, roomName } = req.query;
+  const token = new AccessToken(twilioAccountSid, twilioApiKeySID, twilioApiKeySecret, {
+    ttl: MAX_ALLOWED_SESSION_DURATION,
+  });
+  token.identity = identity;
+  const videoGrant = new VideoGrant({ room: roomName });
+  token.addGrant(videoGrant);
+  res.send(token.toJwt());
+  console.log(`issued token for ${identity} in room ${roomName}`);
+});
+
+
+
+//
+// twilio track subscription
+//
 
 const SUBSCRIBE_RULES = {
   basic: () => [
@@ -43,48 +99,6 @@ const SUBSCRIBE_RULES = {
   audio: () => [{ type: 'include', kind: 'audio' }],
   nothing: () => [{ type: 'exclude', all: true }],
 }
-
-
-// TODO wrap the above in isDev?
-const isDev = () => !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-if (!isDev()) {
-
-// Enable reverse proxy support in Express. This causes the
-// the "X-Forwarded-Proto" header field to be trusted so its
-// value can be used to determine the protocol. See
-// http://expressjs.com/api#app-settings for more details.
-  app.enable('trust proxy');
-
-// Add a handler to inspect the req.secure flag (see
-// http://expressjs.com/api#req.secure). This allows us
-// to know whether the request was via http or https.
-  app.use(function(req, res, next) {
-    if (req.secure) {
-      // request was via https, so do no special handling
-      next();
-    } else {
-      // request was via http, so redirect to https
-      res.redirect('https://' + req.headers.host + req.url);
-    }
-  });
-
-}
-
-app.use(express.static(path.join(__dirname, 'build')));
-const port = process.env.PORT || 8081;
-
-app.get('/token', (req, res) => {
-  console.log('token requested');
-  const { identity, roomName } = req.query;
-  const token = new AccessToken(twilioAccountSid, twilioApiKeySID, twilioApiKeySecret, {
-    ttl: MAX_ALLOWED_SESSION_DURATION,
-  });
-  token.identity = identity;
-  const videoGrant = new VideoGrant({ room: roomName });
-  token.addGrant(videoGrant);
-  res.send(token.toJwt());
-  console.log(`issued token for ${identity} in room ${roomName}`);
-});
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
@@ -136,6 +150,13 @@ app.get('/participants/:room', (req, res) => {
     // .catch(error => { console.log(json); res.end(error.body.read()); });
 })
 
+
+
+//
+// millicast relays
+//
+
+// relay millicast turn server
 app.put('/millicast/turn', (req, res) => {
   const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
   fetch(turnUrl, { method: 'put' }).then(response => {
@@ -143,9 +164,7 @@ app.put('/millicast/turn', (req, res) => {
   })
 });
 
-//support parsing of application/json type post data
-app.use(bodyParser.json());
-
+// relay millicast subscribe
 app.post('/millicast/subscribe', (req, res) => {
   const apiPath  = 'https://director.millicast.com/api/director/subscribe';
   console.log('got post request with body', JSON.stringify(req.body));

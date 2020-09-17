@@ -15,5 +15,5 @@ export default function CaptioningEntry({ match }: RouteComponentProps<CodeParam
 
   return roomStatus === 'connected'
     ? <Broadcast />
-    : <SignIn roomName={code || defaultRoom()} role="signer"/>
+    : <SignIn roomName={code || defaultRoom()} role="sign-interpreter"/>
 }

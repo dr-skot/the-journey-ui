@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, styled } from '@material-ui/core';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import useHeight from '../../hooks/useHeight/useHeight';
@@ -13,26 +13,13 @@ const Container = styled('div')(() => ({
 export default function Millicast() {
   const height = useHeight();
   const [isFullscreen, toggleFullscreen] = useFullScreenToggle();
-  const [v, setV] = useState<HTMLVideoElement>();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const iframeRef = (frame: HTMLIFrameElement) => {
-    const content = frame?.contentDocument || frame?.contentWindow?.document;
-    const player = content?.getElementById('player') as HTMLVideoElement;
-    console.log('got player', { player, content, frame });
-    if (player) {
-      player.muted = false;
-      // if (!isFullscreen) toggleFullscreen();
-      setV(player);
-    }
-  }
 
-  const unmuteAndFullscreen = () => {
-    console.log({ v });
-    if (v) {
-      console.log('unmuting and fullscreening', { v, isFullscreen });
-      v.muted = false;
-      // if (!isFullscreen) toggleFullscreen();
-    }
+  function handleClickHopefully(e: { preventDefault: () => void; stopPropagation: () => void; }) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('tried to stop the click');
   }
 
   return (
