@@ -1,14 +1,6 @@
 import React, { useEffect } from 'react';
-import { Button, styled } from '@material-ui/core';
-import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
+import { styled } from '@material-ui/core';
 import MenuBar from '../../components/MenuBar/MenuBar';
-
-const ClickBlocker = styled('div')(() => ({
-  position: 'absolute',
-  height: '90vh',
-  width: '100%',
-  background: 'transparent',
-}));
 
 const Container = styled('div')(() => ({
   position: 'absolute',
@@ -35,7 +27,6 @@ export default function Millicast() {
         <MenuBar />
         <iframe
           ref={iframeRef}
-          style={{ border: '1px solid red' }}
           src="/player3/?id=keidk0k0"
           allowFullScreen
           width="100%" height="100%"

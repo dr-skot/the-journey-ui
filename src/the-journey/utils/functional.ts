@@ -24,8 +24,10 @@ export const includesEqual = (xs: any[]) => (x: any) => xs.some((xx) => isEqual(
 
 // add or remove an element from an array, depending on whether it's there or not
 // uses isEqual for comparison
-export const toggleMembership = (xs: any[]) => (x: any) =>
-  includesEqual(xs)(x) ? xs.filter(xx => !isEqual(xx, x)) : [...xs, x];
+export const toggleMembership = (xs: any[]) => (x: any) => {
+  console.log('TOGGLE MEMBERSHIP', { xs, x });
+  return includesEqual(xs)(x) ? xs.filter(xx => !isEqual(xx, x)) : [...xs, x];
+}
 
 export const constrain = (a: number, b: number) => (n: number) => Math.max(a, Math.min(b, n));
 

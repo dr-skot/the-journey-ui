@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import SignIn from '../Min/SignIn';
 import { Gallery } from '../Gallery/MinGallery';
-import Meetup from './Meetup';
-import useMeetup from '../../hooks/useMeetup';
+import Meeting from './Meeting';
+import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Min/WithFacts';
 import MenuedView from '../Gallery/MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
@@ -20,12 +20,12 @@ export default function MinFOH() {
 
 
 function FOHView() {
-  const { meetup } = useMeetup();
+  const { meeting } = useMeeting();
   // TODO should PlayAllSubscribedAudio live in App.jsx?
   return (
     <>
       <PlayAllSubscribedAudio />
-      { meetup ? <Meetup group={meetup} /> : <FOHGallery /> }
+      { meeting ? <Meeting group={meeting} /> : <FOHGallery /> }
     </>
   );
 }

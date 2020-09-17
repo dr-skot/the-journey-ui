@@ -11,6 +11,7 @@ import { inGroup, isRole, subscribe } from '../../../utils/twilio';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
+import useMeeting from '../../../hooks/useMeeting';
 
 interface FOHControlsProps {
   participant: Participant;
@@ -18,17 +19,18 @@ interface FOHControlsProps {
 
 export default function FOHControls({ participant }: FOHControlsProps) {
   const [{ room }, dispatch] = useAppContext();
-  const [{ admitted, rejected, meetups }, changeSharedState] =  useSharedRoomState();
+  const [{ admitted, rejected, meetings }, changeSharedState] =  useSharedRoomState();
   const [waiting, setWaiting] = useState(false);
   const audioTracks = useRemoteTracks('audio');
   const me = room?.localParticipant;
+  const { meeting } = useMeeting();
 
   if (!me || !isRole('foh')(me) || isRole('foh')(participant)) return null;
 
   const fohIdentity = me.identity || '';
   const { identity } = participant;
 
-  const inMeeting = meetups.some((group) => isEqual(group, [identity, fohIdentity]));
+  const inMeeting = !!meeting;
 
   const audioTrack = audioTracks[identity]?.[0] as RemoteAudioTrack;
   const spying = !!audioTrack;
@@ -46,8 +48,11 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     changeSharedState({ admitted: toggleMembership(admitted || [])(identity) });
 
   const toggleMeeting = () => {
-    changeSharedState({ meetups: toggleMembership(meetups)([identity, fohIdentity]) });
-  };
+    const newMeetings = inMeeting
+      ? meetings.filter((group) => !group.includes(identity))
+      : [...meetings, [identity, fohIdentity]];
+    changeSharedState({ meetings: newMeetings });
+  }
 
   const approved = inGroup(admitted)(participant);
 

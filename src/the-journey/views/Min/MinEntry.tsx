@@ -4,8 +4,8 @@ import { useAppContext } from '../../contexts/AppContext';
 import SignIn from './SignIn';
 import Broadcast from '../Broadcast/Broadcast';
 import WithFacts from './WithFacts';
-import useMeetup from '../../hooks/useMeetup';
-import Meetup from '../FOH/Meetup';
+import useMeeting from '../../hooks/useMeeting';
+import Meeting from '../FOH/Meeting';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import { inGroup } from '../../utils/twilio';
 import { ROOM_NAME } from '../../../App';
@@ -16,7 +16,7 @@ interface MinEntryProps {
 export default function MinEntry({ withFacts }: MinEntryProps) {
   const [{ room, roomStatus }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
-  const { meetup } = useMeetup();
+  const { meeting } = useMeeting();
   const roomName = ROOM_NAME;
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
@@ -27,8 +27,8 @@ export default function MinEntry({ withFacts }: MinEntryProps) {
   return roomStatus === 'connected'
     ? (
       <>
-        { meetup
-          ? <Meetup group={meetup}/>
+        { meeting
+          ? <Meeting group={meeting}/>
           : withFacts
             ? <WithFacts><Broadcast type="millicast"/></WithFacts>
             : <Broadcast type="millicast"/>

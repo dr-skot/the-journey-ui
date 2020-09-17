@@ -20,7 +20,7 @@ interface SharedRoomState {
   gain: number,
   delayTime: number,
   muteAll: boolean,
-  meetups: Group[];
+  meetings: Group[];
 }
 type StateChanger = (changes: Partial<SharedRoomState>) => void;
 type SharedRoomContextValue = [SharedRoomState, StateChanger];
@@ -34,7 +34,7 @@ const initialState = {
   gain: DEFAULT_GAIN,
   delayTime: DEFAULT_DELAY,
   muteAll: false,
-  meetups: [],
+  meetings: [],
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
 const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];

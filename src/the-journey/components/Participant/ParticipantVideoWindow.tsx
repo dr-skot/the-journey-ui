@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Participant as IParticipant } from 'twilio-video';
 import ParticipantVideo from './ParticipantVideo';
 import ParticipantInfoOverlay from './ParticipantInfo/ParticipantInfoOverlay';
@@ -22,6 +22,18 @@ export default function ParticipantVideoWindow({
   hotKey,
   mutable,
 }: ParticipantProps) {
+  const [, rerender] = useState(false);
+
+  useEffect(() => {
+    const update = () => rerender((prev) => !prev)
+    participant.on('trackSubscribed', update);
+    participant.on('trackUnsubscribed', update);
+    return () => {
+      participant.off('trackSubscribed', update);
+      participant.off('trackUnsubscribed', update);
+    }
+  })
+
   return (
     <ParticipantInfoOverlay {...{ participant, onClick, width, height, selectedIndex, hotKey, mutable }}>
       <ParticipantVideo participant={participant} />

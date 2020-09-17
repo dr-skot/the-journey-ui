@@ -11,11 +11,11 @@ import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 type Identity = Participant.Identity;
 
-interface MeetupProps {
+interface MeetingProps {
   group: Identity[],
 }
 
-export default function Meetup({ group }: MeetupProps) {
+export default function Meeting({ group }: MeetingProps) {
   const [, dispatch] = useAppContext();
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const meeters = sortBy(

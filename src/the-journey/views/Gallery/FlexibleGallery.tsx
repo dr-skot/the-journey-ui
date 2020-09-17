@@ -34,8 +34,6 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
   const containerRef = (node: HTMLElement | null) => setContainer(node)
   const [, rerender] = useState(false);
 
-  console.log('flexible gallery render');
-
   // rerender on resize
   useEffect(() => {
     const forceRender = () => rerender((prev) => !prev);
