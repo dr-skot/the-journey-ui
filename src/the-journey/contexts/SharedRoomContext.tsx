@@ -110,7 +110,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
       .filter((p) => p.identity !== me)
     if (others.length) {
       // they might not be listening yet, so keep asking until they respond
-      let gotInfo = false, retries = 5, attempt = 1, intervalId = 0;
+      let gotInfo = false, retries = 10, attempt = 1, intervalId = 0;
       let stop = () => { window.clearInterval(intervalId); gotInfo = true }
       room.once('trackMessage', stop);
       intervalId = window.setInterval(() => {

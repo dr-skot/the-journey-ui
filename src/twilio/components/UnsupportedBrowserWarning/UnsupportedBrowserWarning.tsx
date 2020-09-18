@@ -19,14 +19,14 @@ const useStyles = makeStyles({
 export default function({ children }: { children: React.ReactElement }) {
   const classes = useStyles();
 
-  if (!Video.isSupported || isFirefox) {
+  if (!Video.isSupported || isFirefox || !Array.prototype.flatMap) {
     return (
       <Container>
         <Grid container justify="center" className={classes.container}>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography variant="h4" className={classes.heading}>
-                Uh oh! This browser isn't supported
+                Uh oh! This browser isn&rsquo;t supported
               </Typography>
               <Typography>
                 The Journey is best experienced in the latest versions of Chrome, Edge, and Safari.
