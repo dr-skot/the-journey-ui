@@ -1,16 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
 import { getRole, getTimestamp, getUsername } from '../../utils/twilio';
 import { DateTime } from 'luxon';
-import { Button, TextField, Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import AudioElement from './AudioElement';
 import AudioNode from './AudioNode';
 import AutoJoin from '../../components/AutoJoin';
-import useAudioContext from '../../contexts/AudioStreamContext/useAudioContext';
-import AudioNodeOrElement from './AudioNodeOrElement';
-import { DEFAULT_ROOM_NAME } from '../../../App';
 import SubscribeToAllAudio from '../../subscribers/SubscribeToAllAudio';
 
 let globalRoom: Room | undefined;
@@ -82,7 +79,7 @@ export default function Testing() {
 
   return (
     <div style={{margin: '2em'}}>
-      <AutoJoin roomName={DEFAULT_ROOM_NAME}/>
+      <AutoJoin />
       <SubscribeToAllAudio/>
       <h1>Room "{room?.name}": all participants</h1>
       { participants.map((p) => p && <TestingParticipant key={p.identity} participant={p} />) }

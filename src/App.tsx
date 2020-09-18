@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import AppContextProvider, { useAppContext } from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
@@ -15,13 +15,11 @@ import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContex
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
-import MinEntry from './the-journey/views/Min/MinEntry';
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
 import MinFOH from './the-journey/views/FOH/MinFOH';
 import BlindOperator from './the-journey/views/Operator/BlindOperator2';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
-import { isDev } from './the-journey/utils/react-help';
 import WithFacts from './the-journey/views/Min/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
@@ -31,8 +29,6 @@ import Landing from './the-journey/views/Landing';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 // import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
-
-export const DEFAULT_ROOM_NAME = isDev() ? 'min-dev' : 'min2';
 
 export function NameHelmet() {
   const [{ room }] = useAppContext();
@@ -91,7 +87,7 @@ export default function App() {
 
                   <Route path="/testing/:code?" component={Testing}/>
                   <Route path="/" component={Landing} />
-  
+
                 </Switch>
               </Router>
             </div>

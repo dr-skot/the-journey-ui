@@ -6,14 +6,13 @@ import Broadcast from '../Broadcast/Broadcast';
 import useMeeting from '../../hooks/useMeeting';
 import Meeting from '../FOH/Meeting';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
-import { inGroup } from '../../utils/twilio';
-import { DEFAULT_ROOM_NAME } from '../../../App';
+import { defaultRoom, inGroup } from '../../utils/twilio';
 
 interface MinEntryProps {
   roomName?: string;
 }
 
-export default function MinEntry({ roomName = DEFAULT_ROOM_NAME }: MinEntryProps) {
+export default function MinEntry({ roomName = defaultRoom() }: MinEntryProps) {
   const [{ room, roomStatus }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
   const { meeting } = useMeeting();

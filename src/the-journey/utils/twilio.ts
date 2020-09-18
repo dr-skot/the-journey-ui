@@ -171,7 +171,8 @@ export function subscribe(room: string, participantId: string, policy: string = 
 
 
 
-export type UserRole = 'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus'
+export type UserRole =
+  'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus' | 'log'
 
 export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
   `${username || type}|${type}|${unixTime()}`;

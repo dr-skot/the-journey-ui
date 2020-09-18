@@ -7,7 +7,6 @@ import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Min/WithFacts';
 import MenuedView from '../Gallery/MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
-import { DEFAULT_ROOM_NAME } from '../../../App';
 import { useRouteMatch, match } from 'react-router-dom';
 import { defaultRoom } from '../../utils/twilio';
 
