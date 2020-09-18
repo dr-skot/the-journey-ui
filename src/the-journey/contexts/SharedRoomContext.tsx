@@ -21,6 +21,7 @@ interface SharedRoomState {
   delayTime: number,
   muteAll: boolean,
   meetings: Group[];
+  userAgents: Record<Identity, string>;
 }
 type StateChanger = (changes: Partial<SharedRoomState>) => void;
 type SharedRoomContextValue = [SharedRoomState, StateChanger];
@@ -35,6 +36,7 @@ const initialState = {
   delayTime: DEFAULT_DELAY,
   muteAll: false,
   meetings: [],
+  userAgents: {},
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
 const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];
@@ -91,6 +93,12 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
             console.log('updating state to', newState);
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
           });
+          // once we've received state, it's safe to publish our userAgent
+          if (room && !sharedStateUpdate.userAgents[room.localParticipant.identity]) {
+            const identity = room.localParticipant.identity;
+            const ua = navigator.userAgent;
+            changeState({ userAgents: { ...sharedStateUpdate.userAgents,  [identity]: ua }});
+          }
         }
         // send updates when requested
         if (request === 'sharedState') {
