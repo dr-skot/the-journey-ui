@@ -39,6 +39,7 @@ import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import { isDev } from './the-journey/utils/react-help';
 import WithFacts from './the-journey/views/Min/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
+import UnsupportedBrowserWarning from './twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 
 export const ROOM_NAME = isDev() ? 'min-dev' : 'min2';
 
@@ -62,6 +63,7 @@ export default function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
+      <UnsupportedBrowserWarning>
       <AppContextProvider>
         <NameHelmet/>
         <AudioStreamContextProvider>
@@ -123,6 +125,7 @@ export default function App() {
           </SharedRoomContextProvider>
         </AudioStreamContextProvider>
       </AppContextProvider>
+      </UnsupportedBrowserWarning>
     </MuiThemeProvider>
   );
 

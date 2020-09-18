@@ -1,9 +1,10 @@
-import { Participant, RemoteAudioTrack } from 'twilio-video';
+import { Participant, RemoteAudioTrack, RemoteParticipant } from 'twilio-video';
 import { AudioOut } from '../../utils/audio';
 import { useEffect, useState } from 'react';
 import { getParticipants, inGroup } from '../../utils/twilio';
 import { useAppContext } from '../AppContext';
 import { constrain } from '../../utils/functional';
+import { flatMap } from 'lodash';
 
 type Identity = Participant.Identity;
 
@@ -45,10 +46,12 @@ export default function useAudioElementCreator() {
   useEffect(() => {
     const { muteAll, unmuteGroup, audioOut, gain } = settings;
     const volume = constrain(0, 1)(gain);
-    const tracks = muteAll ? [] : participants.filter(inGroup(unmuteGroup)).flatMap((p) => (
-      Array.from(p.audioTracks.values())
-        .map((pub) => pub.track)
-        .filter((track) => !!track))) as RemoteAudioTrack[];
+    const tracks = muteAll
+      ? []
+      : flatMap(participants.filter(inGroup(unmuteGroup)), ((p: RemoteParticipant) => (
+        Array.from(p.audioTracks.values())
+          .map((pub) => pub.track)
+          .filter((track) => track !== null)))) as unknown as RemoteAudioTrack[];
     tracks.forEach((track) => {
       const audioElement = track.attach();
       audioElement.addEventListener('canplay', () => {
