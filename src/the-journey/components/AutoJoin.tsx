@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useRouteMatch, match } from 'react-router-dom';
-import Video from 'twilio-video';
 import { AppContext } from '../contexts/AppContext';
-import { defaultRoom, SettingsAdjust, SubscribeProfile, UserRole } from '../utils/twilio';
+import { defaultRoom, SettingsAdjust, UserRole } from '../utils/twilio';
 
 interface AutoJoinProps {
   roomName?: string,

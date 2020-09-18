@@ -1,25 +1,16 @@
-import React, { useContext } from 'react';
-import { codeToTime, codeToTimeWithTZ, formatTime, punctuality, timezones } from '../../utils/foh';
-import moment from 'moment';
+import React from 'react';
+import { codeToTimeWithTZ, punctuality, timezones } from '../../utils/foh';
 import { DateTime } from 'luxon';
-import { AppContext } from '../../contexts/AppContext';
-import { BroadcastType } from '../Broadcast/Broadcast';
-import SignIn from './SignIn';
 import { RouteComponentProps } from 'react-router-dom';
-import { defaultRoom } from '../../utils/twilio';
-import Lobby from './Lobby';
+import MinEntry from '../Min/MinEntry';
+import { DEFAULT_ROOM_NAME } from '../../../App';
 
 
 interface CodeParam {
   code?: string;
 }
 
-interface BroadcastProps extends RouteComponentProps<CodeParam> {
-  broadcastType: BroadcastType,
-}
-
-export default function FrontDoor({ broadcastType = 'millicast', match }: BroadcastProps) {
-  const [{ roomStatus }] = useContext(AppContext);
+export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
   const code = match.params.code;
   const [time, tzIndex] = code ? codeToTimeWithTZ(code) : [undefined, -1];
   const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -28,12 +19,10 @@ export default function FrontDoor({ broadcastType = 'millicast', match }: Broadc
   const timezone = timezones[tzIndex] || localTZ;
   const punct = punctuality(curtain);
 
-  const lobby = `${code || defaultRoom()}`;
+  const roomName = `${code || DEFAULT_ROOM_NAME}`;
 
   if (punct === 'on time' || punct === 'late') {
-    return roomStatus === 'connected'
-      ? <Lobby broadcastType={broadcastType} />
-      : <SignIn roomName={lobby} />
+    return <MinEntry roomName={roomName} />
   }
 
   const display = {

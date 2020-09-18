@@ -7,11 +7,14 @@ import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Min/WithFacts';
 import MenuedView from '../Gallery/MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
-import { ROOM_NAME } from '../../../App';
+import { DEFAULT_ROOM_NAME } from '../../../App';
+import { useRouteMatch, match } from 'react-router-dom';
+import { defaultRoom } from '../../utils/twilio';
 
 export default function MinFOH() {
   const [{ roomStatus }] = useAppContext();
-  const roomName = ROOM_NAME;
+  const match = useRouteMatch() as match<{ code?: string }>;
+  const roomName = match.params.code || defaultRoom();
 
   return roomStatus === 'connected'
     ? <FOHView />

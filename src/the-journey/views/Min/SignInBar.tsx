@@ -53,7 +53,6 @@ export default function SignInBar({ roomName = defaultRoom(), role = 'audience',
         <div className={classes.rightButtonContainer}>
           <FlipCameraButton />
           <LocalAudioLevelIndicator />
-          <ToggleFullscreenButton />
           <SettingsButton />
         </div>
       </Toolbar>

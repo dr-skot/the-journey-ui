@@ -24,13 +24,15 @@ import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import { isDev } from './the-journey/utils/react-help';
 import WithFacts from './the-journey/views/Min/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
-import UnsupportedBrowserWarning from './twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
+import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
+import FrontDoor from './the-journey/views/FOH/FrontDoor';
+import Landing from './the-journey/views/Landing';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 // import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
 
-export const ROOM_NAME = isDev() ? 'min-dev' : 'min2';
+export const DEFAULT_ROOM_NAME = isDev() ? 'min-dev' : 'min2';
 
 export function NameHelmet() {
   const [{ room }] = useAppContext();
@@ -64,32 +66,32 @@ export default function App() {
                 <Switch>
                   <Route path="/log/:code?" component={Log} />
 
-                  <Route path="/entry/:code?" component={MinEntry}/>
+                  <Route path="/entry/:code?" component={FrontDoor}/>
                   <Route path="/rejected" component={Rejected} />
 
                   <Route path="/code" component={GetCode} />
                   <Route path="/foh/:code?" component={MinFOH}/>
 
                   <Route path="/operator/:code?">
-                    <AutoJoin roomName={ROOM_NAME} role="operator" /><BlindOperator />
+                    <AutoJoin role="operator" /><BlindOperator />
                   </Route>
                   <Route path="/focus/:code?">
-                    <AutoJoin roomName={ROOM_NAME} role="focus" /><MinFocusGroup />
+                    <AutoJoin role="focus" /><MinFocusGroup />
                   </Route>
                   <Route path="/gallery/:code?">
-                    <AutoJoin roomName={ROOM_NAME} role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
+                    <AutoJoin role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
                   </Route>
 
                   <Route path="/captioning/:code?" component={CaptioningEntry} />
 
                   <Route path="/lurk/:code?">
-                    <AutoJoin roomName={ROOM_NAME} role="lurker" />
+                    <AutoJoin role="lurker" />
                     <WithFacts><Broadcast type="millicast"/></WithFacts>
                   </Route>
 
                   <Route path="/testing/:code?" component={Testing}/>
-                  <Route path="/" component={MinEntry} />
-
+                  <Route path="/" component={Landing} />
+  
                 </Switch>
               </Router>
             </div>
