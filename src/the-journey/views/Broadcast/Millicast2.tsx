@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, styled } from '@material-ui/core';
+import { Button, CircularProgress, styled } from '@material-ui/core';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import useHeight from '../../hooks/useHeight/useHeight';
 import fscreen from 'fscreen';
@@ -26,7 +26,6 @@ const Floated = styled('div')({
   left: '-50%',
 });
 
-
 type VideoElementListener = (el: HTMLVideoElement) => void;
 
 let player: HTMLVideoElement;
@@ -40,24 +39,16 @@ window.onMillicastStreamCanPlay = (videoElement: HTMLVideoElement) => {
   listeners.forEach((listener) => listener(videoElement));
 }
 
-
-
-const Container = styled('div')(() => ({
-  position: 'absolute',
-  height: '100%',
-  width: '100%'
-}))
-
 export default function Millicast() {
   const height = useHeight();
   const [isFullscreen, toggleFullscreen] = useFullScreenToggle();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [, rerender] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [buttonClicked, setButtonClicked] = useState(false);
 
   const onVideoReady = useCallback(() => {
-    rerender((prev) => !prev);
-  }, [rerender]);
+    setLoading(false);
+  }, [setLoading]);
 
   useEffect(() => {
     listeners.push(onVideoReady);
@@ -75,8 +66,9 @@ export default function Millicast() {
 
   return (
     <>
-      <div style={{ position: 'absolute', height, width: '100%' }}>
+      <div style={{ position: 'absolute', height, width: '100%', background: 'black' }}>
         <iframe
+          style={{ opacity: loading ? 0 : 1 }}
           ref={iframeRef}
           src="/player3/?id=keidk0k0"
           allowFullScreen
@@ -87,6 +79,13 @@ export default function Millicast() {
         console.log('click blocker!');
         e.stopPropagation()
       }} /> }
+      { loading && (
+        <Floater>
+          <Floated>
+            <CircularProgress />
+          </Floated>
+        </Floater>
+      )}
       { needButton && (
         <Floater>
           <Floated>
