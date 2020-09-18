@@ -37,7 +37,7 @@ function FOHGallery() {
 
   // initialize by subscribing to gallery
   // FOH controls may punch in to audio and video feeds
-  useEffect(() => dispatch('subscribe', { profile: 'data-only' }), [])
+  useEffect(() => dispatch('subscribe', { profile: 'data-only' }), [dispatch])
 
   return (
     <WithFacts>

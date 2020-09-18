@@ -94,7 +94,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
           });
           // once we've received state, it's safe to publish our userAgent
-          if (room && !sharedStateUpdate.userAgents[room.localParticipant.identity]) {
+          if (room && sharedStateUpdate.userAgents && !sharedStateUpdate.userAgents[room.localParticipant.identity]) {
             const identity = room.localParticipant.identity;
             const ua = navigator.userAgent;
             changeState({ userAgents: { ...sharedStateUpdate.userAgents,  [identity]: ua }});

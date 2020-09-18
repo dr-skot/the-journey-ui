@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 export default function({ children }: { children: React.ReactElement }) {
   const classes = useStyles();
 
-  if (!Video.isSupported || isFirefox || !Array.prototype.flatMap) {
+  if (!Video.isSupported || !Array.prototype.flatMap) {
     return (
       <Container>
         <Grid container justify="center" className={classes.container}>
