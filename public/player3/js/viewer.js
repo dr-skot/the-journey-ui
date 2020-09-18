@@ -57,8 +57,17 @@
       let vidWin = document.getElementsByTagName('video')[0];
       if (vidWin) {
         vidWin.srcObject = event.streams[0];
-        vidWin.controls  = true;
-
+        vidWin.controls = true;
+        vidWin.addEventListener('canplay', () => {
+          console.log('I can play!');
+          window.parent?.onMillicastStreamCanPlay?.(vidWin);
+        })
+        vidWin.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log('I was clicked');
+          vidWin.play();
+        })
       }
     };
 
