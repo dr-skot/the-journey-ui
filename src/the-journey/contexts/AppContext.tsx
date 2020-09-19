@@ -152,9 +152,9 @@ export default function AppContextProvider({ children }: ChildrenProps) {
   // reportEqual({ state, dispatch });
   const providerValue = prevIfEqual('AppContext.value', [state, dispatch]);
 
-  return <AppContext.Provider value={[state, dispatch]}>
+  return <AppContext.Provider value={providerValue}>
     {children}
   </AppContext.Provider>
 }
 
-export function useAppContext() { return useContext(AppContext ) };
+export function useAppContext() { return useContext(AppContext ) }

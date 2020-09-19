@@ -249,3 +249,4 @@ function removeLocalVideoTrack(track: LocalVideoTrack | undefined = localVideoTr
     localVideoTrack = undefined;
   }
 }
+

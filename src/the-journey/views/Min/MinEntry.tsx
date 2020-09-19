@@ -19,7 +19,7 @@ export default function MinEntry({ roomName = defaultRoom() }: MinEntryProps) {
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
 
-  return roomStatus === 'connected'
+  return roomStatus !== 'disconnected'
     ? meeting
       ? <Meeting group={meeting}/>
       : <Broadcast type="millicast" />

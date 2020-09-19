@@ -18,7 +18,7 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', options,
   const roomNameReally = roomName || match.params.code || defaultRoom();
 
   useEffect(() => {
-    if (['connected', 'connecting'].includes(roomStatus)) return;
+    if (roomStatus !== 'disconnected') return;
 
     dispatch('joinRoom', {
       roomName: roomNameReally, role: role, username, options
@@ -26,7 +26,7 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', options,
     // eslint-disable-next-line
   }, [roomStatus]);
 
-  return roomStatus === 'connected' ? children || null : null;
+  return roomStatus === 'disconnected' ? null : children || null;
 });
 AutoJoin.whyDidYouRender = false;
 

@@ -15,7 +15,7 @@ export default function MinFOH() {
   const match = useRouteMatch() as match<{ code?: string }>;
   const roomName = match.params.code || defaultRoom();
 
-  return roomStatus === 'connected'
+  return roomStatus !== 'disconnected'
     ? <FOHView />
     : <SignIn roomName={roomName} role="foh" options={{ maxTracks: '0' }} />;
 }

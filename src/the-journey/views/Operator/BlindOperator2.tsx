@@ -76,7 +76,7 @@ function MinOperatorView() {
 
   const [{ focusGroup }] = sharedRoom;
   const { toggleFocus } = operatorControls;
-
+ 
   console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery });
 
 
