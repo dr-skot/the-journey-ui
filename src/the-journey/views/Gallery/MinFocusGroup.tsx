@@ -10,9 +10,8 @@ import MenuedView from './MenuedView';
 import WithFacts from '../Entry/WithFacts';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import SubscribeToFocusGroupVideoAndAllAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAllAudio';
-import SubscribeToFocusGroupVideoAndAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAudio';
 import { Button } from '@material-ui/core';
+import Subscribe from '../../subscribers/Subscribe';
 
 function MinFocusGroupView() {
   const [{ focusGroup }] = useSharedRoomState();
@@ -36,12 +35,10 @@ function MinFocusGroupView() {
    </>
   )
 
-
-
   const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
   return (
     <MenuedView menuExtras={menuExtras}>
-      { safer ? <SubscribeToFocusGroupVideoAndAllAudio/> : <SubscribeToFocusGroupVideoAndAudio/> }
+      <Subscribe profile={safer ? 'focus-safer' : 'focus'} focus={focusGroup}/>
       <FlexibleGallery participants={final} />
     </MenuedView>
   );

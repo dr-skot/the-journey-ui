@@ -39,12 +39,12 @@ export default function Broadcast({ type }: BroadcastProps) {
     <SubscribeToFocusGroupAudio/>
     <FocusGroupAudio/>
     <WithFacts>
-    <Container>
-      <Main>
+      <Container>
+        <Main>
           <Millicast/>
-      </Main>
-      <SignLanguageInterpreter />
-    </Container>
+        </Main>
+        <SignLanguageInterpreter />
+      </Container>
     </WithFacts>
     </>
   );

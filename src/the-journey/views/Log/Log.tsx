@@ -5,7 +5,7 @@ import { listKey } from '../../utils/react-help';
 import { RemoteParticipant } from 'twilio-video';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import WithFacts from '../Entry/WithFacts';
-import SubscribeToDataOnly from '../../subscribers/SubscribeToDataOnly';
+import Subscribe from '../../subscribers/Subscribe';
 
 const logLine = (s: string) => `${new Date().toLocaleTimeString()}: ${s}`; // TODO add timestamp
 
@@ -62,7 +62,7 @@ export function LogView() {
   return (
     <div style={{margin: '2em'}}>
       <AutoJoin role="log" />
-      <SubscribeToDataOnly />
+      <Subscribe profile="data-only" />
       <h1>Log from {startTime.toLocaleTimeString()}</h1>
       { log.map((line, i) => (
         <p key={listKey('log', i)}>{line}</p>

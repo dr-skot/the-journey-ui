@@ -144,7 +144,9 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
 //
 // SUBSCRIBING
 //
-export type SubscribeProfile = 'data-only' | 'audio' | 'focus' | 'gallery' | 'listen' | 'nothing'
+export type SubscribeProfile =
+  'data-only' | 'audio' | 'focus' | 'focus-safer' | 'gallery' | 'listen' | 'watch' | 'nothing'
+
 const TIMEOUT_DELAY = 5000;
 
 export function subscribe(room: string, participantId: string, policy: string = 'data_only', focus: string[] = []) {

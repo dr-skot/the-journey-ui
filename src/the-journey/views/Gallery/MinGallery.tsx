@@ -4,8 +4,8 @@ import WithFacts from '../Entry/WithFacts';
 import FlexibleGallery, { GALLERY_SIZE } from './FlexibleGallery';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { isRole } from '../../utils/twilio';
-import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import { Button } from '@material-ui/core';
+import Subscribe from '../../subscribers/Subscribe';
 
 interface GalleryProps {
   hideBlanks?: boolean
@@ -31,7 +31,7 @@ export default function MinGallery() {
 
   return (
     <>
-      <SubscribeToAllVideo />
+      <Subscribe profile="gallery" />
       <WithFacts>
         <MenuedView menuExtras={menuExtras}>
           <Gallery hideBlanks={hideBlanks} />

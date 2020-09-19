@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
-import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
+import { GALLERY_SIZE } from './FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { getIdentities, isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Entry/WithFacts';
 import { Button } from '@material-ui/core';
-import SubscribeToVideoOfGroup from '../../subscribers/SubscribeToVideoOfGroup';
+import Subscribe from '../../subscribers/Subscribe';
 
 
 const Container = styled('div')({
@@ -97,7 +96,7 @@ function HalfGalleryView() {
 
   return (
     <Container>
-      { twoPage && halfSubscribe ? <SubscribeToVideoOfGroup group={identities}/> : <SubscribeToAllVideo /> }
+      { twoPage && halfSubscribe ? <Subscribe profile="watch" focus={identities}/> : <Subscribe profile="gallery" /> }
       <MenuBar extras={menuExtras}/>
       <Main>
         <FlexibleGallery

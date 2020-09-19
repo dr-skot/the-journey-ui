@@ -8,12 +8,10 @@ import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { getIdentities, isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Entry/WithFacts';
 import { Button } from '@material-ui/core';
-import SubscribeToVideoOfGroup from '../../subscribers/SubscribeToVideoOfGroup';
-
+import Subscribe from '../../subscribers/Subscribe';
 
 const Container = styled('div')({
   display: 'flex',
@@ -32,7 +30,7 @@ const Main = styled('div')({
 
 const half = (n: number) => Math.ceil(n / 2);
 
-function MinOperatorView() {
+function OperatorView() {
   const sharedRoom = useContext(SharedRoomContext);
   const operatorControls = useOperatorControls();
   let gallery = useParticipants().filter(isRole('audience'));
@@ -40,38 +38,28 @@ function MinOperatorView() {
 
   // TODO consolidaate this with MinGallery
   const [hideBlanks, setHideBlanks] = useState(false);
-  const [twoPage, setTwoPage] = useState(false);
-  const [galleryPage, setGalleryPage] = useState(1);
-  const [halfSubscribe, setHalfSubscribe] = useState(false);
-
+  const [paged, setPaged] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
 
   const menuExtras = (
     <>
-      { twoPage && (
+      { paged && (
         <>
-          Video: subscribed to {halfSubscribe ? 'page' : 'all'}
-          <Button
-            onClick={() => setHalfSubscribe((prev) => !prev)}
-            style={{ margin: '0.5em' }}
-            size="small" color="default" variant="contained"
-          >
-            {`subscribe to ${halfSubscribe ? 'all' : 'page'}`}
-          </Button>
         <Button
-          onClick={() => setGalleryPage((prev) => prev === 1 ? 2 : 1)}
+          onClick={() => setPageNumber((prev) => prev === 1 ? 2 : 1)}
           style={{ margin: '0.5em' }}
           size="small" color="default" variant="contained"
         >
-          {`${galleryPage === 2 ? 'page 1' : 'page 2'}`}
+          {`${pageNumber === 2 ? 'page 1' : 'page 2'}`}
         </Button>
           </>
       ) }
       <Button
-        onClick={() => setTwoPage((prev) => !prev)}
+        onClick={() => setPaged((prev) => !prev)}
         style={{ margin: '0.5em' }}
         size="small" color="default" variant="contained"
       >
-        {`${twoPage ? 'one page' : 'two pages'}`}
+        {`${paged ? 'one page' : 'two pages'}`}
       </Button>
     <Button
       onClick={() => setHideBlanks((prev) => !prev)}
@@ -90,8 +78,8 @@ function MinOperatorView() {
 
 
   const mid = half(gallery.length);
-  if (twoPage) {
-    gallery = galleryPage === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
+  if (paged) {
+    gallery = pageNumber === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
   }
 
   const identities = getIdentities(gallery);
@@ -99,8 +87,8 @@ function MinOperatorView() {
   const galleryProps = {
     participants: gallery,
     selection: focusGroup,
-    fixedLength: hideBlanks ? undefined : twoPage ? half(GALLERY_SIZE) : GALLERY_SIZE,
-    hotKeys: twoPage ? (galleryPage === 1 ? KEYS.slice(0, mid) : KEYS.slice(mid)) : KEYS,
+    fixedLength: hideBlanks ? undefined : paged ? half(GALLERY_SIZE) : GALLERY_SIZE,
+    hotKeys: paged ? (pageNumber === 1 ? KEYS.slice(0, mid) : KEYS.slice(mid)) : KEYS,
     onClick: toggleFocus,
   };
 
@@ -110,7 +98,7 @@ function MinOperatorView() {
 
   return (
     <Container>
-      { twoPage && halfSubscribe ? <SubscribeToVideoOfGroup group={identities}/> : <SubscribeToAllVideo /> }
+      <Subscribe profile="data-only" />
       <MenuBar extras={menuExtras}/>
       <Main>
         <FlexibleGallery
@@ -132,7 +120,7 @@ export default function Operator() {
   return (
     <>
       <WithFacts>
-        <MinOperatorView />
+        <OperatorView />
       </WithFacts>
     </>
   );

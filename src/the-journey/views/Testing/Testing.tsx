@@ -8,7 +8,7 @@ import { Button } from '@material-ui/core';
 import AudioElement from './AudioElement';
 import AudioNode from './AudioNode';
 import AutoJoin from '../../components/AutoJoin';
-import SubscribeToAllAudio from '../../subscribers/SubscribeToAllAudio';
+import Subscribe from '../../subscribers/Subscribe';
 
 let globalRoom: Room | undefined;
 
@@ -80,7 +80,7 @@ export default function Testing() {
   return (
     <div style={{margin: '2em'}}>
       <AutoJoin />
-      <SubscribeToAllAudio/>
+      <Subscribe profile="audio"/>
       <h1>Room "{room?.name}": all participants</h1>
       { participants.map((p) => p && <TestingParticipant key={p.identity} participant={p} />) }
     </div>

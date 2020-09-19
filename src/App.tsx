@@ -18,7 +18,7 @@ import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/F
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
 import FOH from './the-journey/views/FOH/FOH';
-import BlindOperator from './the-journey/views/Operator/BlindOperator';
+import BlindOperator from './the-journey/views/Operator/Operator';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import WithFacts from './the-journey/views/Entry/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
