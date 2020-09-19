@@ -252,3 +252,7 @@ function removeLocalVideoTrack(track: LocalVideoTrack | undefined = localVideoTr
   }
 }
 
+export function removeParticipant(participant: Participant, room?: Room) {
+  if (!room) return Promise.reject('No room!');
+  return fetch(`/disconnect/${room.name}/${participant.identity}`);
+}

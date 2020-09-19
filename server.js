@@ -102,7 +102,6 @@ const SUBSCRIBE_RULES = {
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
-  const client = new Twilio(twilioApiKeySID, twilioApiKeySecret, {accountSid: twilioAccountSid});
   const focus = req.query.focus || '';
   const basicRules = SUBSCRIBE_RULES.basic();
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
@@ -133,6 +132,23 @@ app.get('/subscribe/*', (req, res) => {
   console.log('uncaught subscribe request!');
   res.send('Error: bad subscribe request');
 })
+
+app.get('/disconnect/:room/:user', (req, res) => {
+  const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}`;
+  const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
+
+  const curl = `curl -X POST ${url} -u '${auth}' -d 'Status=disconnected' -H 'Content-Type: application/x-www-form-urlencoded'`;
+  console.log(curl);
+
+  const params = new URLSearchParams();
+  params.append('Status', 'disconnected');
+
+  fetch(url, { method: 'post', body: params, headers: { Authorization: `Basic ${base64(auth)}` } })
+    .then(response => {
+      console.log('success');
+      res.end(response.body.read());
+    })
+});
 
 app.get('/participants/:room', (req, res) => {
   const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants`;

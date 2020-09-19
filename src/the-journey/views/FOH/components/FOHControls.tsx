@@ -7,7 +7,7 @@ import { Participant, RemoteAudioTrack, RemoteVideoTrack } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 import CameraIcon from '@material-ui/icons/Videocam';
 import CameraOffIcon from '@material-ui/icons/VideocamOff';
-import { inGroup, isRole, subscribe } from '../../../utils/twilio';
+import { inGroup, isRole, removeParticipant, subscribe } from '../../../utils/twilio';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
@@ -41,8 +41,10 @@ export default function FOHControls({ participant }: FOHControlsProps) {
       .finally(() => setWaiting(false));
   }
 
-  const reject = () =>
+  const reject = () => {
     changeSharedState({ rejected: [...rejected, identity] });
+    removeParticipant(participant, room);
+  }
 
   const toggleApproved = () =>
     changeSharedState({ admitted: toggleMembership(admitted || [])(identity) });
