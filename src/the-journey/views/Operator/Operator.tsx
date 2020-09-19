@@ -1,17 +1,19 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
-import useGalleryParticipants from '../Gallery/hooks/useGalleryParticipants';
-import { GALLERY_SIZE } from '../Gallery/FixedGallery';
+import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
-import { inGroup } from '../../utils/twilio';
+import { getIdentities, isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
-import { elements, findIndexes } from '../../utils/functional';
-import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import { Helmet } from 'react-helmet';
-import { reportEqual } from '../../utils/dev';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
+import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
+import WithFacts from '../Entry/WithFacts';
+import { Button } from '@material-ui/core';
+import SubscribeToVideoOfGroup from '../../subscribers/SubscribeToVideoOfGroup';
+
 
 const Container = styled('div')({
   display: 'flex',
@@ -28,34 +30,77 @@ const Main = styled('div')({
   alignContent: 'center',
 });
 
-interface OperatorProps {
-  withMuppets?: boolean,
-}
+const half = (n: number) => Math.ceil(n / 2);
 
-const EMPTY_ARRAY = Object.freeze([]);
-
-export default function Operator(props: OperatorProps = {}) {
-  const { withMuppets } = props;
+function MinOperatorView() {
   const sharedRoom = useContext(SharedRoomContext);
-  const operatorControls = useOperatorControls({ withMuppets });
-  const gallery = useGalleryParticipants({ withMuppets });
+  const operatorControls = useOperatorControls();
+  let gallery = useParticipants().filter(isRole('audience'));
+  useRerenderOnTrackSubscribed();
+
+  // TODO consolidaate this with MinGallery
+  const [hideBlanks, setHideBlanks] = useState(false);
+  const [twoPage, setTwoPage] = useState(false);
+  const [galleryPage, setGalleryPage] = useState(1);
+  const [halfSubscribe, setHalfSubscribe] = useState(false);
+
+
+  const menuExtras = (
+    <>
+      { twoPage && (
+        <>
+          Video: subscribed to {halfSubscribe ? 'page' : 'all'}
+          <Button
+            onClick={() => setHalfSubscribe((prev) => !prev)}
+            style={{ margin: '0.5em' }}
+            size="small" color="default" variant="contained"
+          >
+            {`subscribe to ${halfSubscribe ? 'all' : 'page'}`}
+          </Button>
+        <Button
+          onClick={() => setGalleryPage((prev) => prev === 1 ? 2 : 1)}
+          style={{ margin: '0.5em' }}
+          size="small" color="default" variant="contained"
+        >
+          {`${galleryPage === 2 ? 'page 1' : 'page 2'}`}
+        </Button>
+          </>
+      ) }
+      <Button
+        onClick={() => setTwoPage((prev) => !prev)}
+        style={{ margin: '0.5em' }}
+        size="small" color="default" variant="contained"
+      >
+        {`${twoPage ? 'one page' : 'two pages'}`}
+      </Button>
+    <Button
+      onClick={() => setHideBlanks((prev) => !prev)}
+      style={{ margin: '0.5em' }}
+      size="small" color="default" variant="contained"
+    >
+      {`${hideBlanks ? 'show' : 'hide'} blanks`}
+    </Button>
+      </>
+  )
 
   const [{ focusGroup }] = sharedRoom;
-  const { forceGallery, forceHotKeys, toggleFocus } = operatorControls;
+  const { toggleFocus } = operatorControls;
 
-  console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery, props });
+  console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery });
 
-  const focusing = focusGroup.length && !forceGallery && gallery.some(inGroup(focusGroup));
-  const selector = focusing ? inGroup(focusGroup) : () => true;
-  const groupIndexes = findIndexes(selector)(gallery);
-  const selected = elements(groupIndexes)
-  const hotKeys = selected(KEYS.split('')).join('');
+
+  const mid = half(gallery.length);
+  if (twoPage) {
+    gallery = galleryPage === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
+  }
+
+  const identities = getIdentities(gallery);
 
   const galleryProps = {
-    participants: selected(gallery),
-    selection: focusing ? EMPTY_ARRAY : focusGroup,
-    fixedLength: focusing ? undefined : GALLERY_SIZE,
-    hotKeys: !focusing || forceHotKeys ? hotKeys : '',
+    participants: gallery,
+    selection: focusGroup,
+    fixedLength: hideBlanks ? undefined : twoPage ? half(GALLERY_SIZE) : GALLERY_SIZE,
+    hotKeys: twoPage ? (galleryPage === 1 ? KEYS.slice(0, mid) : KEYS.slice(mid)) : KEYS,
     onClick: toggleFocus,
   };
 
@@ -65,17 +110,30 @@ export default function Operator(props: OperatorProps = {}) {
 
   return (
     <Container>
-      <MenuBar />
+      { twoPage && halfSubscribe ? <SubscribeToVideoOfGroup group={identities}/> : <SubscribeToAllVideo /> }
+      <MenuBar extras={menuExtras}/>
       <Main>
-      <FlexibleGallery
-        participants={final.participants}
-        selection={final.selection}
-        fixedLength={final.fixedLength}
-        hotKeys={final.hotKeys}
-        onClick={final.onClick}
-      />
+        <FlexibleGallery
+          participants={final.participants}
+          selection={final.selection}
+          fixedLength={final.fixedLength}
+          hotKeys={final.hotKeys}
+          onClick={final.onClick}
+          muteControls={true}
+        />
       </Main>
-      <FocusGroupAudio />
     </Container>
+  );
+}
+
+
+export default function Operator() {
+
+  return (
+    <>
+      <WithFacts>
+        <MinOperatorView />
+      </WithFacts>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import { sortBy } from 'lodash';
 import { useContext } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
 import { padWithMuppets } from '../../../components/Participant/Muppet';
-import { GALLERY_SIZE } from '../FixedGallery';
+import { GALLERY_SIZE } from '../FlexibleGallery';
 import { getTimestamp, inGroup, isRole, sameIdentities } from '../../../utils/twilio';
 import { and, not } from '../../../utils/functional';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';

@@ -2,7 +2,7 @@ import React from 'react';
 import { codeToTimeWithTZ, punctuality, timezones } from '../../utils/foh';
 import { DateTime } from 'luxon';
 import { RouteComponentProps } from 'react-router-dom';
-import MinEntry from '../Min/MinEntry';
+import Entry from '../Entry/Entry';
 import { defaultRoom } from '../../utils/twilio';
 
 
@@ -22,7 +22,7 @@ export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
   const roomName = `${code || defaultRoom()}`;
 
   if (punct === 'on time' || punct === 'late') {
-    return <MinEntry roomName={roomName} />
+    return <Entry roomName={roomName} />
   }
 
   const display = {

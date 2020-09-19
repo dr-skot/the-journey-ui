@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
-import { GALLERY_SIZE } from '../Gallery/FixedGallery';
+import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { getIdentities, isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import WithFacts from '../Min/WithFacts';
+import WithFacts from '../Entry/WithFacts';
 import { Button } from '@material-ui/core';
 import SubscribeToVideoOfGroup from '../../subscribers/SubscribeToVideoOfGroup';
 

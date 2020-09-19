@@ -12,7 +12,7 @@ interface MinEntryProps {
   roomName?: string;
 }
 
-export default function MinEntry({ roomName = defaultRoom() }: MinEntryProps) {
+export default function Entry({ roomName = defaultRoom() }: MinEntryProps) {
   const [{ room, roomStatus }] = useAppContext();
   const [{ rejected }] = useSharedRoomState();
   const { meeting } = useMeeting();

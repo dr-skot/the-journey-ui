@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
-import { ASPECT_RATIO } from './FixedGallery';
 import { styled } from '@material-ui/core/styles';
 import Nobody, { Blanks } from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
+
+export const GALLERY_SIZE = 30;
+export const ASPECT_RATIO = 16/9;
 
 const Container = styled('div')(() => ({
   flex: '1 1 0',

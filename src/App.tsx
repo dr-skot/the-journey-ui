@@ -10,17 +10,17 @@ import { CssBaseline } from '@material-ui/core';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
 import Rejected from './the-journey/views/FOH/Rejected';
-import CaptioningEntry from './the-journey/views/Broadcast/components/CaptioningEntry';
+import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
 import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
-import MinFOH from './the-journey/views/FOH/MinFOH';
-import BlindOperator from './the-journey/views/Operator/BlindOperator2';
+import FOH from './the-journey/views/FOH/FOH';
+import BlindOperator from './the-journey/views/Operator/BlindOperator';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
-import WithFacts from './the-journey/views/Min/WithFacts';
+import WithFacts from './the-journey/views/Entry/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
@@ -66,7 +66,7 @@ export default function App() {
                   <Route path="/rejected" component={Rejected} />
 
                   <Route path="/code" component={GetCode} />
-                  <Route path="/foh/:code?" component={MinFOH}/>
+                  <Route path="/foh/:code?" component={FOH}/>
 
                   <Route path="/operator/:code?">
                     <AutoJoin role="operator" /><BlindOperator />
@@ -78,11 +78,11 @@ export default function App() {
                     <AutoJoin role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
                   </Route>
 
-                  <Route path="/captioning/:code?" component={CaptioningEntry} />
+                  <Route path="/captioning/:code?" component={SignLanguageEntry} />
 
                   <Route path="/lurk/:code?">
                     <AutoJoin role="lurker" />
-                    <WithFacts><Broadcast type="millicast"/></WithFacts>
+                    <WithFacts><Broadcast /></WithFacts>
                   </Route>
 
                   <Route path="/testing/:code?" component={Testing}/>

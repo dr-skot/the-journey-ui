@@ -7,7 +7,7 @@ import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery from './FlexibleGallery';
 import MenuedView from './MenuedView';
-import WithFacts from '../Min/WithFacts';
+import WithFacts from '../Entry/WithFacts';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import SubscribeToFocusGroupVideoAndAllAudio from '../../subscribers/SubscribeToFocusGroupVideoAndAllAudio';

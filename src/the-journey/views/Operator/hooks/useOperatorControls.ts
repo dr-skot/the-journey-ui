@@ -5,6 +5,8 @@ import { isEqual } from 'lodash';
 import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 import { toggleMembership } from '../../../utils/functional';
 import { cached } from '../../../utils/react-help';
+import useParticipants from '../../../hooks/useParticipants/useParticipants';
+import { isRole } from '../../../utils/twilio';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -17,19 +19,21 @@ interface OperatorData {
 }
 
 export default function useOperatorControls({ withMuppets }: MuppetOption = {}) {
-  let participants = useGalleryParticipants({ withMuppets });
+  let participants = useParticipants().filter(isRole('audience'));
   const [{ focusGroup }, setSharedState] = useContext(SharedRoomContext);
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
 
   const toggleFocus = useCallback((participant: Participant) => {
-    console.log('toggleFocus', { focusGroup, identitiy: participant.identity });
-    setSharedState({ focusGroup: toggleMembership(focusGroup)(participant.identity) });
-  },
+      console.log('toggleFocus', { focusGroup, identitiy: participant.identity });
+      // @ts-ignore
+      setSharedState({ focusGroup: toggleMembership(focusGroup)(participant.identity) });
+    },
     [focusGroup, setSharedState]);
 
   const clearFocus = useCallback(() =>
-    setSharedState({ focusGroup: [] }),
+      // @ts-ignore
+      setSharedState({ focusGroup: [] }),
     [setSharedState]);
 
   const [data, setData] = useReducer((state: OperatorData, payload: OperatorData) => {

@@ -9,7 +9,7 @@ interface CodeParam {
   code?: string;
 }
 
-export default function CaptioningEntry({ match }: RouteComponentProps<CodeParam>) {
+export default function SignLanguageEntry({ match }: RouteComponentProps<CodeParam>) {
   const [{ roomStatus }] = useContext(AppContext);
   const code = match.params.code;
 

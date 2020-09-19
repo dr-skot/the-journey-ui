@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import MenuedView from './MenuedView';
-import WithFacts from '../Min/WithFacts';
-import FlexibleGallery from './FlexibleGallery';
-import { GALLERY_SIZE } from './FixedGallery';
+import WithFacts from '../Entry/WithFacts';
+import FlexibleGallery, { GALLERY_SIZE } from './FlexibleGallery';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { isRole } from '../../utils/twilio';
 import SubscribeToAllVideo from '../../subscribers/SubscribeToAllVideo';
