@@ -27,7 +27,7 @@ export function LogView() {
   useEffect(() => {
     if (room) {
       const n = room.participants.size;
-      addToLog(`entered room ${room.name} with ${n} participant${n < 1 ? '.' : n < 2 ? ':' : 's:'}`);
+      addToLog(`entered room ${room.name} (${room.sid}) with ${n} participant${n < 1 ? '.' : n < 2 ? ':' : 's:'}`);
       room.participants.forEach((p) => {
         addToLog(`${p.identity} with sid ${p.sid}`);
       });
