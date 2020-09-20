@@ -8,6 +8,10 @@ import Meeting from '../FOH/Meeting';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import { defaultRoom, inGroup } from '../../utils/twilio';
 
+function rejectedPath() {
+  return window.location.pathname.replace('entry', 'rejected');
+}
+
 interface MinEntryProps {
   roomName?: string;
 }
@@ -17,7 +21,7 @@ export default function Entry({ roomName = defaultRoom() }: MinEntryProps) {
   const [{ rejected }] = useSharedRoomState();
   const { meeting } = useMeeting();
 
-  if (inGroup(rejected)(room?.localParticipant)) return <Redirect to="/rejected" />;
+  if (inGroup(rejected)(room?.localParticipant)) return <Redirect to={rejectedPath()} />;
 
   return roomStatus !== 'disconnected'
     ? meeting
