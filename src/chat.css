@@ -1,5 +1,14 @@
+body {
+    font-family: "DIN Alternate", "DIN Condensed", "Avenir Next", "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 .rcw-conversation-container > .rcw-header {
     background-color: cornflowerblue;
+    font-family: "DIN Alternate", "DIN Condensed", "Avenir Next", "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+.rcw-conversation-container .rcw-title {
+    padding: 0;
 }
 
 .rcw-response > .rcw-message-text {
@@ -11,8 +20,13 @@
 }
 .rcw-launcher {
     background-color: cornflowerblue;
+    box-shadow: none;
 }
 
 .rcw-timestamp {
     color: lightslategray;
+}
+
+.rcw-conversation-container {
+    box-shadow: none;
 }

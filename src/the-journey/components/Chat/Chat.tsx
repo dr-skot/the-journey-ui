@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { addResponseMessage, Widget } from 'react-chat-widget';
-import { AppContext } from '../../../../contexts/AppContext';
-import { tryToParse } from '../../../../utils/functional';
-import { getLocalDataTrack, getUsername } from '../../../../utils/twilio';
+import { AppContext } from '../../contexts/AppContext';
+import { tryToParse } from '../../utils/functional';
+import { getLocalDataTrack, getUsername } from '../../utils/twilio';
 import 'react-chat-widget/lib/styles.css';
-import '../../../../../chat.css';
+import '../../../chat.css';
 
 export default function Chat() {
   const [{ room }] = useContext(AppContext);
@@ -32,8 +32,8 @@ export default function Chat() {
   return (
     <div>
       <Widget
-        title="Lobby for The Journey"
-        subtitle="we'll be letting you in soon"
+        title="T H E &nbsp;&nbsp; J O U R N E Y"
+        subtitle="chat window"
         handleNewUserMessage={handleNewUserMessage} />
     </div>
   );

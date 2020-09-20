@@ -6,7 +6,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { useAppContext } from '../../contexts/AppContext';
 import MenuedView from '../MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
-import Chat from './components/Chat/Chat';
+import Chat from '../../components/Chat/Chat';
 import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
