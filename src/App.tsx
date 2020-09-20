@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import AppContextProvider, { useAppContext } from './the-journey/contexts/AppContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
@@ -25,10 +25,8 @@ import ReconnectingNotification from './the-journey/components/ReconnectingNotif
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
 import FrontDoor from './the-journey/views/FOH/FrontDoor';
-import Landing from './the-journey/views/Landing';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
-// import generateConnectionOptions from './twilio/utils/generateConnectionOptions/generateConnectionOptions';
 
 export function NameHelmet() {
   const [{ room }] = useAppContext();
@@ -86,7 +84,10 @@ export default function App() {
                   </Route>
 
                   <Route path="/testing/:code?" component={Testing}/>
-                  <Route path="/" component={Landing} />
+
+                  <Route path="/">
+                    <Redirect to="/trailer.m4v" />
+                  </Route>
 
                 </Switch>
               </Router>
@@ -104,15 +105,10 @@ export default function App() {
 /*
 const VideoAppFull = React.memo(({ view }: VideoAppProps) => {
   const { error, setError, settings } = useAppState();
-  const connectionOptions = generateConnectionOptions(settings);
 
   return (
-    <UnsupportedBrowserWarning>
-      <VideoProvider options={connectionOptions} onError={setError} lurk={view === 'gallery' || view === 'operator'}>
         <ErrorDialog dismissError={() => setError(null)} error={error} />
         <App />
-      </VideoProvider>
-    </UnsupportedBrowserWarning>
   );
 });
  */
