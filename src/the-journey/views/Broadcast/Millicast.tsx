@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, CircularProgress, styled } from '@material-ui/core';
-import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import useHeight from '../../hooks/useHeight/useHeight';
 import fscreen from 'fscreen';
 import { remove } from '../../utils/functional';
@@ -27,39 +26,56 @@ const Floated = styled('div')({
 });
 
 type VideoElementListener = (el: HTMLVideoElement) => void;
+type ResponseListener = (res: any) => void;
 
 let player: HTMLVideoElement;
-const listeners: VideoElementListener[] = []
+const successListeners: VideoElementListener[] = [];
+const failureListeners: ResponseListener[] = [];
 
 // @ts-ignore
 window.onMillicastStreamCanPlay = (videoElement: HTMLVideoElement) => {
   console.log('millicast stream can play, unmuting');
   // videoElement.muted = false;
   player = videoElement;
-  listeners.forEach((listener) => listener(videoElement));
+  successListeners.forEach((listener) => listener(videoElement));
+}
+
+// @ts-ignore
+window.onMillicastError = (response: any) => {
+  console.log('millicast error', response);
+  failureListeners.forEach((listener) => listener(response));
 }
 
 export default function Millicast() {
   const height = useHeight();
-  const [isFullscreen, toggleFullscreen] = useFullScreenToggle();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<any>();
   const [buttonClicked, setButtonClicked] = useState(false);
 
   const onVideoReady = useCallback(() => {
     setLoading(false);
   }, [setLoading]);
 
+  const onError = useCallback((error) => {
+    setLoading(false);
+    setError(error);
+  }, [setLoading, setError]);
+
   useEffect(() => {
-    listeners.push(onVideoReady);
-    return () => remove(listeners, onVideoReady);
+    successListeners.push(onVideoReady);
+    failureListeners.push(onError);
+    return () => {
+      remove(successListeners, onVideoReady);
+      remove(failureListeners, onError);
+    }
   }, [onVideoReady]);
 
   const needButton = player && (player.muted || player.paused) && (!buttonClicked);
 
   const finalTouches = () => {
     player.muted = false;
-    player.play();
+    player.play().finally();
     fscreen.requestFullscreen(player);
     setButtonClicked(true);
   };
@@ -68,9 +84,9 @@ export default function Millicast() {
     <>
       <div style={{ position: 'absolute', height, width: '100%', background: 'black' }}>
         <iframe
-          style={{ opacity: loading ? 0 : 1 }}
+          style={{ opacity: loading || error ? 0 : 1 }}
           ref={iframeRef}
-          src="/player3/?id=keidk0k0"
+          src={'/player3/?id=keidk0k0'}
           allowFullScreen
           width="100%" height="100%"
         />
@@ -79,7 +95,7 @@ export default function Millicast() {
         console.log('click blocker!');
         e.stopPropagation()
       }} /> }
-      { loading && (
+      { loading && !error && (
         <Floater>
           <Floated>
             <CircularProgress />
@@ -92,6 +108,13 @@ export default function Millicast() {
           <Button onClick={finalTouches} variant="contained" color="primary">
             click<br/>to begin
           </Button>
+          </Floated>
+        </Floater>
+      ) }
+      { error && (
+        <Floater>
+          <Floated>
+            <h1>Stream not available!</h1>
           </Floated>
         </Floater>
       ) }

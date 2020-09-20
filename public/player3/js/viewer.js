@@ -34,8 +34,8 @@
           connect();
         })
         .catch(e => {
-          console.log('api error: ', e);
-          alert("Error: The API encountered an error ", e);
+          console.log('updateMillicastAuth failed: ', e);
+          window.parent?.onMillicastError?.(e);
         });
       return;
     }
@@ -51,6 +51,9 @@
     console.log('config: ', conf);
     let pc     = new RTCPeerConnection(conf);
     //Listen for track once it starts playing.
+    pc.onconnectionstatechange = (event) => {
+      console.log('RTCPeerConnection state changed to', pc.connectionState);
+    }
     pc.ontrack = function (event) {
       console.debug("pc::onAddStream", event);
       //Play it
@@ -120,9 +123,11 @@
           })
           .catch(e => {
             console.log('setLocalDescription failed: ', e);
+            window.parent?.onMillicastError?.(e);
           })
       }).catch(e => {
         console.log('createOffer Failed: ', e)
+        window.parent?.onMillicastError?.(e);
       });
     }
 
@@ -144,6 +149,7 @@
             })
             .catch(e => {
               console.log('setRemoteDescription failed: ', e);
+              window.parent?.onMillicastError?.(e);
             });
           break;
       }
@@ -204,18 +210,11 @@
       xhr.onreadystatechange = function (evt) {
         if (xhr.readyState == 4) {
           let res = JSON.parse(xhr.responseText);
-          console.log('res: ', res);
-          console.log('status:', xhr.status, ' response: ', xhr.responseText);
-          switch (xhr.status) {
-            case 200:
-              let d = res.data;
-              jwt   = d.jwt;
-              url   = d.urls[0];
-              resolve(d);
-              break;
-            default:
-              reject(res);
-          }
+          console.log('updateMillicastAuth res: ', res);
+          if (res.status === 'fail' || xhr.status !== 200) reject(res);
+          jwt = res.data.jwt;
+          url = res.data.urls[0];
+          resolve(d);
         }
       }
       xhr.open("POST", apiPath, true);
