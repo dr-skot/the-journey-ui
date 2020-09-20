@@ -4,7 +4,7 @@ import AutoJoin from '../../components/AutoJoin';
 import { listKey } from '../../utils/react-help';
 import { RemoteParticipant } from 'twilio-video';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
-import WithFacts from '../Entry/WithFacts';
+import WithFacts from '../Facts/WithFacts';
 import Subscribe from '../../subscribers/Subscribe';
 
 const logLine = (s: string) => `${new Date().toLocaleTimeString()}: ${s}`; // TODO add timestamp

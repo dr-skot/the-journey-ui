@@ -5,15 +5,15 @@ import { cached } from '../../utils/react-help';
 import { inGroup, sameIdentities } from '../../utils/twilio';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import FlexibleGallery from './FlexibleGallery';
-import MenuedView from './MenuedView';
-import WithFacts from '../Entry/WithFacts';
+import FlexibleGallery from '../Gallery/FlexibleGallery';
+import MenuedView from '../MenuedView';
+import WithFacts from '../Facts/WithFacts';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 
-function MinFocusGroupView() {
+function FocusGroupView() {
   const [{ focusGroup }] = useSharedRoomState();
   const group = sortBy(
     useParticipants().filter(inGroup(focusGroup)),
@@ -44,12 +44,12 @@ function MinFocusGroupView() {
   );
 }
 
-export default function MinFocusGroup() {
+export default function FocusGroup() {
   return (
     <>
       <FocusGroupAudio/>
       <WithFacts>
-        <MinFocusGroupView />
+        <FocusGroupView />
       </WithFacts>
     </>
   );

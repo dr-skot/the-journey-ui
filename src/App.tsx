@@ -15,12 +15,12 @@ import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContex
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
-import MinFocusGroup from './the-journey/views/Gallery/MinFocusGroup';
+import FocusGroup from './the-journey/views/Focus/FocusGroup';
 import { getUsername } from './the-journey/utils/twilio';
 import FOH from './the-journey/views/FOH/FOH';
 import BlindOperator from './the-journey/views/Operator/Operator';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
-import WithFacts from './the-journey/views/Entry/WithFacts';
+import WithFacts from './the-journey/views/Facts/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
@@ -70,7 +70,7 @@ export default function App() {
                     <AutoJoin role="operator" /><BlindOperator />
                   </Route>
                   <Route path="/focus/:code?">
-                    <AutoJoin role="focus" /><MinFocusGroup />
+                    <AutoJoin role="focus" /><FocusGroup />
                   </Route>
                   <Route path="/gallery/:code?">
                     <AutoJoin role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />

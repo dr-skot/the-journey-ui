@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import MenuBar from '../../components/MenuBar/MenuBar';
+import MenuBar from '../components/MenuBar/MenuBar';
 import { styled } from '@material-ui/core/styles';
 
 const Container = styled('div')({

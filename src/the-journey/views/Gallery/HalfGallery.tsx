@@ -7,7 +7,7 @@ import { getIdentities, isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import WithFacts from '../Entry/WithFacts';
+import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 

@@ -1,11 +1,9 @@
-import { useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import useGalleryParticipants, { MuppetOption } from '../../Gallery/hooks/useGalleryParticipants';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
-import { isEqual } from 'lodash';
 import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 import { toggleMembership } from '../../../utils/functional';
 import { cached } from '../../../utils/react-help';
-import useParticipants from '../../../hooks/useParticipants/useParticipants';
+import useParticipants from '../../../hooks/useParticipants/useParticipants'
 import { isRole } from '../../../utils/twilio';
 
 // both with and without shift key
@@ -18,7 +16,7 @@ interface OperatorData {
   toggleFocus?: (p: Participant) => void,
 }
 
-export default function useOperatorControls({ withMuppets }: MuppetOption = {}) {
+export default function useOperatorControls() {
   let participants = useParticipants().filter(isRole('audience'));
   const [{ focusGroup }, setSharedState] = useContext(SharedRoomContext);
   const [forceGallery, setForceGallery] = useState(false);
@@ -35,11 +33,6 @@ export default function useOperatorControls({ withMuppets }: MuppetOption = {}) 
       // @ts-ignore
       setSharedState({ focusGroup: [] }),
     [setSharedState]);
-
-  const [data, setData] = useReducer((state: OperatorData, payload: OperatorData) => {
-    const newState = { ...state, ...payload };
-    return isEqual(newState, state) ? state : newState;
-  }, { forceGallery: false, forceHotKeys: false, toggleFocus });
 
   // hotkeys
   useEffect(() => {

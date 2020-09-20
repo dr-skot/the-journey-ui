@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import SignIn from '../Entry/SignIn';
-import { Gallery } from '../Gallery/MinGallery';
 import Meeting from './Meeting';
 import useMeeting from '../../hooks/useMeeting';
-import WithFacts from '../Entry/WithFacts';
-import MenuedView from '../Gallery/MenuedView';
+import WithFacts from '../Facts/WithFacts';
+import MenuedView from '../MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 import { useRouteMatch, match } from 'react-router-dom';
-import { defaultRoom } from '../../utils/twilio';
+import { defaultRoom, isRole } from '../../utils/twilio';
+import useParticipants from '../../hooks/useParticipants/useParticipants';
+import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 
 export default function FOH() {
   const [{ roomStatus }] = useAppContext();
@@ -46,4 +47,14 @@ function FOHGallery() {
       </MenuedView>
     </WithFacts>
   )
+}
+
+interface GalleryProps {
+  hideBlanks?: boolean
+}
+export function Gallery({ hideBlanks }: GalleryProps) {
+  const participants = useParticipants().filter(isRole('audience'));
+  return <FlexibleGallery participants={participants}
+                          fixedLength={hideBlanks ? undefined : GALLERY_SIZE}
+                          blanks="nothing"/>;
 }

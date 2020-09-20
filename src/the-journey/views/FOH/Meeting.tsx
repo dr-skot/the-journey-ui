@@ -4,7 +4,7 @@ import { Participant } from 'twilio-video';
 import { inGroup, isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { useAppContext } from '../../contexts/AppContext';
-import MenuedView from '../Gallery/MenuedView';
+import MenuedView from '../MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Chat from './components/Chat/Chat';
 import Controls from '../../components/Controls/Controls';
