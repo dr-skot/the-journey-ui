@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import { RouteComponentProps } from 'react-router-dom';
 import Entry from '../Entry/Entry';
 import { defaultRoom } from '../../utils/twilio';
+import SimpleMessage from '../MessageView';
 
 
 interface CodeParam {
@@ -13,10 +14,10 @@ interface CodeParam {
 export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
   const code = match.params.code;
   const [time, tzIndex] = code ? codeToTimeWithTZ(code) : [undefined, -1];
-  const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const curtain = time ? DateTime.fromJSDate(time) : DateTime.local().plus({ minutes: 15 });
-  const timezone = timezones[tzIndex] || localTZ;
+  const timezone = timezones[tzIndex] || localTz;
   const punct = punctuality(curtain);
 
   const roomName = `${code || defaultRoom()}`;
@@ -35,14 +36,21 @@ export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
     time: curtain.setZone(timezone).toFormat('h:mma'),
   }
 
-  return (
-    <div>
-      <h1>You're {punct}!</h1>
-      <p>Show {punct.match(/late/) ? 'started' : 'starts'} at {display.time} on {display.day}</p>
-      { timezone !== localTZ && (
-        <p>(That's {displayTz.time} in {timezone})</p>
-      ) }
-    </div>
+  const friendlyTimezone = (timezone: string) => (
+    timezone.replace(/^.*\//, '').replace('_', ' ')
   )
+
+  const timezoneIsLocal = timezone === localTz;
+
+  return (
+    <SimpleMessage
+      title={`You’re ${punct}!`}
+      paragraphs={[
+        <>This show {punct.match(/late/) ? 'started' : 'starts'} at {display.time} on {display.day}.</>,
+        <>{ timezoneIsLocal && <p>({displayTz.time} in {friendlyTimezone(timezone)}.)</p> }</>,
+        ]}
+    />
+  )
+
 }
 
