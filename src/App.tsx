@@ -10,7 +10,7 @@ import { CssBaseline } from '@material-ui/core';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
 import Rejected from './the-journey/views/FOH/Rejected';
-import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
+// import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
 import Testing from './the-journey/views/Testing/Testing';
@@ -26,6 +26,7 @@ import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrows
 import Log from './the-journey/views/Log/Log';
 import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Comm from './the-journey/views/Comm/Comm';
+import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -59,34 +60,47 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
-                  <Route path="/log/:code?" component={Log} />
-
                   <Route path="/entry/:code?" component={FrontDoor}/>
                   <Route path="/rejected" component={Rejected} />
 
-                  <Route path="/code" component={GetCode} />
-                  <Route path="/foh/:code?" component={FOH}/>
+                  <PrivateRoute roles="foh|operator" path="/code">
+                    <GetCode/>
+                  </PrivateRoute>
+                  <PrivateRoute roles="foh|operator" path="/foh/:code?">
+                    <FOH/>
+                  </PrivateRoute>
+                  <PrivateRoute roles="foh|operator" path="/comm/:code?">
+                    <Comm/>
+                  </PrivateRoute>
 
-                  <Route path="/operator/:code?">
+
+                  <PrivateRoute roles="operator" path="/operator/:code?">
                     <AutoJoin role="operator" /><BlindOperator />
-                  </Route>
-                  <Route path="/focus/:code?">
+                  </PrivateRoute>
+                  <PrivateRoute roles="operator" path="/focus/:code?">
                     <AutoJoin role="focus" /><FocusGroup />
-                  </Route>
-                  <Route path="/gallery/:code?">
+                  </PrivateRoute>
+                  <PrivateRoute roles="operator" path="/gallery/:code?">
                     <AutoJoin role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
-                  </Route>
+                  </PrivateRoute>
+                  <PrivateRoute roles="operator" path="/log/:code?">
+                    <Log/>
+                  </PrivateRoute>
 
-                  <Route path="/captioning/:code?" component={SignLanguageEntry} />
+                  { /*
+                  <PrivateRoute roles="captioning" path="/captioning/:code?">
+                    <SignLanguageEntry />
+                  </PrivateRoute>
+                  */ }
 
-                  <Route path="/lurk/:code?">
+                  <PrivateRoute roles="lurker" path="/lurk/:code?">
                     <AutoJoin role="lurker" />
                     <WithFacts><Broadcast /></WithFacts>
-                  </Route>
+                  </PrivateRoute>
 
-                  <Route path="/comm/:code?" component={Comm}/>
-
-                  <Route path="/testing/:code?" component={Testing}/>
+                  <PrivateRoute roles="operator" path="/testing/:code?">
+                    <Testing />
+                  </PrivateRoute>
 
                   <Route path="/">
                     <Redirect to="/trailer.m4v" />

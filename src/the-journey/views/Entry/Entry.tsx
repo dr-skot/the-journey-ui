@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { useAppContext } from '../../contexts/AppContext';
 import SignIn from './SignIn';

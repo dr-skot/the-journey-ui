@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useRouteMatch, match } from 'react-router-dom';
 import { AppContext } from '../contexts/AppContext';
 import { defaultRoom, SettingsAdjust, UserRole } from '../utils/twilio';
@@ -22,7 +23,7 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', withAudio, o
   useEffect(() => {
     if (roomStatus === 'disconnected' && withAudio)
       dispatch('getLocalTracks', { audioOnly: true })
-  }, [roomStatus, withAudio]);
+  }, [roomStatus, withAudio, dispatch]);
 
   useEffect(() => {
     if (roomStatus !== 'disconnected' || (withAudio && localTracks.length === 0)) return;
@@ -30,7 +31,7 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', withAudio, o
     dispatch('joinRoom', {
       roomName: roomNameReally, role: role, username, options
     });
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomStatus, withAudio, localTracks.length, dispatch, roomNameReally]);
 
   return roomStatus === 'disconnected' ? null : children || null;

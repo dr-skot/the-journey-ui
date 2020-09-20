@@ -6,7 +6,7 @@ export default function useAudioOut(inputs?: number, gain?: number, delay?: numb
 
   useEffect(() => {
     if (!audioOut) getAudioOut(inputs, gain, delay).then(setAudioOut);
-  }, [!audioOut]);
+  }, [audioOut, inputs, gain, delay]);
 
   return audioOut;
 }

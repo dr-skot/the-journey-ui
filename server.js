@@ -17,9 +17,8 @@ const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET;
 const base64 = (string) => Buffer.from(string, 'utf-8').toString('base64');
 function noop() {}
 
-// support json body in post requests
+// support json body and form data in post requests
 app.use(bodyParser.json());
-
 
 //
 // http -> https forwarding
@@ -50,6 +49,27 @@ if (!isDev()) {
 
 
 //
+// password checking
+//
+const passwords = {
+  foh: 'hoffa',
+  operator: 'rowlf',
+  lurker: 'sliver',
+}
+app.post('/auth', (req, res) => {
+  const password = req.body.password;
+  const roles = req.body.roles?.split('|') || [];
+  console.log('got auth request', password, roles.join('|'), req.body);
+  if (!password) {
+    res.json({ error: 'No password sent!', success: 'false' });
+    return;
+  }
+  const role = roles.find((role) => passwords[role] === password);
+  res.json({ success: !!role, role });
+});
+
+
+//
 // twilio room-join token
 //
 
@@ -68,7 +88,6 @@ app.get('/token', (req, res) => {
   res.send(token.toJwt());
   console.log(`issued token for ${identity} in room ${roomName}`);
 });
-
 
 
 //
@@ -102,9 +121,9 @@ const SUBSCRIBE_RULES = {
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
-  const focus = req.query.focus || '';
+  const focus = (req.query.focus || '').split(',') || [];
   const basicRules = SUBSCRIBE_RULES.basic();
-  const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus.split(',') || []) || [];
+  const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus) || [];
   const rules = basicRules.concat(moreRules);
 
   console.log('subscribe', req.params.room, req.params.user, req.params.policy);
@@ -183,7 +202,6 @@ app.put('/millicast/turn', (req, res) => {
 // relay millicast subscribe
 app.post('/millicast/subscribe', (req, res) => {
   const apiPath  = 'https://director.millicast.com/api/director/subscribe';
-  console.log('got post request with body', JSON.stringify(req.body));
   fetch(apiPath, {
     method: 'post',
     body: JSON.stringify(req.body),

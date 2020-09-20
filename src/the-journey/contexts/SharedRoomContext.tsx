@@ -75,7 +75,15 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
       });
     });
     setQueue([]);
-  }, [room, queue])
+  }, [room, queue, me])
+
+  const changeState = useCallback((changes: Partial<SharedRoomState>) => {
+    setSharedState((prev) => {
+      const newState = { ...prev, ...changes };
+      return isEqual(prev, changes) ? prev : newState;
+    });
+    sendMessage({ to: 'all', payload: { sharedStateUpdate: changes }});
+  }, [sendMessage, setSharedState]);
 
   // listen for shared state updates, then request an update
   useEffect(() => {
@@ -118,6 +126,7 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
       .filter((p) => p.identity !== me)
     if (others.length) {
       // they might not be listening yet, so keep asking until they respond
+      // TODO the gotInfo variable might not actually be doing anything...
       let gotInfo = false, retries = 10, attempt = 1, intervalId = 0;
       let stop = () => { window.clearInterval(intervalId); gotInfo = true }
       room.once('trackMessage', stop);
@@ -126,22 +135,14 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
         if (others.length === 0) { window.clearInterval(intervalId); return }
         const other = others[attempt % others.length];
         sendMessage({ to: other.identity, attempt, payload: { request: 'sharedState' } });
-        if (++attempt > retries) window.clearInterval(intervalId);
+        if (gotInfo || ++attempt > retries) window.clearInterval(intervalId);
       }, 500);
     }
 
     return () => {
       room.off('trackMessage', syncSharedState);
     }
-  }, [room, sendMessage]);
-
-  const changeState = useCallback((changes: Partial<SharedRoomState>) => {
-    setSharedState((prev) => {
-      const newState = { ...prev, ...changes };
-      return isEqual(prev, changes) ? prev : newState;
-    });
-    sendMessage({ to: 'all', payload: { sharedStateUpdate: changes }});
-  }, [sendMessage, setSharedState, sendMessage]);
+  }, [room, sendMessage, changeState, me]);
 
   // wire gain and delayTime to the audio streams
   useEffect(() => { setGain(sharedState.gain) },

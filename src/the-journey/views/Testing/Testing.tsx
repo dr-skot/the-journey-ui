@@ -45,7 +45,7 @@ function TestingParticipant({ participant }: TestingParticipantProps) {
   useEffect(() => {
     participant.on('trackSubscribed', rerender);
     return () => { participant.off('trackSubscribed', rerender) }
-  }, []);
+  }, [participant, rerender]);
 
   return (
     <>

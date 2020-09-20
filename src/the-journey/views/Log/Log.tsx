@@ -47,17 +47,31 @@ export function LogView() {
     }
   }, [room, addToLog]);
 
-  useEffect(() => addToLog(`focus group set to [${focusGroup.join(', ')}]`), [focusGroup])
-  useEffect(() => addToLog(`volume set to ${gain}`), [gain]);
-  useEffect(() => addToLog(`muteAll set to ${muteAll}`), [muteAll]);
-  useEffect(() => addToLog(`mutedInFocusGroup set to [${mutedInFocusGroup.join(', ')}]`), [mutedInFocusGroup]);
-  useEffect(() => addToLog(`meetings set to [${meetings.join(', ')}]`), [meetings]);
-  useEffect(() => addToLog(`rejected set to [${rejected.join(', ')}]`), [rejected]);
+  useEffect(() => addToLog(`focus group set to [${focusGroup.join(', ')}]`),
+    [focusGroup, addToLog])
+
+  useEffect(() => addToLog(`volume set to ${gain}`),
+    [gain, addToLog]);
+
+  useEffect(() => addToLog(`muteAll set to ${muteAll}`),
+    [muteAll, addToLog]);
+
+  useEffect(() => addToLog(`mutedInFocusGroup set to [${mutedInFocusGroup.join(', ')}]`),
+    [mutedInFocusGroup, addToLog]);
+
+  useEffect(() => addToLog(`meetings set to [${meetings.join(', ')}]`),
+    [meetings, addToLog]);
+
+  useEffect(() => addToLog(`rejected set to [${rejected.join(', ')}]`),
+    [rejected, addToLog]);
+
   useEffect(() => {
     if (!admitted) return;
     addToLog(`approved set to [${admitted.join(', ')}]`);
-  }, [admitted]);
-  useEffect(() => addToLog(`userAgents set to ${JSON.stringify(userAgents, null, 1)}`), [userAgents]);
+  }, [admitted, addToLog]);
+
+  useEffect(() => addToLog(`userAgents set to ${JSON.stringify(userAgents, null, 1)}`),
+    [userAgents, addToLog]);
 
   return (
     <div style={{margin: '2em'}}>

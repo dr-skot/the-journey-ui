@@ -5,7 +5,7 @@ import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
-import { getIdentities, isRole } from '../../utils/twilio';
+import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
@@ -81,8 +81,6 @@ function OperatorView() {
   if (paged) {
     gallery = pageNumber === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
   }
-
-  const identities = getIdentities(gallery);
 
   const galleryProps = {
     participants: gallery,

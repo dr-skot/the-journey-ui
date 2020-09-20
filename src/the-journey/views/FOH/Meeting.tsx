@@ -33,7 +33,7 @@ export default function Meeting({ group }: MeetingProps) {
   useEffect(() => {
     dispatch('subscribe', { profile: 'focus', focus: group });
     setUnmutedGroup(group);
-  },[group]);
+  },[group, setUnmutedGroup, dispatch]);
 
   // TODO with facts?
   return (

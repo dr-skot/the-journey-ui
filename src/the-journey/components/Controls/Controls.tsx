@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import ToggleAudioButton from './ToggleAudioButton/ToggleAudioButton';
-import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
+// import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
 
 import useIsUserActive from './useIsUserActive/useIsUserActive';
 import { AppContext } from '../../contexts/AppContext';

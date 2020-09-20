@@ -8,7 +8,6 @@ import AutoJoin from '../../components/AutoJoin';
 import WithFacts from '../Facts/WithFacts';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 import Chat from '../../components/Chat/Chat';
-import MenuedView from '../MenuedView';
 
 export default function Comm() {
   const commUsers = getIdentities(useParticipants().filter(isRole('comm')));

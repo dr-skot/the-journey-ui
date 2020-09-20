@@ -44,7 +44,7 @@ export default function useAudioElementCreator() {
 
   // when settings or participant list change, detach old elements, generate new ones
   useEffect(() => {
-    const { muteAll, unmuteGroup, audioOut, gain } = settings;
+    const { muteAll, unmuteGroup, gain } = settings;
     const volume = constrain(0, 1)(gain);
     const tracks = muteAll
       ? []

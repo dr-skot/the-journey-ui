@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { isEqual } from 'lodash';
 import { Button, CircularProgress } from '@material-ui/core';
 import VerifiedIcon from '@material-ui/icons/CheckCircle';
 import { toggleMembership } from '../../../utils/functional';
-import { Participant, RemoteAudioTrack, RemoteVideoTrack } from 'twilio-video';
+import { Participant, RemoteAudioTrack } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 import CameraIcon from '@material-ui/icons/Videocam';
 import CameraOffIcon from '@material-ui/icons/VideocamOff';
@@ -18,7 +17,7 @@ interface FOHControlsProps {
 }
 
 export default function FOHControls({ participant }: FOHControlsProps) {
-  const [{ room }, dispatch] = useAppContext();
+  const [{ room }] = useAppContext();
   const [{ admitted, rejected, meetings }, changeSharedState] =  useSharedRoomState();
   const [waiting, setWaiting] = useState(false);
   const audioTracks = useRemoteTracks('audio');
@@ -43,7 +42,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   const reject = () => {
     changeSharedState({ rejected: [...rejected, identity] });
-    removeParticipant(participant, room);
+    removeParticipant(participant, room).then();
   }
 
   const toggleApproved = () =>
@@ -66,7 +65,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
         : (
           <span onClick={toggleMute}>
             { spying ? <CameraIcon /> : <CameraOffIcon /> }
-            <AudioLevelIndicator audioTrack={audioTrack} background="white" />
+            <AudioLevelIndicator audioTrack={audioTrack} background={'white'} />
           </span>
         ) }
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
 import { useAppContext } from '../../contexts/AppContext';
-import { getIdentities, getTimestamp, sameIdentities } from '../../utils/twilio';
+import { getTimestamp, sameIdentities } from '../../utils/twilio';
 import { sortBy } from 'lodash';
 import { cached } from '../../utils/react-help';
 

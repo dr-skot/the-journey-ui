@@ -21,11 +21,6 @@ const Main = styled('div')(() => ({
   alignContent: 'center',
 }));
 
-const Column = styled('div')(() => ({
-  flex: '1 1 0',
-}));
-
-
 export type BroadcastType = 'millicast' | 'hybrid' | 'pure'
 interface BroadcastProps {
   type?: BroadcastType,

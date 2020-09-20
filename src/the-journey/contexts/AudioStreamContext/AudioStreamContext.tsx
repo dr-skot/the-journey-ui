@@ -65,6 +65,7 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
     const [activeMethod, inactiveMethod] = fallback ? methods : methods.reverse();
     inactiveMethod([], true, audioOut, gainValue);
     activeMethod(unmuted, muteAll, audioOut, gainValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unmuted, muteAll, audioOut, fallback])
 
   const setTheGain = useCallback((gain: number) => {

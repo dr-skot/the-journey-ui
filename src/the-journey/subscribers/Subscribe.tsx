@@ -14,7 +14,7 @@ export default function Subscribe({ profile, focus }: SubscribeProps) {
   // watch room status so we resubscribe after reconnect
   useEffect(() => {
       if (roomStatus === 'connected') dispatch('subscribe', { profile, focus });
-    },[roomStatus, profile, focus]);
+    },[roomStatus, profile, focus, dispatch]);
 
   return null;
 }

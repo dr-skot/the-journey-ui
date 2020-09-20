@@ -27,9 +27,9 @@ export default function useRemoteTracks(kind: SubscribedTrackKind) {
   const [tracks, setTracks] = useState<ParticipantTracks>({});
 
   const resetTracks = useCallback(() =>
-    setTracks(getTracks(participants as RemoteParticipant[], kind)), [participants]);
+    setTracks(getTracks(participants as RemoteParticipant[], kind)), [participants, setTracks, kind]);
 
-  useEffect(resetTracks, [participants]);
+  useEffect(resetTracks, [participants, resetTracks]);
 
   useEffect(() => {
     room?.on('trackSubscribed', resetTracks);
@@ -38,7 +38,7 @@ export default function useRemoteTracks(kind: SubscribedTrackKind) {
       room?.off('trackSubscribed', resetTracks);
       room?.off('trackUnsubscribed', resetTracks);
     }
-  });
+  }, [room, resetTracks]);
 
   return tracks;
 }

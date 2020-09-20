@@ -36,7 +36,7 @@ export default function AudioNode({ track }: AudioTrackProps) {
       node.mediaStream.getAudioTracks().forEach(track => track.enabled = false);
       remove(nodes, node);
     }
-  }, [outputNode, audioContext]);
+  }, [outputNode, audioContext, track.mediaStreamTrack]);
 
   return null;
 }

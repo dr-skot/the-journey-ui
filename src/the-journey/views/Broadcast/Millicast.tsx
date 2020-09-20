@@ -69,7 +69,7 @@ export default function Millicast() {
       remove(successListeners, onVideoReady);
       remove(failureListeners, onError);
     }
-  }, [onVideoReady]);
+  }, [onVideoReady, onError]);
 
   const needButton = player && (player.muted || player.paused) && (!buttonClicked);
 
@@ -84,6 +84,7 @@ export default function Millicast() {
     <>
       <div style={{ position: 'absolute', height, width: '100%', background: 'black' }}>
         <iframe
+          title={'The Journey'}
           style={{ opacity: loading || error ? 0 : 1 }}
           ref={iframeRef}
           src={'/player3/?id=keidk0k0'}

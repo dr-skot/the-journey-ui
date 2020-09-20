@@ -6,7 +6,7 @@ export default function useAudioContext() {
 
   useEffect(() => {
     if (!audioContext) getAudioContext().then(setAudioContext);
-  }, [!audioContext]);
+  }, [audioContext, setAudioContext]);
 
   return audioContext;
 }
