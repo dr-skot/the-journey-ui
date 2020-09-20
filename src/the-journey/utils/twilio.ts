@@ -110,9 +110,9 @@ export function getSubscribedTracks(room: Room, kind: TrackFilter = undefined) {
   return tracks;
 }
 
-export function getLocalTracks() {
+export function getLocalTracks({ audioOnly }: { audioOnly?: boolean } = {}) {
   return Video.createLocalTracks({
-    video: {
+    video: audioOnly ? false : {
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
       name: `camera-${Date.now()}`,
     },
@@ -174,7 +174,7 @@ export function subscribe(room: string, participantId: string, policy: string = 
 
 
 export type UserRole =
-  'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus' | 'log'
+  'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus' | 'log' | 'comm'
 
 export const getIdentity = (type: UserRole = 'lurker', username?: String) =>
   `${username || type}|${type}|${unixTime()}`;

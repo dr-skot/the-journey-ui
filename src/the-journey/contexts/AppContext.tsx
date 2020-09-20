@@ -1,6 +1,12 @@
 import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 import { createContext } from 'react';
-import { joinRoom, getLocalTracks, getIdentity, subscribe, toggleVideoEnabled } from '../utils/twilio';
+import {
+  joinRoom,
+  getLocalTracks,
+  getIdentity,
+  subscribe,
+  toggleVideoEnabled,
+} from '../utils/twilio';
 import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
@@ -37,7 +43,7 @@ export const AppContext = createContext([initialState, () => {}] as AppContextVa
 
 type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'setSinkId' | 'changeSetting' | 'subscribe' |
-  'toggleVideoEnabled'
+  'toggleVideoEnabled' | 'getLocalAudioTrack'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -60,8 +66,7 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
       break;
 
     case 'getLocalTracks':
-      getLocalTracks()
-        .then(tracks => {
+      getLocalTracks(payload).then(tracks => {
           dispatch('gotLocalTracks', { tracks });
           if (payload.then) payload.then(tracks);
         });
@@ -73,7 +78,6 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
-      // console.log('joining with tracks', state.localTracks); // TODO allow payload tracks
       joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {

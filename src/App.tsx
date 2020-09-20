@@ -25,6 +25,7 @@ import ReconnectingNotification from './the-journey/components/ReconnectingNotif
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
 import FrontDoor from './the-journey/views/FOH/FrontDoor';
+import Comm from './the-journey/views/Comm/Comm';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -82,6 +83,8 @@ export default function App() {
                     <AutoJoin role="lurker" />
                     <WithFacts><Broadcast /></WithFacts>
                   </Route>
+
+                  <Route path="/comm/:code?" component={Comm}/>
 
                   <Route path="/testing/:code?" component={Testing}/>
 

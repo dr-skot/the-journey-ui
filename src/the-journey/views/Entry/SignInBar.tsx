@@ -8,10 +8,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import FlipCameraButton from '../../components/MenuBar/FlipCameraButton/FlipCameraButton';
 import LocalAudioLevelIndicator from '../../components/MenuBar/DeviceSelector/LocalAudioLevelIndicator/LocalAudioLevelIndicator';
-import ToggleFullscreenButton from '../../components/MenuBar/ToggleFullScreenButton/ToggleFullScreenButton';
 import SettingsButton from '../../components/MenuBar/SettingsButton/SettingsButton';
 import { defaultRoom, UserRole } from '../../utils/twilio';
-import Video from 'twilio-video';
 import { Settings } from '../../contexts/settings/settingsReducer';
 
 
