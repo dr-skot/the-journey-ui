@@ -88,7 +88,7 @@ export default function Millicast() {
           title={'The Journey'}
           style={{ opacity: loading || error ? 0 : 1 }}
           ref={iframeRef}
-          src={'/player3/?id=keidk0k0'}
+          src={'/millicast-stereo/viewer.html'}
           allowFullScreen
           width="100%" height="100%"
         />
@@ -108,7 +108,7 @@ export default function Millicast() {
         <Floater>
           <Floated>
           <Button onClick={finalTouches} variant="contained" color="primary">
-            click<br/>to begin
+            click here<br/>to begin
           </Button>
           </Floated>
         </Floater>

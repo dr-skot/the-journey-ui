@@ -7,7 +7,6 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 import SignLanguageInterpreter from './components/SignLanguageInterpreter';
-import WithFacts from '../Facts/WithFacts';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -29,20 +28,16 @@ interface BroadcastProps {
 export default function Broadcast({ type }: BroadcastProps) {
   useHighPriorityInFocusGroup();
 
-  return (
-    <>
+  return <>
     <SubscribeToFocusGroupAudio/>
     <FocusGroupAudio/>
-    <WithFacts>
       <Container>
         <Main>
           <Millicast/>
         </Main>
         <SignLanguageInterpreter />
       </Container>
-    </WithFacts>
-    </>
-  );
+  </>;
 }
 
 function useHighPriorityInFocusGroup() {

@@ -47,7 +47,7 @@
   //let streamName = params.get('streamName');
   let accountId  = 'Wu3EU2';
   let streamName = 'keidk0k0';
-  console.log('Millicast Viewer Stream: ', streamName);
+  // console.log('Millicast Viewer Stream: ', streamName);
 
   //Millicast required info.
   let url;// path to Millicast Server - Returned from API
@@ -63,20 +63,23 @@
   function connect() {
 
     if (!url) {
-      console.log('connect need path to server - url:', url);
+      // console.log('connect need path to server - url:', url);
       updateMillicastAuth()
         .then(d => {
           console.log('millicast server:', d);
           connect();
         })
         .catch(e => {
-          console.log('api error: ', e);
-          alert("Error: The API encountered an error ", e);
+          console.log('millicast api error: ', e);
+          // alert("Error: The API encountered an error ", e);
+          if (window.parent && window.parent.onMillicastError) {
+            window.parent.onMillicastError(e);
+          }
         });
       return;
     }
 
-    console.log('connecting to: ', url);
+    // console.log('connecting to: ', url);
     //create Peer connection object
     let conf = {
       iceServers:    iceServers,
@@ -84,7 +87,7 @@
       rtcpMuxPolicy: "require",
       bundlePolicy:  "max-bundle"
     };
-    console.log('config: ', conf);
+    // console.log('config: ', conf);
     let pc     = new RTCPeerConnection(conf);
     //Listen for track once it starts playing.
     pc.ontrack = function (event) {
@@ -94,15 +97,27 @@
       if (vidWin) {
         vidWin.srcObject = event.streams[0];
         vidWin.controls  = true;
+        vidWin.addEventListener('canplay', () => {
+          console.log('millicast video element can play');
+          if (window.parent && window.parent.onMillicastStreamCanPlay) {
+            window.parent.onMillicastStreamCanPlay(vidWin);
+          }
+        })
+        vidWin.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log('millicast video element was clicked');
+          vidWin.play();
+        })
       }
     };
 
-    console.log('connecting to: ', url + '?token=' + jwt);//token
+    // console.log('connecting to: ', url + '?token=' + jwt);//token
     //connect with Websockets for handshake to media server.
     let ws    = new WebSocket(url + '?token=' + jwt);
     ws.onopen = function () {
       //Connect to our media server via WebRTC
-      console.log('ws::onopen');
+      // console.log('ws::onopen');
       //if this is supported
       /* if (pc.addTransceiver) {
           console.log('transceiver!');
@@ -124,14 +139,14 @@
                                    offerToReceiveAudio: true,
                                    offerToReceiveVideo: true
                                  }).then(desc => {
-        console.log('createOffer Success!');
+        // console.log('createOffer Success!');
 
         //support for stereo
         desc.sdp = desc.sdp.replace("useinbandfec=1", "useinbandfec=1; stereo=1");
         //set local description and send offer to media server via ws.
         pc.setLocalDescription(desc)
           .then(() => {
-            console.log('setLocalDescription Success!');
+            // console.log('setLocalDescription Success!');
             //set required information for media server.
             let data    = {
               streamId: accountId,//Millicast accountId
@@ -144,19 +159,25 @@
               name:    'view',
               data:    data
             }
-            console.log('send ', payload);
+            // console.log('send ', payload);
             ws.send(JSON.stringify(payload));
           })
           .catch(e => {
             console.log('setLocalDescription failed: ', e);
+            if (window.parent && window.parent.onMillicastError) {
+              window.parent.onMillicastError(e);
+            }
           })
       }).catch(e => {
         console.log('createOffer Failed: ', e)
+        if (window.parent && window.parent.onMillicastError) {
+          window.parent.onMillicastError(e);
+        }
       });
     }
 
     ws.addEventListener('message', evt => {
-      console.log('ws::message', evt);
+      // console.log('ws::message', evt);
       let msg = JSON.parse(evt.data);
       switch (msg.type) {
         //Handle counter response coming from the Media Server.
@@ -170,7 +191,7 @@
             remotesdp = remotesdp.split('\n').filter(function (line) {
               return line.trim() !== 'a=extmap-allow-mixed';
             }).join('\n');
-            console.log('trimed a=extmap-allow-mixed - sdp \n',remotesdp);
+            // console.log('trimed a=extmap-allow-mixed - sdp \n',remotesdp);
           }
           let answer = new RTCSessionDescription({
                                                    type: 'answer',
@@ -179,10 +200,13 @@
 
           pc.setRemoteDescription(answer)
             .then(d => {
-              console.log('setRemoteDescription  Success! ');
+              // console.log('setRemoteDescription  Success! ');
             })
             .catch(e => {
               console.log('setRemoteDescription failed: ', e);
+              if (window.parent && window.parent.onMillicastError) {
+                window.parent.onMillicastError(e);
+              }
             });
           break;
       }
@@ -196,7 +220,7 @@
       xhr.onreadystatechange = function (evt) {
         if (xhr.readyState == 4) {
           let res = JSON.parse(xhr.responseText), a;
-          console.log('getICEServers::status:', xhr.status, ' response: ', xhr.responseText);
+          // console.log('getICEServers::status:', xhr.status, ' response: ', xhr.responseText);
           switch (xhr.status) {
             case 200:
               //returns array.
@@ -218,7 +242,7 @@
                 a.push(cred);
                 //console.log('cred:',cred);
               });
-              console.log('ice: ', a);
+              // console.log('ice: ', a);
               resolve(a);
               break;
             default:
@@ -237,23 +261,21 @@
 
   // gets server path and auth token.
   function updateMillicastAuth() {
-    console.log('updateMillicastAuth at: ' + apiPath + ' for:', streamName, ' accountId:', accountId);
+    // console.log('updateMillicastAuth at: ' + apiPath + ' for:', streamName, ' accountId:', accountId);
     return new Promise((resolve, reject) => {
       let xhr                = new XMLHttpRequest();
       xhr.onreadystatechange = function (evt) {
         if (xhr.readyState == 4) {
           let res = JSON.parse(xhr.responseText);
-          console.log('res: ', res);
-          console.log('status:', xhr.status, ' response: ', xhr.responseText);
-          switch (xhr.status) {
-            case 200:
-              let d = res.data;
-              jwt   = d.jwt;
-              url   = d.urls[0];
-              resolve(d);
-              break;
-            default:
-              reject(res);
+          // console.log('res: ', res);
+          // console.log('status:', xhr.status, ' response: ', xhr.responseText);
+          if (xhr.status === 200 && res.status !== 'fail') {
+            let d = res.data;
+            jwt = d.jwt;
+            url = d.urls[0];
+            resolve(d);
+          } else {
+            reject(res);
           }
         }
       }
