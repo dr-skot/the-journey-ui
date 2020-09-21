@@ -28,8 +28,9 @@
 
     if (!url) {
       console.log('connect need path to server - url:', url);
+      console.log('theres definitely a then...');
       updateMillicastAuth()
-        .then(d => {
+        .then((d) => {
           console.log('millicast server:', d);
           connect();
         })
@@ -202,8 +203,37 @@
     })
   }
 
-  // gets server path and auth token.
-  function updateMillicastAuth() {
+
+ // gets server path and auth token.
+ function updateMillicastAuth() {
+   console.log('updateMillicastAuth at: ' + apiPath + ' for:', streamName, ' accountId:', accountId);
+   return new Promise((resolve, reject) => {
+     let xhr                = new XMLHttpRequest();
+     xhr.onreadystatechange = function (evt) {
+       if (xhr.readyState == 4) {
+         let res = JSON.parse(xhr.responseText);
+         console.log('res: ', res);
+         console.log('status:', xhr.status, ' response: ', xhr.responseText);
+         if (xhr.status === 200 && res.status !== 'fail') {
+           let d = res.data;
+           jwt = d.jwt;
+           url = d.urls[0];
+           resolve(d);
+         } else {
+           reject(res);
+         }
+       }
+     }
+     xhr.open("POST", apiPath, true);
+     xhr.setRequestHeader("Content-Type", "application/json");
+     xhr.send(JSON.stringify({streamAccountId: accountId, streamName: streamName, unauthorizedSubscribe: true}));
+   });
+ }
+
+
+ // gets server path and auth token.
+ // WTF?? why is this not the same as above? below code's resolve(d) does not trigger then() callback
+  function updateMillicastAuth2() {
     console.log('updateMillicastAuth at: ' + apiPath + ' for:', streamName, ' accountId:', accountId);
     return new Promise((resolve, reject) => {
       let xhr                = new XMLHttpRequest();
@@ -212,9 +242,13 @@
           let res = JSON.parse(xhr.responseText);
           console.log('updateMillicastAuth res: ', res);
           if (res.status === 'fail' || xhr.status !== 200) reject(res);
-          jwt = res.data.jwt;
-          url = res.data.urls[0];
-          resolve(d);
+          else {
+            console.log('not rejecting, setting vars');
+            jwt = res.data.jwt;
+            url = res.data.urls[0];
+            console.log('and resolving');
+            resolve(d);
+          }
         }
       }
       xhr.open("POST", apiPath, true);
