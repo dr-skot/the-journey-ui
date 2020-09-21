@@ -36,7 +36,9 @@
         })
         .catch(e => {
           console.log('updateMillicastAuth failed: ', e);
-          window.parent?.onMillicastError?.(e);
+          if (window.parent && window.parent.onMillicastError) {
+            window.parent.onMillicastError(e);
+          }
         });
       return;
     }
@@ -52,7 +54,7 @@
     console.log('config: ', conf);
     let pc     = new RTCPeerConnection(conf);
     //Listen for track once it starts playing.
-    pc.onconnectionstatechange = (event) => {
+    pc.onconnectionstatechange = () => {
       console.log('RTCPeerConnection state changed to', pc.connectionState);
     }
     pc.ontrack = function (event) {
@@ -64,7 +66,9 @@
         vidWin.controls = true;
         vidWin.addEventListener('canplay', () => {
           console.log('I can play!');
-          window.parent?.onMillicastStreamCanPlay?.(vidWin);
+          if (window.parent && window.parent.onMillicastStreamCanPlay) {
+            window.parent.onMillicastStreamCanPlay(vidWin);
+          }
         })
         vidWin.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -124,11 +128,15 @@
           })
           .catch(e => {
             console.log('setLocalDescription failed: ', e);
-            window.parent?.onMillicastError?.(e);
+            if (window.parent && window.parent.onMillicastError) {
+              window.parent.onMillicastError(e);
+            }
           })
       }).catch(e => {
         console.log('createOffer Failed: ', e)
-        window.parent?.onMillicastError?.(e);
+        if (window.parent && window.parent.onMillicastError) {
+          window.parent.onMillicastError(e);
+        }
       });
     }
 
