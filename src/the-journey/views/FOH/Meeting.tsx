@@ -39,8 +39,8 @@ export default function Meeting({ group }: MeetingProps) {
   return (
     <MenuedView>
       <FlexibleGallery participants={meeters}/>
-      <Chat/>
       <Controls />
+      <Chat/>
     </MenuedView>
   );
 }

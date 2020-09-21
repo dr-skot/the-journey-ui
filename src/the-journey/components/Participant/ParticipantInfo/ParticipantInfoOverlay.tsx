@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     infoRow: {
       display: 'flex',
       justifyContent: 'space-between',
+      pointerEvents: 'none',
     },
   })
 );

@@ -63,14 +63,15 @@ export default function FOHControls({ participant }: FOHControlsProps) {
       { waiting
         ? <CircularProgress size={20} />
         : (
-          <span onClick={toggleMute}>
+          <Button onClick={toggleMute}>
             { spying ? <CameraIcon /> : <CameraOffIcon /> }
             <AudioLevelIndicator audioTrack={audioTrack} background={'white'} />
-          </span>
+          </Button>
         ) }
     </div>
       <div style={{ width: '100%', textAlign: 'right' }}>
         <Button
+          style={{ margin: '3px 0' }}
           onClick={toggleMeeting}
           size="small" variant="contained"
         >

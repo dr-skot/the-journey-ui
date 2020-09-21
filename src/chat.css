@@ -1,5 +1,9 @@
-body {
-    font-family: "Avenir Next", "DIN Alternate", "DIN Condensed", "Roboto", "Helvetica", "Arial", sans-serif;
+.rcw-widget-container {
+    pointer-events: none;
+}
+
+.rcw-conversation-container, .rcw-launcher {
+    pointer-events: auto;
 }
 
 .rcw-conversation-container > .rcw-header {
