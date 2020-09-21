@@ -230,35 +230,6 @@
    });
  }
 
-
- // gets server path and auth token.
- // WTF?? why is this not the same as above? below code's resolve(d) does not trigger then() callback
-  function updateMillicastAuth2() {
-    console.log('updateMillicastAuth at: ' + apiPath + ' for:', streamName, ' accountId:', accountId);
-    return new Promise((resolve, reject) => {
-      let xhr                = new XMLHttpRequest();
-      xhr.onreadystatechange = function (evt) {
-        if (xhr.readyState == 4) {
-          let res = JSON.parse(xhr.responseText);
-          console.log('updateMillicastAuth res: ', res);
-          if (res.status === 'fail' || xhr.status !== 200) reject(res);
-          else {
-            console.log('not rejecting, setting vars');
-            jwt = res.data.jwt;
-            url = res.data.urls[0];
-            console.log('and resolving');
-            resolve(d);
-          }
-        }
-      }
-      xhr.open("POST", apiPath, true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify({streamAccountId: accountId, streamName: streamName, unauthorizedSubscribe: true}));
-    });
-  }
-
-
-
   function ready() {
     let v = document.getElementsByTagName('video')[0];
     if (v) {
