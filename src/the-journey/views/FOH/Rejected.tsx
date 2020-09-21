@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
-import SimpleMessage from '../MessageView';
+import SimpleMessage from '../SimpleMessage';
 
 export default function Rejected() {
   const [{ room  }] = useContext(AppContext);

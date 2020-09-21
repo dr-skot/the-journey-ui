@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import { RouteComponentProps } from 'react-router-dom';
 import Entry from '../Entry/Entry';
 import { defaultRoom } from '../../utils/twilio';
-import SimpleMessage from '../MessageView';
+import SimpleMessage from '../SimpleMessage';
 
 
 interface CodeParam {
