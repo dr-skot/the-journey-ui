@@ -58,7 +58,7 @@ const passwords = {
 }
 app.post('/auth', (req, res) => {
   const password = req.body.password;
-  const roles = req.body.roles?.split('|') || [];
+  const rolesString = (req.body.roles || '').split('|');
   console.log('got auth request', password, roles.join('|'), req.body);
   if (!password) {
     res.json({ error: 'No password sent!', success: 'false' });
