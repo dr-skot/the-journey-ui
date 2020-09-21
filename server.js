@@ -57,6 +57,8 @@ const passwords = {
   lurker: 'sliver',
 }
 app.post('/auth', (req, res) => {
+  res.end('post request to /auth!');
+  return;
   const password = req.body.password;
   const rolesString = (req.body.roles || '').split('|');
   console.log('got auth request', password, roles.join('|'), req.body);
