@@ -27,6 +27,7 @@ import Log from './the-journey/views/Log/Log';
 import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
+import NewFrontDoor from './the-journey/views/FOH/NewFrontDoor';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -60,6 +61,7 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+                  <Route path="/newentry/:code?" component={NewFrontDoor}/>
                   <Route path="/entry/:code?" component={FrontDoor}/>
                   <Route path="/rejected" component={Rejected} />
 
@@ -93,7 +95,7 @@ export default function App() {
                   </PrivateRoute>
                   */ }
 
-                  <PrivateRoute roles="lurker" path="/lurk/:code?">
+                  <PrivateRoute roles="lurker|foh|operator" path="/lurk/:code?">
                     <AutoJoin role="lurker" />
                     <WithFacts><Broadcast /></WithFacts>
                   </PrivateRoute>
