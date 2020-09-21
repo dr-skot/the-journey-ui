@@ -33,14 +33,16 @@ export default function Entry({ roomName = defaultRoom() }: EntryProps) {
     setMediaStatus('help-needed');
     console.log('changing helpNeeded to', [...helpNeeded, myIdentity]);
     changeSharedState({ helpNeeded: [...helpNeeded, myIdentity] });
-  }, [setMediaStatus, room, helpNeeded]);
+  }, [setMediaStatus, room, helpNeeded, changeSharedState]);
 
   const onAllGood = useCallback(() => {
     setMediaStatus('ready');
   }, [setMediaStatus]);
 
   // get default media
-  useEffect(() => dispatch('getLocalTracks'), []);
+  useEffect(() => dispatch('getLocalTracks'),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []);
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to={rejectedPath()} />;
 

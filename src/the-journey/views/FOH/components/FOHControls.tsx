@@ -11,8 +11,6 @@ import { useAppContext } from '../../../contexts/AppContext';
 import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
 import useMeeting from '../../../hooks/useMeeting';
-import HelpMeIcon from '@material-ui/icons/ContactSupportOutlined';
-import AllGoodIcon from '@material-ui/icons/ThumbUpOutlined';
 
 interface FOHControlsProps {
   participant: Participant;
