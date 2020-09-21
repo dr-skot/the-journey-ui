@@ -11,6 +11,8 @@ import { useAppContext } from '../../../contexts/AppContext';
 import { useSharedRoomState } from '../../../contexts/SharedRoomContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
 import useMeeting from '../../../hooks/useMeeting';
+import HelpMeIcon from '@material-ui/icons/ContactSupportOutlined';
+import AllGoodIcon from '@material-ui/icons/ThumbUpOutlined';
 
 interface FOHControlsProps {
   participant: Participant;
@@ -18,7 +20,7 @@ interface FOHControlsProps {
 
 export default function FOHControls({ participant }: FOHControlsProps) {
   const [{ room }] = useAppContext();
-  const [{ admitted, rejected, meetings }, changeSharedState] =  useSharedRoomState();
+  const [{ admitted, rejected, meetings, helpNeeded }, changeSharedState] =  useSharedRoomState();
   const [waiting, setWaiting] = useState(false);
   const audioTracks = useRemoteTracks('audio');
   const me = room?.localParticipant;
@@ -56,6 +58,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   }
 
   const approved = inGroup(admitted)(participant);
+  const needsHelp = helpNeeded.includes(identity) && !approved && !inMeeting;
 
   return  (
     <>
@@ -71,11 +74,10 @@ export default function FOHControls({ participant }: FOHControlsProps) {
     </div>
       <div style={{ width: '100%', textAlign: 'right' }}>
         <Button
-          style={{ margin: '3px 0' }}
           onClick={toggleMeeting}
-          size="small" variant="contained"
+          size="small" color={needsHelp ? 'primary' : 'secondary'} variant="contained"
         >
-          {`${inMeeting ? 'end' : 'start'} meeting`}
+          { needsHelp ? 'help!' : `${inMeeting ? 'end' : 'start'} meeting` }
         </Button>
       </div>
     <div style={{ opacity: '90%' }}>

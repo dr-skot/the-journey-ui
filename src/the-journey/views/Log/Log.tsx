@@ -16,7 +16,9 @@ export default function Log() {
 
 export function LogView() {
   const [{ room }] = useAppContext();
-  const [{ focusGroup, gain, muteAll, mutedInFocusGroup, admitted, rejected, meetings, userAgents }] = useSharedRoomState();
+  const [{
+    focusGroup, gain, muteAll, mutedInFocusGroup, admitted, rejected, meetings, userAgents, helpNeeded
+  }] = useSharedRoomState();
   const [log, setLog] = useState<string[]>([]);
   const [startTime] = useState(new Date())
 
@@ -64,6 +66,9 @@ export function LogView() {
 
   useEffect(() => addToLog(`rejected set to [${rejected.join(', ')}]`),
     [rejected, addToLog]);
+
+  useEffect(() => addToLog(`helpNeeded set to [${helpNeeded.join(', ')}]`),
+    [helpNeeded, addToLog]);
 
   useEffect(() => {
     if (!admitted) return;

@@ -22,6 +22,7 @@ interface SharedRoomState {
   muteAll: boolean,
   meetings: Group[];
   userAgents: Record<Identity, string>;
+  helpNeeded: Identity[],
 }
 type StateChanger = (changes: Partial<SharedRoomState>) => void;
 type SharedRoomContextValue = [SharedRoomState, StateChanger];
@@ -37,6 +38,7 @@ const initialState = {
   muteAll: false,
   meetings: [],
   userAgents: {},
+  helpNeeded: [],
 } as SharedRoomState;
 const initialStateChanger: StateChanger = () => {};
 const initalContextValue: SharedRoomContextValue = [initialState, initialStateChanger];

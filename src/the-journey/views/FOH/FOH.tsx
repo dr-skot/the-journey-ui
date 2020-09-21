@@ -11,6 +11,7 @@ import { useRouteMatch, match } from 'react-router-dom';
 import { defaultRoom, isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
+import Subscribe from '../../subscribers/Subscribe';
 
 export default function FOH() {
   const [{ roomStatus }] = useAppContext();
@@ -43,6 +44,7 @@ function FOHGallery() {
 
   return (
     <WithFacts>
+      <Subscribe profile="data-only" />
       <MenuedView>
         <Gallery />
       </MenuedView>
