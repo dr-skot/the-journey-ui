@@ -65,7 +65,7 @@ app.post('/auth', (req, res) => {
     return;
   }
   const role = roles.find((role) => passwords[role] === password);
-  res.json({ success: !!role, role });
+  res.json({ success: !!role, role: role });
 });
 
 
