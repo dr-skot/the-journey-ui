@@ -158,7 +158,9 @@
             })
             .catch(e => {
               console.log('setRemoteDescription failed: ', e);
-              window.parent?.onMillicastError?.(e);
+              if (window.parent && window.parent.onMillicastError) {
+                window.parent.onMillicastError(e);
+              }
             });
           break;
       }
