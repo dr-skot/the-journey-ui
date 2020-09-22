@@ -18,6 +18,7 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
 
   const curtain = time ? DateTime.fromJSDate(time) : DateTime.local().plus({ minutes: 15 });
   const timezone = timezones[tzIndex] || localTz;
+  // TODO expire this localStorage pass after <curtain + length-of-show>
   const punct = localStorage.getItem(`arrival-${code}`) || punctuality(curtain);
 
   const roomName = `${code || defaultRoom()}`;

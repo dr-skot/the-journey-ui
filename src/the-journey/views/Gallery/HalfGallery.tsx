@@ -88,6 +88,7 @@ function HalfGalleryView() {
   const galleryProps = {
     participants: gallery,
     fixedLength: hideBlanks ? undefined : twoPage ? half(GALLERY_SIZE) : GALLERY_SIZE,
+    rightAlign: twoPage && galleryPage === 1,
   };
 
   const final = cached('HalfGallery.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
@@ -106,6 +107,7 @@ function HalfGalleryView() {
           hotKeys={final.hotKeys}
           onClick={final.onClick}
           blanks="nothing"
+          rightAlign={final.rightAlign}
         />
       </Main>
     </Container>

@@ -4,17 +4,11 @@ import AutoJoin from '../../components/AutoJoin';
 import { listKey } from '../../utils/react-help';
 import { RemoteParticipant } from 'twilio-video';
 import { useSharedRoomState } from '../../contexts/SharedRoomContext';
-import WithFacts from '../Facts/WithFacts';
 import Subscribe from '../../subscribers/Subscribe';
 
 const logLine = (s: string) => `${new Date().toLocaleTimeString()}: ${s}`; // TODO add timestamp
 
 export default function Log() {
-  return <WithFacts><LogView /></WithFacts>
-}
-
-
-export function LogView() {
   const [{ room }] = useAppContext();
   const [{
     focusGroup, gain, muteAll, mutedInFocusGroup, admitted, rejected, meetings, userAgents, helpNeeded
@@ -29,7 +23,7 @@ export function LogView() {
   useEffect(() => {
     if (room) {
       const n = room.participants.size;
-      addToLog(`entered room ${room.name} (${room.sid}) with ${n} participant${n < 1 ? '.' : n < 2 ? ':' : 's:'}`);
+      addToLog(`entered room ${room.name} (${room.sid}) with ${n} participant${n === 1 ? '' : 's'}${n > 0 ? ':' : '.'}`);
       room.participants.forEach((p) => {
         addToLog(`${p.identity} with sid ${p.sid}`);
       });
@@ -75,8 +69,11 @@ export function LogView() {
     addToLog(`approved set to [${admitted.join(', ')}]`);
   }, [admitted, addToLog]);
 
-  useEffect(() => addToLog(`userAgents set to ${JSON.stringify(userAgents, null, 1)}`),
-    [userAgents, addToLog]);
+  useEffect(() => {
+    const users = Object.keys(userAgents);
+    const newUser = users[users.length - 1];
+    if (newUser) addToLog(`${newUser} is using ${userAgents[newUser]}`);
+  },[userAgents, addToLog]);
 
   return (
     <div style={{margin: '2em'}}>

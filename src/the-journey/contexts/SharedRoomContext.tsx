@@ -98,13 +98,14 @@ export default function SharedRoomContextProvider({ children }: ProviderProps) {
         console.log('received data track message', message);
         // receive updates
         if (sharedStateUpdate) {
+          let newState = sharedState;
           setSharedState((prev) => {
-            const newState = { ...prev, ...sharedStateUpdate };
+            newState = { ...prev, ...sharedStateUpdate };
             console.log('updating state to', newState);
             return isEqual(prev, newState) ? prev : newState; // avoid equal-value rerendering
           });
           // once we've received state, it's safe to publish our userAgent
-          if (room && sharedStateUpdate.userAgents && !sharedStateUpdate.userAgents[room.localParticipant.identity]) {
+          if (room && !newState.userAgents[room.localParticipant.identity]) {
             const identity = room.localParticipant.identity;
             const ua = navigator.userAgent;
             changeState({ userAgents: { ...sharedStateUpdate.userAgents,  [identity]: ua }});

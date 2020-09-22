@@ -27,10 +27,11 @@ export interface FlexibleGalleryProps {
   onClick?: (participant: IParticipant, e: MouseEvent) => void;
   blanks?: Blanks,
   muteControls?: boolean,
+  rightAlign?: boolean,
 }
 
-export default function FlexibleGallery({ participants, fixedLength = 0, selection = [],
-                                          hotKeys = '', onClick = () => {}, blanks, muteControls
+export default function FlexibleGallery({ participants, fixedLength = 0, selection = [], hotKeys = '',
+                                          onClick = () => {}, blanks, muteControls
                          }: FlexibleGalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>();
   const containerRef = (node: HTMLElement | null) => setContainer(node)
@@ -46,15 +47,6 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
       window.removeEventListener('fullscreenchange', forceRender);
     }
   }, [])
-
-  // I don't trust resize observer
-  /*
-  useEffect(() => {
-    if (!container) return;
-    resizeObserver.observe(container);
-    return () => resizeObserver.unobserve(container);
-  }, [container])
-   */
 
   // console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
   // reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
