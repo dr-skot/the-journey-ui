@@ -18,11 +18,12 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
 
   const curtain = time ? DateTime.fromJSDate(time) : DateTime.local().plus({ minutes: 15 });
   const timezone = timezones[tzIndex] || localTz;
-  const punct = punctuality(curtain);
+  const punct = localStorage.getItem(`arrival-${code}`) || punctuality(curtain);
 
   const roomName = `${code || defaultRoom()}`;
 
   if (punct === 'on time' || punct === 'late') {
+    localStorage.setItem(`arrival-${code}`, punct);
     return <Entry roomName={roomName} test={test} />
   }
 
