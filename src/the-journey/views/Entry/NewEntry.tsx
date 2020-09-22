@@ -10,6 +10,8 @@ import { defaultRoom, inGroup } from '../../utils/twilio';
 import RoomJoinForm from './RoomJoinForm';
 import { DeviceSelector } from '../../components/MenuBar/DeviceSelector/DeviceSelector';
 import { Button } from '@material-ui/core';
+import GetMedia, { PleaseEmail, ThatsAll } from './GetMedia';
+import NameForm from './NameForm';
 
 function rejectedPath() {
   return window.location.pathname.replace('entry', 'rejected');
@@ -19,8 +21,9 @@ type MediaStatus = 'pending' | 'ready' | 'help-needed'
 
 interface EntryProps {
   roomName?: string;
+  test?: boolean;
 }
-export default function Entry({ roomName = defaultRoom() }: EntryProps) {
+export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
   const [{ room, roomStatus }, dispatch] = useAppContext();
   const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
   const [{ rejected, helpNeeded }, changeSharedState] = useSharedRoomState();
@@ -46,28 +49,16 @@ export default function Entry({ roomName = defaultRoom() }: EntryProps) {
 
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to={rejectedPath()} />;
 
-  if (!room) return <RoomJoinForm roomName={roomName}/>
+  if (!room) return <NameForm roomName={roomName}/>
   console.log('got past room check');
 
   if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
+
+  if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <PleaseEmail/> : <ThatsAll/>;
 
   return roomStatus !== 'disconnected'
     ? meeting
       ? <Meeting group={meeting}/>
       : <Broadcast type="millicast" />
     : <SignIn roomName={roomName} role="audience"/>;
-}
-
-interface GetMediaProps {
-  onAllGood: () => void,
-  onNeedHelp: () => void,
-}
-
-function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
-  return <>
-    <h1>get media</h1>
-    <DeviceSelector/>
-    <Button onClick={onNeedHelp}>I need help</Button>
-    <Button onClick={onAllGood}>All good</Button>
-  </>
 }

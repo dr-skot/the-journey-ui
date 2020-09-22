@@ -7,6 +7,7 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 import SignLanguageInterpreter from './components/SignLanguageInterpreter';
+import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -37,6 +38,7 @@ export default function Broadcast({ type }: BroadcastProps) {
         </Main>
         <SignLanguageInterpreter />
       </Container>
+    <HelpIsComingNotification />
   </>;
 }
 

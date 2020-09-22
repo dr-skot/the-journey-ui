@@ -1,17 +1,17 @@
 import React from 'react';
 import { codeToTimeWithTZ, punctuality, timezones } from '../../utils/foh';
 import { DateTime } from 'luxon';
-import { RouteComponentProps } from 'react-router-dom';
-import Entry from '../Entry/NewEntry';
+import Entry from './NewEntry';
 import { defaultRoom } from '../../utils/twilio';
 import SimpleMessage from '../SimpleMessage';
 
 
-interface CodeParam {
-  code?: string;
+interface FrontDoorProps {
+  match: { params: { code?: string } },
+  test: boolean,
 }
 
-export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
+export default function FrontDoor({ match, test }: FrontDoorProps) {
   const code = match.params.code;
   const [time, tzIndex] = code ? codeToTimeWithTZ(code) : [undefined, -1];
   const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -23,7 +23,7 @@ export default function FrontDoor({ match }: RouteComponentProps<CodeParam>) {
   const roomName = `${code || defaultRoom()}`;
 
   if (punct === 'on time' || punct === 'late') {
-    return <Entry roomName={roomName} />
+    return <Entry roomName={roomName} test={test} />
   }
 
   const display = {
