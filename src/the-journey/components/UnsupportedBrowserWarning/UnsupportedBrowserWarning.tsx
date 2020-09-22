@@ -15,10 +15,30 @@ const useStyles = makeStyles({
   },
 });
 
+function supportsVideoType(type: string) {
+  let video;
+
+  // Allow user to create shortcuts, i.e. just "webm"
+  let formats: Record<string, string> = {
+    ogg: 'video/ogg; codecs="theora"',
+    h264: 'video/mp4; codecs="avc1.42E01E"',
+    webm: 'video/webm; codecs="vp8, vorbis"',
+    vp8: 'video/webm; codecs="vp8"',
+    vp9: 'video/webm; codecs="vp9"',
+    hls: 'application/x-mpegURL; codecs="avc1.42E01E"'
+  };
+
+  if(!video) {
+    video = document.createElement('video')
+  }
+
+  return video.canPlayType?.(formats[type] || type);
+}
+
 export default function({ children }: { children: React.ReactElement }) {
   const classes = useStyles();
 
-  if (!Video.isSupported || !Array.prototype.flatMap) {
+  if (!Video.isSupported || !supportsVideoType('vp8') || !Array.prototype.flatMap) {
     return (
       <Container>
         <Grid container justify="center" className={classes.container}>

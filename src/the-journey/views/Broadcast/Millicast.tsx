@@ -77,7 +77,7 @@ export default function Millicast() {
   const finalTouches = () => {
     player.muted = false;
     player.play().finally();
-    fscreen.requestFullscreen(player);
+    if (iframeRef.current) fscreen.requestFullscreen(iframeRef.current);
     setButtonClicked(true);
   };
 
