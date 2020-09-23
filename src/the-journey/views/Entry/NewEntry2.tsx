@@ -26,6 +26,8 @@ export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
   const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
   const { meeting } = useMeeting();
 
+  console.log('Entry2 room status', roomStatus, 'media status', mediaStatus);
+
   const onNeedHelp = useCallback(() => {
     setMediaStatus('help-needed');
     roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
