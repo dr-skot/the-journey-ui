@@ -26,7 +26,7 @@ export default function Chat() {
       room.off('trackMessage', handleMessage)
       me?.dataTracks?.forEach((pub) => pub.unpublish());
     };
-  }, [room])
+  }, [room, me])
 
   const handleNewUserMessage = (newMessage: string) => {
     if (!room) return;

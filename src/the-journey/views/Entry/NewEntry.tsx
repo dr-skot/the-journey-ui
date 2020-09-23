@@ -22,18 +22,14 @@ interface EntryProps {
 }
 export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
   const [{ room, roomStatus }, dispatch] = useTwilioRoomContext();
-  const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
   const [{ rejected, helpNeeded }, roomStateDispatch] = useRoomState();
+  const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
   const { meeting } = useMeeting();
 
-  console.log('!!!helpNeeded', helpNeeded);
-
   const onNeedHelp = useCallback(() => {
-    const myIdentity = room?.localParticipant.identity || '';
     setMediaStatus('help-needed');
-    console.log('changing helpNeeded to', [...helpNeeded, myIdentity]);
     roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
-  }, [setMediaStatus, room, helpNeeded, dispatch]);
+  }, [setMediaStatus, roomStateDispatch]);
 
   const onAllGood = useCallback(() => {
     setMediaStatus('ready');
