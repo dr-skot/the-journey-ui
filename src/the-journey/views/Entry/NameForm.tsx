@@ -71,6 +71,7 @@ export default function NameForm({ roomName, role = 'audience', options= {} }: N
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     localStorage.setItem('username', username);
+    console.log('joining room...');
     dispatch('joinRoom', { roomName, role, username: username, options });
   };
 

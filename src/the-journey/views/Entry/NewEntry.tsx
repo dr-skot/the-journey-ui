@@ -49,6 +49,7 @@ export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
 
   if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <PleaseEmail/> : <ThatsAll/>;
 
+  // TODO should go back to NameForm
   return roomStatus !== 'disconnected'
     ? meeting ? <Meeting group={meeting}/> : <Broadcast />
     : <SignIn roomName={roomName} role="audience"/>;

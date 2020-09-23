@@ -81,13 +81,16 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
+      console.log('trying to join!')
       joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
+          console.log('joined room!')
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
         })
         .catch((error) => {
+          console.log('room join failed!')
           dispatch('roomJoinFailed', { error });
           if (payload.catch) payload.catch(error);
         });
