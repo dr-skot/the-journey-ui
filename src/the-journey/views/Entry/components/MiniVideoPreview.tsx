@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { LocalVideoTrack } from 'twilio-video';
-import { AppContext } from '../../../contexts/AppContext';
+import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 import VideoTrack from '../../../components/VideoTrack/VideoTrack';
 
 const useStyles = makeStyles({
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 
 export default function MiniVideoPreview() {
   const classes = useStyles();
-  const [{ localTracks }] = useContext(AppContext);
+  const [{ localTracks }] = useContext(TwilioRoomContext);
 
   const localVideoTrack = localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
 

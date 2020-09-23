@@ -1,17 +1,17 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import MinusIcon from '@material-ui/icons/RemoveCircle';
 import PlusIcon from '@material-ui/icons/AddCircle';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
+import { useRoomState } from '../../contexts/AppStateContext';
 
 const valence = (x: number) => (x < 0 ? -1 : 1);
 
 export default function DelayControl() {
-  const [{ delayTime }, changeSharedState] = useContext(SharedRoomContext);
+  const [{ delayTime }, roomStateDispatch] = useRoomState();
 
   const bumpDelayTime = useCallback((bump: number) => {
-    changeSharedState({ delayTime: delayTime + bump });
-  }, [delayTime, changeSharedState])
+    roomStateDispatch('set', { delayTime: delayTime + bump });
+  }, [delayTime, roomStateDispatch])
 
   useEffect(() => {
     const handleKeys = (e: KeyboardEvent) => {

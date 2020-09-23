@@ -1,10 +1,10 @@
 import { LocalVideoTrack } from 'twilio-video';
 import { useCallback, useContext, useRef, useState } from 'react';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import useLocalTracks from '../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 
 export default function useLocalVideoToggle() {
-  const [{ room, localTracks }] = useContext(AppContext);
+  const [{ room, localTracks }] = useContext(TwilioRoomContext);
   const { getLocalVideoTrack, removeLocalVideoTrack } = useLocalTracks();
   // const onError = () => {}; // TODO implement
   const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;

@@ -1,10 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
-import { SharedRoomContext } from '../../../contexts/SharedRoomContext';
 import { toggleMembership } from '../../../utils/functional';
 import { cached } from '../../../utils/react-help';
 import useParticipants from '../../../hooks/useParticipants/useParticipants'
 import { isRole } from '../../../utils/twilio';
+import { useRoomState } from '../../../contexts/AppStateContext';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -18,21 +18,17 @@ interface OperatorData {
 
 export default function useOperatorControls() {
   let participants = useParticipants().filter(isRole('audience'));
-  const [{ focusGroup }, setSharedState] = useContext(SharedRoomContext);
+  const [{ focusGroup }, roomStateDispatch] = useRoomState();
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
 
-  const toggleFocus = useCallback((participant: Participant) => {
-      console.log('toggleFocus', { focusGroup, identitiy: participant.identity });
-      // @ts-ignore
-      setSharedState({ focusGroup: toggleMembership(focusGroup)(participant.identity) });
-    },
-    [focusGroup, setSharedState]);
+  const toggleFocus = useCallback((participant: Participant) =>
+    roomStateDispatch('toggleMembership', { group: 'focusGroup', identity: participant.identity }),
+    [focusGroup, roomStateDispatch]);
 
   const clearFocus = useCallback(() =>
-      // @ts-ignore
-      setSharedState({ focusGroup: [] }),
-    [setSharedState]);
+    roomStateDispatch('clearMembership', { group: 'focusGroup' }),
+    [roomStateDispatch]);
 
   // hotkeys
   useEffect(() => {

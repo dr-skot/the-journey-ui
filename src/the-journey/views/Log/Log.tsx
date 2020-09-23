@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import AutoJoin from '../../components/AutoJoin';
 import { listKey } from '../../utils/react-help';
 import { RemoteParticipant } from 'twilio-video';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useRoomState } from '../../contexts/AppStateContext';
 import Subscribe from '../../subscribers/Subscribe';
 
 const logLine = (s: string) => `${new Date().toLocaleTimeString()}: ${s}`; // TODO add timestamp
 
 export default function Log() {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const [{
     focusGroup, gain, muteAll, mutedInFocusGroup, admitted, rejected, meetings, userAgents, helpNeeded
-  }] = useSharedRoomState();
+  }] = useRoomState();
   const [log, setLog] = useState<string[]>([]);
   const [startTime] = useState(new Date())
 

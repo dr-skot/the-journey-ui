@@ -2,13 +2,13 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import useLocalVideoToggle from './useLocalVideoToggle';
 import { EventEmitter } from 'events';
 import { LocalParticipant } from 'twilio-video';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import useLocalTracks from '../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks';
 
 jest.mock('../../contexts/AppContext');
 jest.mock('../../../twilio/components/VideoProvider/useLocalTracks/useLocalTracks');
 
-const mockUseAppContext = useAppContext as jest.Mock<any>;
+const mockUseAppContext = useTwilioRoomContext as jest.Mock<any>;
 const mockUseLocalTracks = useLocalTracks as jest.Mock<any>;
 
 function getMockTrack(name: string, deviceId?: string) {

@@ -2,17 +2,17 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import AppContextProvider, { useAppContext } from './the-journey/contexts/AppContext';
+import TwilioRoomContextProvider, { useTwilioRoomContext } from './the-journey/contexts/TwilioRoomContext';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
 import useHeight from './the-journey/hooks/useHeight/useHeight';
 import theme from './theme';
 import { CssBaseline } from '@material-ui/core';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
-import Rejected from './the-journey/views/FOH/Rejected';
+import Rejected from './the-journey/views/Entry/Rejected';
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
-import SharedRoomContextProvider from './the-journey/contexts/SharedRoomContext';
+import RoomStateContextProvider from './the-journey/contexts/AppStateContext';
 import Testing from './the-journey/views/Testing/Testing';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
 import FocusGroup from './the-journey/views/Focus/FocusGroup';
@@ -24,7 +24,6 @@ import WithFacts from './the-journey/views/Facts/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
-import FrontDoor from './the-journey/views/FOH/FrontDoor';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
@@ -32,7 +31,7 @@ import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
 export function NameHelmet() {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const me = room?.localParticipant;
   return <Helmet><title>{me ? `${getUsername(me.identity)} : ` : ''}The Journey</title></Helmet>
 }
@@ -52,11 +51,11 @@ export default function App() {
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <UnsupportedBrowserWarning>
-      <AppContextProvider>
+      <TwilioRoomContextProvider>
         <NameHelmet/>
         <AudioStreamContextProvider>
           <FallbackToAudioElements/>
-          <SharedRoomContextProvider>
+          <RoomStateContextProvider>
             <ReconnectingNotification />
             <div style={{ height }}>
               <Router>
@@ -66,7 +65,6 @@ export default function App() {
                     <NewFrontDoor test {...props} />
                   )}/>
 
-                  <Route path="/old-entry/:code?" component={FrontDoor}/>
                   <Route path="/rejected" component={Rejected} />
 
                   <PrivateRoute roles="foh|operator" path="/code">
@@ -115,9 +113,9 @@ export default function App() {
                 </Switch>
               </Router>
             </div>
-          </SharedRoomContextProvider>
+          </RoomStateContextProvider>
         </AudioStreamContextProvider>
-      </AppContextProvider>
+      </TwilioRoomContextProvider>
       </UnsupportedBrowserWarning>
     </MuiThemeProvider>
   );

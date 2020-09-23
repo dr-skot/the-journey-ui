@@ -2,11 +2,11 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import EventEmitter from 'events';
 import { Room } from 'twilio-video';
 import useRoomState from './useRoomState';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 jest.mock('../../contexts/AppContext');
 
-const mockedAppContext = useAppContext as jest.Mock<any>;
+const mockedAppContext = useTwilioRoomContext as jest.Mock<any>;
 
 describe('the useRoomState hook', () => {
   let mockRoom: Room;

@@ -1,8 +1,8 @@
-import { useAppContext } from '../contexts/AppContext';
+import { useTwilioRoomContext } from '../contexts/TwilioRoomContext';
 import { useEffect, useState } from 'react';
 
 export default function useRerenderOnTrackSubscribed() {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const [toggle, setToggle] = useState(false);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Participant, RemoteAudioTrack, RemoteAudioTrackPublication, RemoteParticipant } from 'twilio-video';
 
 import { Sid } from 'twilio/lib/interfaces';
-import { AppContext } from '../AppContext';
+import { TwilioRoomContext } from '../TwilioRoomContext';
 import useAudioContext from './useAudioContext';
 type Identity = Participant.Identity;
 export type TrackRecord = [Identity, Sid, MediaStreamAudioSourceNode];
@@ -21,7 +21,7 @@ function getNode(audioContext: AudioContext, track: RemoteAudioTrack) {
 export default function useStreamNodes() {
   const [nodes, setNodes] = useState<TrackRecord[]>([]);
   const audioContext = useAudioContext();
-  const [{ room }] = useContext(AppContext);
+  const [{ room }] = useContext(TwilioRoomContext);
 
   useEffect(() => {
     if (!room || !audioContext) return;

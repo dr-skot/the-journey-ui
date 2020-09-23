@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { UserRole } from '../../utils/twilio';
 import { Settings } from '../../contexts/settings/settingsReducer';
 
@@ -58,7 +58,7 @@ interface NameFormProps {
 
 export default function NameForm({ roomName, role = 'audience', options= {} }: NameFormProps) {
   const classes = useStyles();
-  const [{ roomStatus}, dispatch] = useAppContext();
+  const [{ roomStatus}, dispatch] = useTwilioRoomContext();
 
   const [username, setUsername] = useState<string>(localStorage.getItem('username') || '');
 

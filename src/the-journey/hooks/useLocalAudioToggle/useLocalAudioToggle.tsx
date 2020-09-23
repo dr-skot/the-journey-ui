@@ -1,10 +1,10 @@
 import { LocalAudioTrack } from 'twilio-video';
 import { useCallback, useContext } from 'react';
 import useIsTrackEnabled from '../useIsTrackEnabled/useIsTrackEnabled';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 export default function useLocalAudioToggle() {
-  const [{ localTracks }] = useContext(AppContext);
+  const [{ localTracks }] = useContext(TwilioRoomContext);
   const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
   const isEnabled = useIsTrackEnabled(audioTrack);
 

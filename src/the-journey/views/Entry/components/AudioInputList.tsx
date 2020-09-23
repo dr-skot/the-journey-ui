@@ -3,7 +3,7 @@ import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { LocalAudioTrack } from 'twilio-video';
 import { useAudioInputDevices } from '../../../components/MenuBar/DeviceSelector/deviceHooks/deviceHooks';
-import { useAppContext } from '../../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 import useMediaStreamTrack from '../../../../twilio/hooks/useMediaStreamTrack/useMediaStreamTrack';
 
 const useStyles = makeStyles({
@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 export default function AudioInputList() {
   const classes = useStyles();
   const audioInputDevices = useAudioInputDevices();
-  const [{ localTracks }] = useAppContext();
+  const [{ localTracks }] = useTwilioRoomContext();
 
   const localAudioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
   const mediaStreamTrack = useMediaStreamTrack(localAudioTrack);

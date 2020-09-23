@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getTimestamp, sameIdentities } from '../../utils/twilio';
 import { sortBy } from 'lodash';
 import { cached } from '../../utils/react-help';
 
 export default function useParticipants(includeMe?: 'includeMe') {
-  const appContext = useAppContext();
+  const appContext = useTwilioRoomContext();
   const [{ room }] = appContext;
   const [participants, setParticipants] = useState(Array.from(room?.participants.values() || []));
 

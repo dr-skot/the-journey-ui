@@ -1,18 +1,12 @@
 import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 import { createContext } from 'react';
-import {
-  joinRoom,
-  getLocalTracks,
-  getIdentity,
-  subscribe,
-  toggleVideoEnabled,
-} from '../utils/twilio';
+import { joinRoom, getLocalTracks, getIdentity, subscribe, toggleVideoEnabled } from '../utils/twilio';
 import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
-import { prevIfEqual } from '../utils/react-help';
+import { cached } from '../utils/react-help';
 
-interface AppState {
+interface TwilioState {
   error?: TwilioError,
 
   room?: Room,
@@ -25,7 +19,7 @@ interface AppState {
   settings: Settings,
 }
 
-const initialState: AppState = {
+const initialState: TwilioState = {
   error: undefined,
 
   room: undefined,
@@ -38,8 +32,8 @@ const initialState: AppState = {
   settings: initialSettings,
 };
 
-type AppContextValue = [AppState, EasyDispatch];
-export const AppContext = createContext([initialState, () => {}] as AppContextValue);
+type TwilioRoomContextValue = [TwilioState, EasyDispatch];
+export const TwilioRoomContext = createContext([initialState, () => {}] as TwilioRoomContextValue);
 
 type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'setSinkId' | 'changeSetting' | 'subscribe' |
@@ -53,7 +47,7 @@ interface ReducerRequest {
 
 type EasyDispatch = (action: ReducerAction, payload?: any) => void;
 
-const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, request: ReducerRequest) => {
+const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState, request: ReducerRequest) => {
   const { action, payload, dispatch } = request;
   // console.log('action', action, 'payload', payload);
   let newState = state;
@@ -131,7 +125,8 @@ const reducer: React.Reducer<AppState, ReducerRequest> = (state: AppState, reque
     case 'subscribe':
       if (state.room) {
         // console.log('requesting subscription change', payload);
-        subscribe(state.room.name, state.room.localParticipant.identity, payload.profile, payload.focus);
+        subscribe(state.room.name, state.room.localParticipant.identity, payload.profile, payload.focus)
+          .then();
       }
       break;
 
@@ -144,7 +139,7 @@ interface ChildrenProps {
   children: ReactNode,
 }
 
-export default function AppContextProvider({ children }: ChildrenProps) {
+export default function TwilioRoomContextProvider({ children }: ChildrenProps) {
   const [state, _dispatch] = useReducer(reducer, initialState, undefined);
 
   // pass dispatch to _dispatch, for promise resolving
@@ -152,13 +147,14 @@ export default function AppContextProvider({ children }: ChildrenProps) {
     _dispatch({ action, payload, dispatch });
   }, [_dispatch]);
 
-  console.log('AppContext.Provider rerender');
+  console.log('TwilioRoomContext.Provider rerender');
   // reportEqual({ state, dispatch });
-  const providerValue = prevIfEqual('AppContext.value', [state, dispatch]);
+  const providerValue =
+    cached('TwilioRoomContext.value').ifEqual([state, dispatch]) as TwilioRoomContextValue;
 
-  return <AppContext.Provider value={providerValue}>
+  return <TwilioRoomContext.Provider value={providerValue}>
     {children}
-  </AppContext.Provider>
+  </TwilioRoomContext.Provider>
 }
 
-export function useAppContext() { return useContext(AppContext ) }
+export function useTwilioRoomContext() { return useContext(TwilioRoomContext ) }

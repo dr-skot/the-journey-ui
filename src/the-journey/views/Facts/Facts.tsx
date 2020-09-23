@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getIdentities, getRole, getTimestamp, getUsername, joinOptions } from '../../utils/twilio';
 import { DateTime } from 'luxon';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
@@ -12,7 +12,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UnmuteButtons } from '../Testing/Testing';
 import VideoTrack from '../../components/VideoTrack/VideoTrack';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useRoomState } from '../../contexts/AppStateContext';
 
 const VideoWindow = styled('div')({
   display: 'inline-block',
@@ -37,8 +37,8 @@ export function VideoPlayer({ track }: VideoPlayerProps) {
 }
 
 export default function Facts() {
-  const [{ room, localTracks }] = useAppContext();
-  const sharedRoomState = useSharedRoomState();
+  const [{ room, localTracks }] = useTwilioRoomContext();
+  const sharedRoomState = useRoomState();
   const participants = useParticipants();
   useRerenderOnTrackSubscribed();
 

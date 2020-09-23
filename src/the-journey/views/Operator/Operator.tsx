@@ -1,10 +1,9 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
@@ -12,6 +11,7 @@ import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscrib
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
+import { useRoomState } from '../../contexts/AppStateContext';
 
 const Container = styled('div')({
   display: 'flex',
@@ -31,7 +31,7 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function OperatorView() {
-  const sharedRoom = useContext(SharedRoomContext);
+  const sharedRoom = useRoomState();
   const operatorControls = useOperatorControls();
   let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();

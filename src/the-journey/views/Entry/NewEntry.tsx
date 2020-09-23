@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from './SignIn';
 import Broadcast from '../Broadcast/Broadcast';
 import useMeeting from '../../hooks/useMeeting';
 import Meeting from '../FOH/Meeting';
-import { useSharedRoomState } from '../../contexts/SharedRoomContext';
+import { useRoomState } from '../../contexts/AppStateContext';
 import { defaultRoom, inGroup } from '../../utils/twilio';
-import RoomJoinForm from './RoomJoinForm';
-import { DeviceSelector } from '../../components/MenuBar/DeviceSelector/DeviceSelector';
-import { Button } from '@material-ui/core';
 import GetMedia, { PleaseEmail, ThatsAll } from './GetMedia';
 import NameForm from './NameForm';
 
@@ -24,9 +21,9 @@ interface EntryProps {
   test?: boolean;
 }
 export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
-  const [{ room, roomStatus }, dispatch] = useAppContext();
+  const [{ room, roomStatus }, dispatch] = useTwilioRoomContext();
   const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
-  const [{ rejected, helpNeeded }, changeSharedState] = useSharedRoomState();
+  const [{ rejected, helpNeeded }, roomStateDispatch] = useRoomState();
   const { meeting } = useMeeting();
 
   console.log('!!!helpNeeded', helpNeeded);
@@ -35,8 +32,8 @@ export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
     const myIdentity = room?.localParticipant.identity || '';
     setMediaStatus('help-needed');
     console.log('changing helpNeeded to', [...helpNeeded, myIdentity]);
-    changeSharedState({ helpNeeded: [...helpNeeded, myIdentity] });
-  }, [setMediaStatus, room, helpNeeded, changeSharedState]);
+    roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
+  }, [setMediaStatus, room, helpNeeded, dispatch]);
 
   const onAllGood = useCallback(() => {
     setMediaStatus('ready');
@@ -57,8 +54,6 @@ export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
   if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <PleaseEmail/> : <ThatsAll/>;
 
   return roomStatus !== 'disconnected'
-    ? meeting
-      ? <Meeting group={meeting}/>
-      : <Broadcast type="millicast" />
+    ? meeting ? <Meeting group={meeting}/> : <Broadcast />
     : <SignIn roomName={roomName} role="audience"/>;
 }

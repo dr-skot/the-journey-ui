@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import useIsUserActive from './useIsUserActive/useIsUserActive';
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function SelfView() {
   const classes = useStyles();
-  const [{ room, roomStatus }] = useContext(AppContext);
+  const [{ room, roomStatus }] = useContext(TwilioRoomContext);
   const isUserActive = useIsUserActive();
   const showControls = isUserActive || roomStatus === 'disconnected';
 

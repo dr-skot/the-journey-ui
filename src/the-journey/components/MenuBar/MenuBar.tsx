@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 // import DelayControl from './DelayControl';
 import GainControl from './GainControl';
 import AppBar from '@material-ui/core/AppBar';
@@ -61,7 +61,7 @@ interface MenuBarProps {
 }
 export default function MenuBar({ extras }: MenuBarProps) {
   const classes = useStyles();
-  const [{ room, roomStatus }] = useContext(AppContext);
+  const [{ room, roomStatus }] = useContext(TwilioRoomContext);
   const [isFullScreen] = useFullScreenToggle();
 
   if (isFullScreen) return null;

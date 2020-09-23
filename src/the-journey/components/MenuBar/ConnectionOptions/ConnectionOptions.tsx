@@ -12,7 +12,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { inputLabels, Settings } from '../../../contexts/settings/settingsReducer';
 import { RenderDimensions } from '../../../contexts/settings/renderDimensions';
-import { AppContext } from '../../../contexts/AppContext';
+import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 
 const useStyles = makeStyles({
   formControl: {
@@ -37,7 +37,7 @@ const RenderDimensionItems = RenderDimensions.map(({ label, value }) => (
 
 export default function ConnectionOptions({ className, hidden }: { className?: string; hidden?: boolean }) {
   const classes = useStyles();
-  const [{ roomStatus, settings }, dispatch] = useContext(AppContext);
+  const [{ roomStatus, settings }, dispatch] = useContext(TwilioRoomContext);
   const isDisabled = roomStatus !== 'disconnected';
 
   const handleChange = useCallback(

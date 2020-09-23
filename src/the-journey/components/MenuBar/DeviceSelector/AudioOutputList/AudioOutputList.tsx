@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
 import { useAudioOutputDevices } from '../deviceHooks/deviceHooks';
-import { AppContext } from '../../../../contexts/AppContext';
+import { TwilioRoomContext } from '../../../../contexts/TwilioRoomContext';
 
 export default function AudioOutputList() {
-  const [{ activeSinkId }, dispatch] = useContext(AppContext);
+  const [{ activeSinkId }, dispatch] = useContext(TwilioRoomContext);
   const audioOutputDevices = useAudioOutputDevices();
   const activeOutputLabel = audioOutputDevices.find(device => device.deviceId === activeSinkId)?.label;
 

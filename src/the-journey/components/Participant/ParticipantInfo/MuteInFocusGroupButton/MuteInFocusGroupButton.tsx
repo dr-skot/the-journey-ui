@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core';
 import UnmutedIcon from '@material-ui/icons/Mic';
 import MutedIcon from '@material-ui/icons/MicOff';
 import { Participant } from 'twilio-video';
-import { useSharedRoomState } from '../../../../contexts/SharedRoomContext';
+import { useRoomState } from '../../../../contexts/AppStateContext';
 import { toggleMembership } from '../../../../utils/functional';
 
 interface MuteInFocusGroupButtonProps {
@@ -11,12 +11,12 @@ interface MuteInFocusGroupButtonProps {
 }
 
 export default function MuteInFocusGroupButton({ identity }: MuteInFocusGroupButtonProps) {
-  const [{ mutedInFocusGroup }, changeSharedState] =  useSharedRoomState();
+  const [{ mutedInFocusGroup }, roomStateDispatch] =  useRoomState();
 
   // I can't figure out what typescript wants here for e
   const toggleMute = (e: any) => {
     e.stopPropagation();
-    changeSharedState({ mutedInFocusGroup: toggleMembership(mutedInFocusGroup)(identity) });
+    roomStateDispatch('toggleMembership', { group: 'mutedInFocusGroup' });
   }
 
   const label = mutedInFocusGroup.includes(identity) ? 'unmute' : 'mute';

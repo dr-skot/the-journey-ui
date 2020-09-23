@@ -1,11 +1,11 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import EventEmitter from 'events';
 import useParticipants from './useParticipants';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 jest.mock('../../contexts/AppContext');
 
-const mockUseAppContext = useAppContext as jest.Mock;
+const mockUseAppContext = useTwilioRoomContext as jest.Mock;
 
 describe('the useParticipants hook', () => {
   let mockRoom: any;

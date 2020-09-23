@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from '../Entry/SignIn';
 import Meeting from './Meeting';
 import useMeeting from '../../hooks/useMeeting';
@@ -14,7 +14,7 @@ import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
 
 export default function FOH() {
-  const [{ roomStatus }] = useAppContext();
+  const [{ roomStatus }] = useTwilioRoomContext();
   const match = useRouteMatch() as match<{ code?: string }>;
   const roomName = match.params.code || defaultRoom();
 
@@ -36,7 +36,7 @@ function FOHView() {
 }
 
 function FOHGallery() {
-  const [, dispatch] = useAppContext();
+  const [, dispatch] = useTwilioRoomContext();
 
   // initialize by subscribing to gallery
   // FOH controls may punch in to audio and video feeds

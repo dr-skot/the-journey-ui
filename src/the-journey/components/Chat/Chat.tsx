@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import { addResponseMessage, Widget } from 'react-chat-widget';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { tryToParse } from '../../utils/functional';
 import { getLocalDataTrack, getUsername } from '../../utils/twilio';
 import 'react-chat-widget/lib/styles.css';
 import '../../../chat.css';
 
 export default function Chat() {
-  const [{ room }] = useContext(AppContext);
+  const [{ room }] = useContext(TwilioRoomContext);
   const me = room?.localParticipant;
 
   useEffect(() => {

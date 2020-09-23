@@ -1,13 +1,13 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { styled } from '@material-ui/core/styles';
-import { AppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import Millicast from './Millicast';
 import { inGroup } from '../../utils/twilio';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import { SharedRoomContext } from '../../contexts/SharedRoomContext';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 import SignLanguageInterpreter from './components/SignLanguageInterpreter';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
+import { useRoomState } from '../../contexts/AppStateContext';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -21,12 +21,7 @@ const Main = styled('div')(() => ({
   alignContent: 'center',
 }));
 
-export type BroadcastType = 'millicast' | 'hybrid' | 'pure'
-interface BroadcastProps {
-  type?: BroadcastType,
-}
-
-export default function Broadcast({ type }: BroadcastProps) {
+export default function Broadcast() {
   useHighPriorityInFocusGroup();
 
   return <>
@@ -43,8 +38,8 @@ export default function Broadcast({ type }: BroadcastProps) {
 }
 
 function useHighPriorityInFocusGroup() {
-  const [{ room }] = useContext(AppContext);
-  const [{ focusGroup }] = useContext(SharedRoomContext);
+  const [{ room }] = useTwilioRoomContext();
+  const [{ focusGroup }] = useRoomState();
 
   // change video priority when entering and leaving the focus group
   useEffect(() => {

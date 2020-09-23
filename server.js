@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
@@ -7,6 +8,8 @@ const Twilio = require('twilio');
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 const URLSearchParams = require('url').URLSearchParams;
+const roomStateManager = require('./room-state-manager');
+
 require('dotenv').config();
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
@@ -53,8 +56,8 @@ if (!isDev()) {
 //
 const passwords = {
   foh: 'hoffa',
-  operator: 'rowlf',
   lurker: 'sliver',
+  operator: 'xxxx',
 }
 app.post('/auth', (req, res) => {
   const password = req.body.password;
@@ -215,4 +218,7 @@ app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))
 });
 
-app.listen(port, () => console.log(`token server running on ${port}`));
+const server = http.createServer(app);
+roomStateManager.useServer(server);
+
+server.listen(port, () => console.log(`server running on ${port}`));

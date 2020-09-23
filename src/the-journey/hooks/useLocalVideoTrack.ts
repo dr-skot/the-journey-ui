@@ -1,9 +1,9 @@
 import { useContext, useEffect } from 'react';
-import { AppContext } from '../contexts/AppContext';
+import { TwilioRoomContext } from '../contexts/TwilioRoomContext';
 import { LocalVideoTrack } from 'twilio-video';
 
 export function useLocalVideoTrack() {
-  const [{ localTracks }, dispatch] = useContext(AppContext);
+  const [{ localTracks }, dispatch] = useContext(TwilioRoomContext);
   const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
 
   useEffect(() => {

@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
 import { LocalVideoTrack } from 'twilio-video';
-import { AppContext } from '../../../contexts/AppContext';
+import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../../constants';
 import useMediaStreamTrack from '../../../../twilio/hooks/useMediaStreamTrack/useMediaStreamTrack';
 import { useVideoInputDevices } from '../../../components/MenuBar/DeviceSelector/deviceHooks/deviceHooks';
 
 export default function VideoInputList() {
   const videoInputDevices = useVideoInputDevices();
-  const [{ localTracks }] = useContext(AppContext);
+  const [{ localTracks }] = useContext(TwilioRoomContext);
 
   const localVideoTrack = localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
   const mediaStreamTrack = useMediaStreamTrack(localVideoTrack);

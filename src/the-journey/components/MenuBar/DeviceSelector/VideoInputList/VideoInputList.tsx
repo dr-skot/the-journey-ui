@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import VideoTrack from '../../../VideoTrack/VideoTrack';
 import useMediaStreamTrack from '../../../../../twilio/hooks/useMediaStreamTrack/useMediaStreamTrack';
 import { useVideoInputDevices } from '../deviceHooks/deviceHooks';
-import { AppContext } from '../../../../contexts/AppContext';
+import { TwilioRoomContext } from '../../../../contexts/TwilioRoomContext';
 
 const useStyles = makeStyles({
   preview: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 export default function VideoInputList() {
   const classes = useStyles();
   const videoInputDevices = useVideoInputDevices();
-  const [{ localTracks }] = useContext(AppContext);
+  const [{ localTracks }] = useContext(TwilioRoomContext);
 
   const localVideoTrack = localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
   const mediaStreamTrack = useMediaStreamTrack(localVideoTrack);

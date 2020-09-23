@@ -1,9 +1,9 @@
-import { useSharedRoomState } from '../contexts/SharedRoomContext';
-import { useAppContext } from '../contexts/AppContext';
+import { useRoomState } from '../contexts/AppStateContext';
+import { useTwilioRoomContext } from '../contexts/TwilioRoomContext';
 
 export default function useMeeting() {
-  const [{ room }] = useAppContext();
-  const [{ meetings }] = useSharedRoomState();
+  const [{ room }] = useTwilioRoomContext();
+  const [{ meetings }] = useRoomState();
   const myIdentity = room?.localParticipant.identity || '';
 
   const meeting = room

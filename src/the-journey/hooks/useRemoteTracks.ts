@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Participant, RemoteParticipant, RemoteTrack, RemoteTrackPublication } from 'twilio-video';
 import useParticipants from './useParticipants/useParticipants';
-import { useAppContext } from '../contexts/AppContext';
+import { useTwilioRoomContext } from '../contexts/TwilioRoomContext';
 import { SubscribedTrackKind } from 'twilio/lib/rest/video/v1/room/roomParticipant/roomParticipantSubscribedTrack';
 
 type ParticipantTracks = Record<Participant.Identity, RemoteTrack[]>;
@@ -22,7 +22,7 @@ const getTracks = (participants: RemoteParticipant[], kind: SubscribedTrackKind)
 }
 
 export default function useRemoteTracks(kind: SubscribedTrackKind) {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const participants = useParticipants();
   const [tracks, setTracks] = useState<ParticipantTracks>({});
 

@@ -6,7 +6,7 @@ import ToggleAudioButton from './ToggleAudioButton/ToggleAudioButton';
 // import ToggleVideoButton from './ToggleVideoButton/ToggleVideoButton';
 
 import useIsUserActive from './useIsUserActive/useIsUserActive';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SettingsButton from './SettingsButton/SettingsButton';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Controls() {
   const classes = useStyles();
-  const [{ roomStatus }] = useContext(AppContext);
+  const [{ roomStatus }] = useContext(TwilioRoomContext);
   const isReconnecting = roomStatus === 'connecting';
   const isUserActive = useIsUserActive();
   const showControls = isUserActive || roomStatus === 'disconnected';

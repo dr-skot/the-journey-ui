@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 type RoomStateType = 'disconnected' | 'connected' | 'reconnecting';
 
 export default function useRoomState() {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const [state, setState] = useState<RoomStateType>('disconnected');
 
   useEffect(() => {

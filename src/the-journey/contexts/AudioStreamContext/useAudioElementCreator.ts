@@ -2,7 +2,7 @@ import { Participant, RemoteAudioTrack, RemoteParticipant } from 'twilio-video';
 import { AudioOut } from '../../utils/audio';
 import { useEffect, useState } from 'react';
 import { getParticipants, inGroup } from '../../utils/twilio';
-import { useAppContext } from '../AppContext';
+import { useTwilioRoomContext } from '../TwilioRoomContext';
 import { constrain } from '../../utils/functional';
 import { flatMap } from 'lodash';
 
@@ -24,7 +24,7 @@ const initialSettings: Settings = {
 
 export default function useAudioElementCreator() {
   const [settings, setSettings] = useState<Settings>(initialSettings)
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const [participants, setParticipants] = useState<Participant[]>(getParticipants());
 
   // don't miss new tracks

@@ -33,7 +33,7 @@ const initialValues: AudioStreamContextValues = {
 
 export const AudioStreamContext = createContext(initialValues);
 
-export const MAX_STREAMS = 31;
+export const MAX_STREAMS = 32;
 export const DEFAULT_GAIN = 0.8;
 export const DEFAULT_DELAY = 0;
 

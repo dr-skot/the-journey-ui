@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import usePublications from '../../../twilio/hooks/usePublications/usePublications';
 import VideoTrack from '../VideoTrack/VideoTrack';
 import { IVideoTrack } from '../../../types';
@@ -11,7 +11,7 @@ interface ParticipantVideoProps {
 }
 
 export default function ParticipantVideo({ participant, videoPriority, }: ParticipantVideoProps) {
-  const [{ room }] = useContext(AppContext);
+  const [{ room }] = useContext(TwilioRoomContext);
   const isLocal = participant === room?.localParticipant;
   let publications = usePublications(participant);
 

@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React, { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { UserRole } from '../../utils/twilio';
 import { Settings } from '../../contexts/settings/settingsReducer';
 
@@ -44,7 +44,7 @@ interface RoomJoinFormProps {
 
 export default function RoomJoinForm({ roomName, role = 'audience', options= {} }: RoomJoinFormProps) {
   const classes = useStyles();
-  const [{ roomStatus }, dispatch] = useContext(AppContext);
+  const [{ roomStatus }, dispatch] = useContext(TwilioRoomContext);
   const [username, setUsername] = useState<string>('');
 
   // TODO autofill remembered identity

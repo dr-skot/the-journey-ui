@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { AppContext } from '../../contexts/AppContext';
+import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 import RoomJoinForm from './RoomJoinForm';
 import AppBar from '@material-ui/core/AppBar';
@@ -40,7 +40,7 @@ interface SignInBarProps {
 
 export default function SignInBar({ roomName = defaultRoom(), role = 'audience', options }: SignInBarProps) {
   const classes = useStyles();
-  const [{ roomStatus }] = useContext(AppContext)
+  const [{ roomStatus }] = useContext(TwilioRoomContext)
 
   return (
     <AppBar className={classes.container} position="fixed">

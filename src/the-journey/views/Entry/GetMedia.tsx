@@ -8,7 +8,7 @@ import AudioInputList from './components/AudioInputList';
 import VideoInputList from './components/VideoInputList';
 import MiniVideoPreview from './components/MiniVideoPreview';
 import LocalAudioLevelIndicator from './components/LocalAudioLevelIndicator';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getUsername } from '../../utils/twilio';
 
 const Center = styled('div')({
@@ -67,7 +67,7 @@ interface GetMediaProps {
 
 export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
   const classes = useStyles();
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const [consentGiven, setConsentGiven] = useState(false);
   const name = getUsername(room?.localParticipant.identity || '');
 

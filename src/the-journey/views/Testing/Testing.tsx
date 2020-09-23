@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
 import { getRole, getTimestamp, getUsername } from '../../utils/twilio';
@@ -69,7 +69,7 @@ function TestingParticipant({ participant }: TestingParticipantProps) {
 }
 
 export default function Testing() {
-  const [{ room }] = useAppContext();
+  const [{ room }] = useTwilioRoomContext();
   const participants = useParticipants('includeMe');
 
   globalRoom = room;

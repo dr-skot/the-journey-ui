@@ -7,7 +7,7 @@ import Videocam from '@material-ui/icons/Videocam';
 import VideocamOff from '@material-ui/icons/VideocamOff';
 
 import useLocalVideoToggle from '../../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-import { useAppContext } from '../../../contexts/AppContext';
+import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ToggleVideoButton(props: { disabled?: boolean }) {
   const classes = useStyles();
-  const [{ localTracks }, dispatch] = useAppContext();
+  const [{ localTracks }, dispatch] = useTwilioRoomContext();
   const isVideoEnabled = localTracks.some(track => track.name.includes('camera'));
   const lastClickTimeRef = useRef(0);
 
