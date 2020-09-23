@@ -122,7 +122,7 @@ export function getLocalTracks({ audioOnly }: { audioOnly?: boolean } = {}) {
     audio: true,
   }).catch((error) => {
     console.log('error getting tracks', error);
-    return error;
+    throw error;
   })
 }
 
@@ -175,7 +175,10 @@ export function subscribe(room: string, participantId: string, policy: string = 
 
   return fetch(url, { headers })
     .then(res => console.log(`${policy} subscribe successful, result`, res))
-    .catch(error => console.log(`error subscribing to ${policy}:`, error))
+    .catch(error => {
+      console.log(`error subscribing to ${policy}:`, error);
+      throw error;
+    })
     .finally(() => clearTimeout(timeoutId));
 }
 

@@ -70,6 +70,8 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
   const [consentGiven, setConsentGiven] = useState(false);
   const [count, setCount] = useState(0);
 
+  console.log('I am get media hear me roar');
+
   const name = getUsername(room?.localParticipant.identity || '');
 
   return <>
