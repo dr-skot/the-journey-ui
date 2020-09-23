@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { LocalAudioTrack, LocalTrack } from 'twilio-video';
 import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';

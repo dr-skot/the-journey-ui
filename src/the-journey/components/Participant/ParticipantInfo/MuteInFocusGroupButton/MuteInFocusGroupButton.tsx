@@ -4,7 +4,6 @@ import UnmutedIcon from '@material-ui/icons/Mic';
 import MutedIcon from '@material-ui/icons/MicOff';
 import { Participant } from 'twilio-video';
 import { useRoomState } from '../../../../contexts/AppStateContext';
-import { toggleMembership } from '../../../../utils/functional';
 
 interface MuteInFocusGroupButtonProps {
   identity: Participant.Identity;

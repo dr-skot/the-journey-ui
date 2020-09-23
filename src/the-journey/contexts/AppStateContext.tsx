@@ -67,7 +67,7 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
     server.send({ action, payload: { identity: me, roomName: room?.name, ...payload } });
-  }, [server, me, room]);
+  },  [me, room]);
 
   // receive room state updates
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
     }
     server.addMessageListener(update);
     return () => server.removeMessageListener(update);
-  }, [server, setRoomState]);
+  }, [setRoomState]);
 
   // join and leave room
   useEffect(() => {

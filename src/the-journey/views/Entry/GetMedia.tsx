@@ -1,5 +1,4 @@
-import { DeviceSelector } from '../../components/MenuBar/DeviceSelector/DeviceSelector';
-import { Button, Checkbox, DialogContent, FormControlLabel, styled, Typography } from '@material-ui/core';
+import { Button, Checkbox, FormControlLabel, styled } from '@material-ui/core';
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';

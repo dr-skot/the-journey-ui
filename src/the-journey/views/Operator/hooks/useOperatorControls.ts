@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
-import { toggleMembership } from '../../../utils/functional';
 import { cached } from '../../../utils/react-help';
 import useParticipants from '../../../hooks/useParticipants/useParticipants'
 import { isRole } from '../../../utils/twilio';
@@ -18,13 +17,13 @@ interface OperatorData {
 
 export default function useOperatorControls() {
   let participants = useParticipants().filter(isRole('audience'));
-  const [{ focusGroup }, roomStateDispatch] = useRoomState();
+  const [, roomStateDispatch] = useRoomState();
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
 
   const toggleFocus = useCallback((participant: Participant) =>
     roomStateDispatch('toggleMembership', { group: 'focusGroup', identity: participant.identity }),
-    [focusGroup, roomStateDispatch]);
+    [roomStateDispatch]);
 
   const clearFocus = useCallback(() =>
     roomStateDispatch('clearMembership', { group: 'focusGroup' }),

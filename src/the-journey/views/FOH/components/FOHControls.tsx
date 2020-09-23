@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 import VerifiedIcon from '@material-ui/icons/CheckCircle';
-import { toggleMembership } from '../../../utils/functional';
 import { Participant, RemoteAudioTrack } from 'twilio-video';
 import AudioLevelIndicator from '../../../../twilio/components/AudioLevelIndicator/AudioLevelIndicator';
 import CameraIcon from '@material-ui/icons/Videocam';
