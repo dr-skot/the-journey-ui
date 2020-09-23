@@ -28,6 +28,7 @@ import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
 import HomePage from './the-journey/views/HomePage';
+import ClearRoom from './the-journey/views/Operator/ClearRoom';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -90,6 +91,9 @@ export default function App() {
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/log/:code?">
                     <Log/>
+                  </PrivateRoute>
+                  <PrivateRoute roles="operator" path="/clear/:code?">
+                    <ClearRoom/>
                   </PrivateRoute>
 
                   { /*

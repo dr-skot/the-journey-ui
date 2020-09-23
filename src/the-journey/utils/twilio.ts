@@ -256,3 +256,8 @@ export function removeParticipant(participant: Participant, room?: Room) {
   if (!room) return Promise.reject('No room!');
   return fetch(`/disconnect/${room.name}/${participant.identity}`);
 }
+
+export function clearRoom(room?: Room) {
+  if (!room) return Promise.reject('No room!');
+  return fetch(`/clear/${room.name}`);
+}

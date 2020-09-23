@@ -155,6 +155,11 @@ app.get('/subscribe/*', (req, res) => {
   res.send('Error: bad subscribe request');
 })
 
+
+//
+// other twilio functions
+//
+
 app.get('/disconnect/:room/:user', (req, res) => {
   const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}`;
   const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
@@ -171,6 +176,24 @@ app.get('/disconnect/:room/:user', (req, res) => {
       res.end(response.body.read());
     })
 });
+
+app.get('/clear/:room', (req, res) => {
+  const url = `https://video.twilio.com/v1/Rooms/${req.params.room}`;
+  const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
+
+  // curl -X POST https://video.twilio.com/v1/Rooms/room2 --data-urlencode "Status=completed"
+  const curl = `curl -X POST ${url} -u '${auth}' -d 'Status=completed' -H 'Content-Type: application/x-www-form-urlencoded'`;
+  console.log(curl);
+
+  const params = new URLSearchParams();
+  params.append('Status', 'completed');
+
+  fetch(url, { method: 'post', body: params, headers: { Authorization: `Basic ${base64(auth)}` } })
+    .then(response => {
+      console.log('success');
+      res.end(response.body.read());
+    })
+})
 
 app.get('/participants/:room', (req, res) => {
   const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants`;
