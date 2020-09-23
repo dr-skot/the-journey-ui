@@ -11,6 +11,8 @@ import { AudioTrack, VideoTrack } from 'twilio-video';
 export default function useMediaStreamTrack(track?: AudioTrack | VideoTrack) {
   const [mediaStreamTrack, setMediaStreamTrack] = useState(track?.mediaStreamTrack);
 
+  console.log('still alive at useMediaStreamTrack');
+
   useEffect(() => {
     setMediaStreamTrack(track?.mediaStreamTrack);
 

@@ -6,7 +6,8 @@ import VideoTrack from '../../../components/VideoTrack/VideoTrack';
 
 const useStyles = makeStyles({
   preview: {
-    width: '250px',
+    height: '144px',
+    width: '256px',
     margin: '0.5em 0',
   },
 });
@@ -17,9 +18,9 @@ export default function MiniVideoPreview() {
 
   const localVideoTrack = localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
 
-  return localVideoTrack && (
+  return (
     <div className={classes.preview}>
-      <VideoTrack isLocal track={localVideoTrack}/>
+      { localVideoTrack && <VideoTrack isLocal track={localVideoTrack}/> }
     </div>
   );
 }

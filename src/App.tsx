@@ -41,6 +41,8 @@ export function NameHelmet() {
   return <Helmet><title>{me ? `${getUsername(me.identity)} : ` : ''}The Journey</title></Helmet>
 }
 
+
+
 export default function App() {
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -55,7 +57,7 @@ export default function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <UnsupportedBrowserWarning>
+      { /* <UnsupportedBrowserWarning> */ }
       <TwilioRoomContextProvider>
         <NameHelmet/>
         <AudioStreamContextProvider>
@@ -132,7 +134,7 @@ export default function App() {
           </RoomStateContextProvider>
         </AudioStreamContextProvider>
       </TwilioRoomContextProvider>
-      </UnsupportedBrowserWarning>
+      { /* </UnsupportedBrowserWarning> */ }
     </MuiThemeProvider>
   );
 
