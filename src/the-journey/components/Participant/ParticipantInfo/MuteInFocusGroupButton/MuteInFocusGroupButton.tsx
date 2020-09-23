@@ -15,7 +15,7 @@ export default function MuteInFocusGroupButton({ identity }: MuteInFocusGroupBut
   // I can't figure out what typescript wants here for e
   const toggleMute = (e: any) => {
     e.stopPropagation();
-    roomStateDispatch('toggleMembership', { group: 'mutedInFocusGroup' });
+    roomStateDispatch('toggleMembership', { group: 'mutedInFocusGroup', identity });
   }
 
   const label = mutedInFocusGroup.includes(identity) ? 'unmute' : 'mute';
