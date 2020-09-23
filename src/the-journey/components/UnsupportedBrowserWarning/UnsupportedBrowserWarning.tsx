@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     marginBottom: '0.4em',
   },
 });
-
+/*
 function supportsVideoType(type: string) {
   let video;
 
@@ -34,11 +34,12 @@ function supportsVideoType(type: string) {
 
   return video.canPlayType?.(formats[type] || type);
 }
+ */
 
 export default function({ children }: { children: React.ReactElement }) {
   const classes = useStyles();
 
-  if (!Video.isSupported || !supportsVideoType('vp8') || !Array.prototype.flatMap) {
+  if (!Video.isSupported || !Array.prototype.flatMap) {
     return (
       <Container>
         <Grid container justify="center" className={classes.container}>
