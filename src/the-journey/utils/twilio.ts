@@ -149,13 +149,15 @@ export type SubscribeProfile =
 
 const TIMEOUT_DELAY = 5000;
 
-export function subscribe(room: string, participantId: string, policy: string = 'data_only', focus: string[] = []) {
+export function subscribe(room: string, participantId: string, policy: string = 'data_only',
+                          focus: string[] = [], stars: string[] = []) {
   const headers = new window.Headers();
   const endpoint = process.env.REACT_APP_SUBSCRIBE_ENDPOINT || '/subscribe';
 
   const esc = encodeURIComponent;
 
-  const params = `${esc(room)}/${esc(participantId)}/${esc(policy)}?focus=${focus.map(esc).join(',')}`;
+  // TODO use a POST request for this
+  const params = `${esc(room)}/${esc(participantId)}/${esc(policy)}?focus=${focus.map(esc).join(',')}&stars=${stars.map(esc)}`;
   const url = `${endpoint}/${params}`
 
   console.log(`fetching ${url}`);

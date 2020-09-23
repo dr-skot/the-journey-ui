@@ -29,6 +29,8 @@ import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
+import PureFrontDoor from './the-journey/views/Entry/PureFrontDoor';
+import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -62,6 +64,13 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+
+                  <Route path="/pure/:code?" component={PureFrontDoor}/>
+                  <PrivateRoute roles="operator" path="/star/:code?">
+                    <StarEntry/>
+                  </PrivateRoute>
+
+
                   <Route path="/entry/:code?" component={NewFrontDoor}/>
                   <Route path="/test/:code?" render={(props) => (
                     <NewFrontDoor test {...props} />
@@ -78,7 +87,6 @@ export default function App() {
                   <PrivateRoute roles="foh|operator" path="/comm/:code?">
                     <Comm/>
                   </PrivateRoute>
-
 
                   <PrivateRoute roles="operator" path="/operator/:code?">
                     <AutoJoin role="operator" /><BlindOperator />

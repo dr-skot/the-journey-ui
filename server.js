@@ -125,9 +125,12 @@ const SUBSCRIBE_RULES = {
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
   const focus = (req.query.focus || '').split(',') || [];
+  const stars = (req.query.stars || '').split(',') || [];
   const basicRules = SUBSCRIBE_RULES.basic();
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus) || [];
-  const rules = basicRules.concat(moreRules);
+  const rules = basicRules
+    .concat(moreRules)
+    .concat(stars.map(star => ({ type: 'include', publisher: star })));
 
   console.log('subscribe', req.params.room, req.params.user, req.params.policy);
 
