@@ -1,17 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@material-ui/core/styles';
-import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import Millicast from './Millicast';
-import { inGroup, isRole } from '../../utils/twilio';
-import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
+import { isRole } from '../../utils/twilio';
 import SignLanguageInterpreter from './components/SignLanguageInterpreter';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
-import { useRoomState } from '../../contexts/AppStateContext';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
-import MenuedView from '../MenuedView';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import SubscribeToFocusGroupAudioAndStar from '../../subscribers/SubscribeToFocusGroupAudioAndStar';
+import WithFacts from '../Facts/WithFacts';
+import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -30,13 +26,15 @@ export default function Broadcast() {
 
   return <>
     <SubscribeToFocusGroupAudioAndStar/>
-    <FocusGroupAudio/>
+    <PlayAllSubscribedAudio/>
+    <WithFacts>
       <Container>
         <Main>
           <FlexibleGallery participants={stars} />
         </Main>
         <SignLanguageInterpreter />
       </Container>
-    <HelpIsComingNotification />
+      <HelpIsComingNotification />
+    </WithFacts>
   </>;
 }

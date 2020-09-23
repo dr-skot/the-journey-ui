@@ -9,7 +9,7 @@ import Video, {
   LocalDataTrack,
   CreateLocalTrackOptions,
   RemoteTrack,
-  VideoBandwidthProfileOptions,
+  VideoBandwidthProfileOptions, LocalParticipant,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { element, unixTime } from './functional';
@@ -262,4 +262,24 @@ export function removeParticipant(participant: Participant, room?: Room) {
 export function clearRoom(room?: Room) {
   if (!room) return Promise.reject('No room!');
   return fetch(`/clear/${room.name}`);
+}
+
+// for some reason typescript is saying LocalVideoTrackPublication has no prority or setPriority properties
+// so we recast it to this
+interface PrioritySettable {
+  priority: Track.Priority,
+  setPriority: (priority: Track.Priority) => void,
+}
+
+export function insureHighPriorityVideo(me: LocalParticipant) {
+  me.videoTracks.forEach((pub) => {
+    console.log('got a video track');
+    if (pub.hasOwnProperty('setPriority') && pub.hasOwnProperty('priority'))
+      console.log('priority properties are okay');
+      const pubWithPriorities = pub as unknown as PrioritySettable;
+      if (pubWithPriorities.priority !== 'high') {
+        console.log('changing my video priority to high');
+        pubWithPriorities.setPriority('high');
+    }
+  });
 }

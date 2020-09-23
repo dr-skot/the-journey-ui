@@ -13,7 +13,7 @@ export default function SignLanguageEntry({ match }: RouteComponentProps<CodePar
   const [{ roomStatus }] = useContext(TwilioRoomContext);
   const code = match.params.code;
 
-  return roomStatus === 'connected'
+  return roomStatus !== 'disconnected'
     ? <Broadcast />
     : <SignIn roomName={code || defaultRoom()} role="sign-interpreter"/>
 }
