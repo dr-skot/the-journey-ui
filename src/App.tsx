@@ -27,6 +27,7 @@ import Log from './the-journey/views/Log/Log';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
+import NewFrontDoor2 from './the-journey/views/Entry/NewFrontDoor2';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import PureFrontDoor from './the-journey/views/Entry/PureFrontDoor';
@@ -70,6 +71,8 @@ export default function App() {
                     <StarEntry/>
                   </PrivateRoute>
 
+
+                  <Route path="/entry2/:code?" component={NewFrontDoor2}/>
 
                   <Route path="/entry/:code?" component={NewFrontDoor}/>
                   <Route path="/test/:code?" render={(props) => (

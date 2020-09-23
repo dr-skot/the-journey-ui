@@ -117,6 +117,9 @@ export function getLocalTracks({ audioOnly }: { audioOnly?: boolean } = {}) {
       name: `camera-${Date.now()}`,
     },
     audio: true,
+  }).catch((error) => {
+    console.log('error getting tracks', error);
+    return error;
   })
 }
 

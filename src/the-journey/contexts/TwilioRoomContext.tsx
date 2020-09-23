@@ -37,7 +37,7 @@ export const TwilioRoomContext = createContext([initialState, () => {}] as Twili
 
 type ReducerAction = 'setAudioOut' | 'getLocalTracks' | 'gotLocalTracks' | 'joinRoom' | 'roomJoined' |
   'roomJoinFailed' | 'setRoomStatus' | 'roomDisconnected' | 'setSinkId' | 'changeSetting' | 'subscribe' |
-  'toggleVideoEnabled' | 'getLocalAudioTrack'
+  'toggleVideoEnabled' | 'getLocalAudioTrack' | 'getLocalTracksFailed'
 
 interface ReducerRequest {
   action: ReducerAction,
@@ -60,14 +60,23 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       break;
 
     case 'getLocalTracks':
-      getLocalTracks(payload).then(tracks => {
+      getLocalTracks(payload)
+        .then(tracks => {
           dispatch('gotLocalTracks', { tracks });
           if (payload.then) payload.then(tracks);
-        });
+        })
+        .catch(error => {
+          dispatch('getLocalTracksFailed', { error });
+          if (payload.catch) payload.catch(error);
+        })
       break;
 
     case 'gotLocalTracks':
       newState = { ...state, localTracks: payload.tracks };
+      break;
+
+    case 'getLocalTracksFailed':
+      newState = { ...state, error: payload.error };
       break;
 
     case 'joinRoom':
