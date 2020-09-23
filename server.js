@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
@@ -244,7 +246,13 @@ app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))
 });
 
-const server = http.createServer(app);
+const server = isDev()
+  ? https.createServer({
+      key: fs.readFileSync('server.key'),
+      cert: fs.readFileSync('server.cert')
+  }, app)
+  : http.createServer(app);
+
 roomStateManager.useServer(server);
 
 server.listen(port, () => console.log(`server running on ${port}`));
