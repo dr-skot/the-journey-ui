@@ -62,9 +62,12 @@ type Priorities = Record<Track.Kind, Track.Priority>;
 function publishTracks(room: Room, tracks: LocalTrack[]) {
   console.log('publishing tracks...');
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+  console.log('got video track...');
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+  console.log('got audio track...');
 
   const me = room.localParticipant;
+  console.log('got me...');
   const priorities: Priorities = isRole('star')(me)
     ? { video: 'high', audio: 'high', data: 'standard' }
     : { video: 'low', audio: 'standard', data: 'standard' };
