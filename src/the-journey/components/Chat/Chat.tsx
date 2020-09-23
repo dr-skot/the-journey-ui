@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { addResponseMessage, Widget } from 'react-chat-widget';
+import { addResponseMessage, deleteMessages, Widget } from 'react-chat-widget';
 import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { tryToParse } from '../../utils/functional';
 import { getLocalDataTrack, getUsername } from '../../utils/twilio';
@@ -10,14 +10,22 @@ export default function Chat() {
   const [{ room }] = useContext(TwilioRoomContext);
   const me = room?.localParticipant;
 
+  // start clean
+  useEffect(() => deleteMessages(Infinity), []);
+
   useEffect(() => {
+    if (!room) return;
     function handleMessage(data: string) {
       const message = tryToParse(data) || {};
       const { from, payload: { chat } } = message;
       if (chat) addResponseMessage(`${getUsername(from)}:\n${chat}`);
     }
-    room?.on('trackMessage', handleMessage);
-    return () => { room?.off('trackMessage', handleMessage) };
+    room.on('trackMessage', handleMessage); // listen
+    getLocalDataTrack(room); // publish
+    return () => {
+      room.off('trackMessage', handleMessage)
+      me?.dataTracks?.forEach((pub) => pub.unpublish());
+    };
   }, [room])
 
   const handleNewUserMessage = (newMessage: string) => {
