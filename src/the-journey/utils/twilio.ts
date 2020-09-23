@@ -189,7 +189,7 @@ export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|'
 
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 
-export const defaultRoom = () => isDev() ? 'dev-room2' : 'room2';
+export const defaultRoom = () => isDev() ? 'dev-room3' : 'room3';
 
 export const getTimestamp = (p?: Participant) => p ? element(-1)(p.identity.split('|')) : '';
 
