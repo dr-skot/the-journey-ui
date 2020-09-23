@@ -64,6 +64,12 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
+  // ping server periodically to keep alive
+  useEffect(() => {
+    const intervalId = window.setInterval(() => server.send({ action: 'ping' }), 5000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
     server.send({ action, payload: { identity: me, roomName: room?.name, ...payload } });
