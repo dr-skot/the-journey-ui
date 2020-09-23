@@ -87,7 +87,6 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
     [audioOut]);
 
   console.log('AudioStreamContext.Provider rerender');
-  // reportEqual({ setUnmutedGroup, getDelayTime, setDelayTime, getGain, setTheGain });
   const contextValues = cached('AudioStreamContext.value').ifEqual({
     setUnmutedGroup, getDelayTime, setDelayTime, getGain, setGain: setTheGain, muteAll, setMuteAll, setFallback,
   }) as AudioStreamContextValues;

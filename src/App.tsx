@@ -27,6 +27,7 @@ import Log from './the-journey/views/Log/Log';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
 import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
+import HomePage from './the-journey/views/HomePage';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -106,9 +107,9 @@ export default function App() {
                     <Testing />
                   </PrivateRoute>
 
-                  <Route path="/">
-                    <Redirect to="/trailer.m4v" />
-                  </Route>
+                  <Route exact path="/" component={HomePage}/>
+
+                  <Redirect to="/" />
 
                 </Switch>
               </Router>

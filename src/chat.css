@@ -34,3 +34,8 @@
 .rcw-conversation-container {
     box-shadow: none;
 }
+
+
+video:focus {
+    outline: none;
+}
