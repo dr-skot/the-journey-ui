@@ -31,6 +31,7 @@ import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import PureFrontDoor from './the-journey/views/Entry/PureFrontDoor';
 import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
+import NinjaFrontDoor from './the-journey/views/Entry/NinjaFrontDoor';
 
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
@@ -90,6 +91,8 @@ export default function App() {
                     <Comm/>
                   </PrivateRoute>
 
+                  <PrivateRoute roles="operator" path="/ninja/:code?" component={NinjaFrontDoor}>
+                  </PrivateRoute>
                   <PrivateRoute roles="operator" path="/operator/:code?">
                     <AutoJoin role="operator" /><BlindOperator />
                   </PrivateRoute>

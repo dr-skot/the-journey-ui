@@ -21,7 +21,7 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
   // TODO expire this localStorage pass after <curtain + length-of-show>
   const punct = localStorage.getItem(`arrival-${code}`) || punctuality(curtain);
 
-  const roomName = `${code || defaultRoom()}`;
+  const roomName = `${code || defaultRoom()}${ test ? '-test' : ''}`;
 
   if (punct === 'on time' || punct === 'late') {
     localStorage.setItem(`arrival-${code}`, punct);
