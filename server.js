@@ -14,6 +14,9 @@ const roomStateManager = require('./room-state-manager');
 
 require('dotenv').config();
 
+const USE_HTTPS = false;
+// const USE_HTTPS = isDev();
+
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioApiKeySID = process.env.TWILIO_API_KEY_SID;
@@ -246,7 +249,7 @@ app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))
 });
 
-const server = isDev()
+const server = USE_HTTPS
   ? https.createServer({
       key: fs.readFileSync('server.key'),
       cert: fs.readFileSync('server.cert')

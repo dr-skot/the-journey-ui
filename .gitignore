@@ -30,3 +30,7 @@ yarn-error.log*
 
 test-reports
 junit.xml
+
+# https certs
+server.cert
+server.key

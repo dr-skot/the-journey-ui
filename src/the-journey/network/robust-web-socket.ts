@@ -19,6 +19,7 @@ interface RobustWebSocket {
   messageListeners: WebSocketMessageListener[],
   webSocket: WebSocket,
   retryInterval: number,
+  reconnecting: number,
 }
 
 const isPingPong = (message: Request) => !!message.action?.match(/^p[io]ng$/);
@@ -29,6 +30,7 @@ class RobustWebSocket {
     this.messageListeners = [];
     this.webSocket = this.getWebsocket();
     this.retryInterval = DEFAULT_RETRY_INTERVAL;
+    this.reconnecting = 0;
   }
 
   getWebsocket = () => {
@@ -57,7 +59,10 @@ class RobustWebSocket {
       webSocket.send(JSON.stringify(message));
     };
     if (this.isConnected()) doIt();
-    else webSocket.addEventListener('open', doIt);
+    else {
+      webSocket.addEventListener('open', doIt);
+      if (webSocket.readyState === WebSocket.CLOSED) this.handleClose(new CloseEvent('Discovered Closed'))
+    }
   };
 
   // eslint-disable-next-line no-console
@@ -76,7 +81,10 @@ class RobustWebSocket {
     console.log('websocket closed', closeEvent);
     this.closeWebsocket(this.webSocket);
     const self = this;
-    setTimeout(() => { self.webSocket = self.getWebsocket(); }, this.retryInterval);
+    if (!this.reconnecting) this.reconnecting = window.setTimeout(() => {
+      self.webSocket = self.getWebsocket();
+      this.reconnecting = 0;
+    }, this.retryInterval);
   };
 
   closeWebsocket = (webSocket: WebSocket) => {
