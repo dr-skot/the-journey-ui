@@ -54,7 +54,7 @@ const theme = createMuiTheme({
 });
 
 function defaultTime() {
-  const result = DateTime.local().set({ hour: 20 }).set({ minute: 0 }).toFormat("yyyy-MM-dd'T'hh:mm");
+  const result = DateTime.local().set({ hour: 20 }).set({ minute: 0 }).toFormat("yyyy-MM-dd'T'HH:mm");
   console.log('defaultTime', result);
   return result;
 }

@@ -49,7 +49,8 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
       title={`You’re ${punct}!`}
       paragraphs={[
         <>This show {punct.match(/late/) ? 'started' : 'starts'} at {display.time} on {display.day}.</>,
-        <>{ timezoneIsLocal && <p>({displayTz.time} in {friendlyTimezone(timezone)}.)</p> }</>,
+        <>{ timezoneIsLocal && <>({displayTz.time} in {friendlyTimezone(timezone)}.)</> }</>,
+        <>{ punct === 'early' && 'Doors open 45 min before showtime.'}</>
         ]}
     />
   )
