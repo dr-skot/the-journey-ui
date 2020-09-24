@@ -4,7 +4,7 @@ import { mod } from './functional';
 export interface DoorPolicy { open: number, close: number };
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
 
-const DEFAULT_DOOR_POLICY = { open: 20, close: 45 }
+export const DEFAULT_DOOR_POLICY = { open: 20, close: 45 }
 
 export const punctuality = (curtain: DateTime, time: DateTime = DateTime.local(),
                             doorPolicy: DoorPolicy = DEFAULT_DOOR_POLICY) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { codeToTimeWithTZ, punctuality, timezones } from '../../utils/foh';
+import { codeToTimeWithTZ, DEFAULT_DOOR_POLICY, punctuality, timezones } from '../../utils/foh';
 import { DateTime } from 'luxon';
 import Entry from './NewEntry';
 import { defaultRoom } from '../../utils/twilio';
@@ -15,11 +15,13 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
   const code = match.params.code;
   const [time, tzIndex] = code ? codeToTimeWithTZ(code) : [undefined, -1];
   const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const doorPolicy = DEFAULT_DOOR_POLICY;
 
   const curtain = time ? DateTime.fromJSDate(time) : DateTime.local().plus({ minutes: 15 });
   const timezone = timezones[tzIndex] || localTz;
   // TODO expire this localStorage pass after <curtain + length-of-show>
-  const punct = localStorage.getItem(`arrival-${code}`) || punctuality(curtain);
+  const punct = localStorage.getItem(`arrival-${code}`)
+    || punctuality(curtain, undefined, doorPolicy);
 
   const roomName = `${code || defaultRoom()}${ test ? '-test' : ''}`;
 
@@ -50,7 +52,7 @@ export default function FrontDoor({ match, test }: FrontDoorProps) {
       paragraphs={[
         <>This show {punct.match(/late/) ? 'started' : 'starts'} at {display.time} on {display.day}.</>,
         <>{ timezoneIsLocal && <>({displayTz.time} in {friendlyTimezone(timezone)}.)</> }</>,
-        <>{ punct === 'early' && 'Doors open 45 min before showtime.'}</>
+        <>{ punct === 'early' && `Doors open ${doorPolicy.open} min before showtime.`}</>
         ]}
     />
   )
