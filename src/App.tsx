@@ -91,7 +91,8 @@ export default function App() {
                     <Comm/>
                   </PrivateRoute>
 
-                  <PrivateRoute roles="operator" path="/ninja/:code?" component={NinjaFrontDoor}>
+                  <PrivateRoute roles="operator" path="/ninja/:code?">
+                    <NinjaFrontDoor />
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/operator/:code?">
                     <AutoJoin role="operator" /><BlindOperator />
