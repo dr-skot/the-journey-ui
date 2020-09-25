@@ -71,11 +71,12 @@ export default function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
+        <Helmet><title>The Journey</title></Helmet>
             <div style={{ height }}>
               <Router>
                 <Switch>
 
-                  <Route path="/entry/:code?">
+                  <Route path="/entry/:code">
                     <Twilio><NewFrontDoor/></Twilio>
                   </Route>
                   <Route path="/test/:code?">
