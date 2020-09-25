@@ -3,8 +3,7 @@ import { Button, CircularProgress, styled } from '@material-ui/core';
 import useHeight from '../../hooks/useHeight/useHeight';
 import fscreen from 'fscreen';
 import { remove } from '../../utils/functional';
-
-const isFirefox  = navigator.userAgent.indexOf('Firefox') > -1;
+import { isFirefox } from '../../utils/browser';
 
 const ClickBlocker = styled('div')(() => ({
   position: 'absolute',

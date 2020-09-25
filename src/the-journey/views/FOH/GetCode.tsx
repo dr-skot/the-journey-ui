@@ -13,7 +13,7 @@ import TimezonePicker from '../../components/TimezonePicker/TimezonePicker';
 import { timeToCodeWithTZ, timezones } from '../../utils/foh';
 import { isDev } from '../../utils/react-help';
 import { DateTime } from 'luxon';
-import { isSafari } from '../../utils/browser';
+import { isFirefox, isSafari } from '../../utils/browser';
 import SimpleMessage from '../SimpleMessage';
 
 const Item = styled('div')(() => ({
@@ -100,11 +100,11 @@ export default function GetCode() {
     return <a href={url}>{url}</a>;
   }
 
-  if (isSafari) return (
+  if (isSafari || isFirefox) return (
     <SimpleMessage
       title={'Please try another browser'}
       paragraphs={[
-        <>Sorry, this page doesn't work in Safari.</>
+        <>This browser doesn't support date/time inputs. Please try Chrome or Edge.</>
       ]} />
   )
 
