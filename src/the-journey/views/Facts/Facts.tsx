@@ -12,7 +12,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UnmuteButtons } from '../Testing/Testing';
 import VideoTrack from '../../components/VideoTrack/VideoTrack';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { listKey } from '../../utils/react-help';
 
 const VideoWindow = styled('div')({
   display: 'inline-block',
@@ -38,7 +39,7 @@ export function VideoPlayer({ track }: VideoPlayerProps) {
 
 export default function Facts() {
   const [{ room, localTracks }] = useTwilioRoomContext();
-  const sharedRoomState = useRoomState();
+  const sharedRoomState = useSharedRoomState();
   const participants = useParticipants();
   useRerenderOnTrackSubscribed();
 
@@ -106,10 +107,12 @@ export default function Facts() {
           <h3>I'm publishing {localTracks.length} tracks</h3>
         </AccordionSummary>
         <AccordionDetails>
-          { localTracks.map((track) => (
+          { localTracks.map((track, i) => (
             <>
               { track.kind === 'audio' ? '[audio]' : '[video]' }
-              <pre>{JSON.stringify(track, null, 1)}</pre>
+              <pre key={listKey('track', i)}>
+                {JSON.stringify(track, null, 1)}
+              </pre>
             </>
           )) }
         </AccordionDetails>

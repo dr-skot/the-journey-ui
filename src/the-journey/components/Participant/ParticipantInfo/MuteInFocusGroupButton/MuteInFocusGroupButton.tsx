@@ -3,14 +3,14 @@ import { IconButton } from '@material-ui/core';
 import UnmutedIcon from '@material-ui/icons/Mic';
 import MutedIcon from '@material-ui/icons/MicOff';
 import { Participant } from 'twilio-video';
-import { useRoomState } from '../../../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../../../contexts/AppStateContext';
 
 interface MuteInFocusGroupButtonProps {
   identity: Participant.Identity;
 }
 
 export default function MuteInFocusGroupButton({ identity }: MuteInFocusGroupButtonProps) {
-  const [{ mutedInFocusGroup }, roomStateDispatch] =  useRoomState();
+  const [{ mutedInFocusGroup }, roomStateDispatch] =  useSharedRoomState();
 
   // I can't figure out what typescript wants here for e
   const toggleMute = (e: any) => {

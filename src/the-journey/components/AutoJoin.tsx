@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
 import { TwilioRoomContext } from '../contexts/TwilioRoomContext';
 import { defaultRoom, SettingsAdjust, UserRole } from '../utils/twilio';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useRouteMatch, match } from 'react-router-dom';
 
 interface AutoJoinProps {
   roomName?: string,

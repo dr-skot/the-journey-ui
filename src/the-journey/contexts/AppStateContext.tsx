@@ -5,6 +5,7 @@ import { AudioStreamContext, DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamCo
 import { TwilioRoomContext } from './TwilioRoomContext';
 import { cached, isDev } from '../utils/react-help';
 import RobustWebSocket from '../network/robust-web-socket';
+import useRoomName from '../hooks/useRoomName';
 type Identity = Participant.Identity;
 export type Group = Identity[];
 
@@ -14,9 +15,9 @@ const serverUrl = isDev()
 let server: RobustWebSocket;
 
 interface RoomState {
-  admitted: Identity[] | undefined,
+  admitted: Identity[],
   rejected: Identity[],
-  mutedInLobby: Identity[],
+  doorsClosed: string,
   mutedInFocusGroup: Identity[],
   focusGroup: Identity[],
   gain: number,
@@ -30,9 +31,9 @@ type Dispatcher = (action: string, payload: any) => void;
 type RoomStateContextValue = [RoomState, Dispatcher];
 
 const initialState = {
-  admitted: undefined,
+  admitted: [],
   rejected: [],
-  mutedInLobby: [],
+  doorsClosed: 'undefined',
   focusGroup: [],
   mutedInFocusGroup: [],
   gain: DEFAULT_GAIN,
@@ -58,8 +59,9 @@ interface ProviderProps {
 }
 
 export default function RoomStateContextProvider({ children }: ProviderProps) {
-  const [{ room }] = useContext(TwilioRoomContext);
   server = server || new RobustWebSocket(serverUrl);
+  const [{ room }] = useContext(TwilioRoomContext);
+  const roomName = useRoomName();
   const [roomState, setRoomState] = useState<RoomState>(initialState);
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
@@ -83,6 +85,8 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
       }
     }
     server.addMessageListener(update);
+    // then request room state right away, even before twilio room is joined
+    dispatch('getRoomState', { roomName });
     return () => server.removeMessageListener(update);
   }, [setRoomState]);
 
@@ -109,4 +113,4 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   </AppStateContext.Provider>
 }
 
-export const useRoomState = () => useContext(AppStateContext);
+export const useSharedRoomState = () => useContext(AppStateContext);

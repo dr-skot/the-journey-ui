@@ -3,7 +3,7 @@ import { Participant } from 'twilio-video';
 import { cached } from '../../../utils/react-help';
 import useParticipants from '../../../hooks/useParticipants/useParticipants'
 import { isRole } from '../../../utils/twilio';
-import { useRoomState } from '../../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../../contexts/AppStateContext';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -17,7 +17,7 @@ interface OperatorData {
 
 export default function useOperatorControls() {
   let participants = useParticipants().filter(isRole('audience'));
-  const [, roomStateDispatch] = useRoomState();
+  const [, roomStateDispatch] = useSharedRoomState();
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
 

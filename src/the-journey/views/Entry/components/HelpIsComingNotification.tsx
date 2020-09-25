@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
-import { useRoomState } from '../../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../../contexts/AppStateContext';
 import { inGroup } from '../../../utils/twilio';
 
 const useStyles = makeStyles({
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 export default function HelpIsComingNotification() {
   const classes = useStyles();
   const [{ room }] = useTwilioRoomContext();
-  const [{ helpNeeded, admitted }] = useRoomState();
+  const [{ helpNeeded, admitted }] = useSharedRoomState();
 
   const needsHelp =
     inGroup(helpNeeded)(room?.localParticipant) && !inGroup(admitted || [])(room?.localParticipant);

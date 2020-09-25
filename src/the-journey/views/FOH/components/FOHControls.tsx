@@ -7,7 +7,7 @@ import CameraIcon from '@material-ui/icons/Videocam';
 import CameraOffIcon from '@material-ui/icons/VideocamOff';
 import { inGroup, isRole, removeParticipant, subscribe } from '../../../utils/twilio';
 import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
-import { useRoomState } from '../../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../../contexts/AppStateContext';
 import useRemoteTracks from '../../../hooks/useRemoteTracks';
 import useMeeting from '../../../hooks/useMeeting';
 
@@ -17,7 +17,7 @@ interface FOHControlsProps {
 
 export default function FOHControls({ participant }: FOHControlsProps) {
   const [{ room }] = useTwilioRoomContext();
-  const [{ admitted, helpNeeded }, roomStateDispatch] =  useRoomState();
+  const [{ admitted, helpNeeded }, roomStateDispatch] =  useSharedRoomState();
   const [waiting, setWaiting] = useState(false);
   const audioTracks = useRemoteTracks('audio');
   const me = room?.localParticipant;

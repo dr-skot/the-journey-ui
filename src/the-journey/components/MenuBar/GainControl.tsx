@@ -1,9 +1,9 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
 
 export default function GainControl() {
-  const [{ gain }, roomStateDispatch] = useRoomState();
+  const [{ gain }, roomStateDispatch] = useSharedRoomState();
 
   const setGain = (e: any) => {
     console.log('setGain', e.target.value);

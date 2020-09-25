@@ -5,10 +5,11 @@ import SignIn from './SignIn';
 import Broadcast from '../Broadcast/Broadcast';
 import useMeeting from '../../hooks/useMeeting';
 import Meeting from '../FOH/Meeting';
-import { useRoomState } from '../../contexts/AppStateContext';
-import { defaultRoom, inGroup } from '../../utils/twilio';
-import GetMedia, { PleaseEmail, ThatsAll } from './GetMedia';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { inGroup } from '../../utils/twilio';
+import GetMedia, { Sorry, ThatsAll } from './GetMedia';
 import NameForm from './NameForm';
+import useRoomName from '../../hooks/useRoomName';
 
 function rejectedPath() {
   return window.location.pathname.replace('entry', 'rejected');
@@ -16,15 +17,13 @@ function rejectedPath() {
 
 type MediaStatus = 'pending' | 'ready' | 'help-needed'
 
-interface EntryProps {
-  roomName?: string;
-  test?: boolean;
-}
-export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
+export default function Entry({ test }: { test?: boolean }) {
   const [{ room, roomStatus }, dispatch] = useTwilioRoomContext();
-  const [{ rejected, helpNeeded }, roomStateDispatch] = useRoomState();
+  const [{ rejected, helpNeeded }, roomStateDispatch] = useSharedRoomState();
   const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
   const { meeting } = useMeeting();
+
+  const roomName = useRoomName() + (test ? '-test' : '');
 
   const onNeedHelp = useCallback(() => {
     setMediaStatus('help-needed');
@@ -47,7 +46,7 @@ export default function Entry({ roomName = defaultRoom(), test }: EntryProps) {
 
   if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
 
-  if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <PleaseEmail/> : <ThatsAll/>;
+  if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <Sorry/> : <ThatsAll/>;
 
   // TODO should go back to NameForm
   return roomStatus !== 'disconnected'

@@ -11,7 +11,7 @@ import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscrib
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
 
 const Container = styled('div')({
   display: 'flex',
@@ -31,7 +31,7 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function OperatorView() {
-  const sharedRoom = useRoomState();
+  const sharedRoom = useSharedRoomState();
   const operatorControls = useOperatorControls();
   let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();

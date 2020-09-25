@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -10,7 +10,6 @@ import { CssBaseline } from '@material-ui/core';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
 import Rejected from './the-journey/views/Entry/Rejected';
-// import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import RoomStateContextProvider from './the-journey/contexts/AppStateContext';
 import Testing from './the-journey/views/Testing/Testing';
@@ -26,13 +25,12 @@ import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrows
 import Log from './the-journey/views/Log/Log';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
-import NewFrontDoor from './the-journey/views/Entry/NewFrontDoor';
+import NewFrontDoor from './the-journey/views/Entry/FrontDoor';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
-import PureFrontDoor from './the-journey/views/Entry/PureFrontDoor';
-import StarEntry from './the-journey/views/Broadcast/components/StarEntry';
-import NinjaFrontDoor from './the-journey/views/Entry/NinjaFrontDoor';
+import Entry from './the-journey/views/Entry/Entry';
 
+// import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
 
 export function NameHelmet() {
@@ -41,6 +39,22 @@ export function NameHelmet() {
   return <Helmet><title>{me ? `${getUsername(me.identity)} : ` : ''}The Journey</title></Helmet>
 }
 
+function Twilio({ children }: { children: ReactNode }) {
+  return (
+    <UnsupportedBrowserWarning>
+      <TwilioRoomContextProvider>
+        <NameHelmet/>
+        <AudioStreamContextProvider>
+          <FallbackToAudioElements/>
+          <RoomStateContextProvider>
+            <ReconnectingNotification />
+            { children }
+          </RoomStateContextProvider>
+        </AudioStreamContextProvider>
+      </TwilioRoomContextProvider>
+    </UnsupportedBrowserWarning>
+  );
+}
 
 
 export default function App() {
@@ -57,57 +71,50 @@ export default function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <UnsupportedBrowserWarning>
-      <TwilioRoomContextProvider>
-        <NameHelmet/>
-        <AudioStreamContextProvider>
-          <FallbackToAudioElements/>
-          <RoomStateContextProvider>
-            <ReconnectingNotification />
             <div style={{ height }}>
               <Router>
                 <Switch>
 
-                  <Route path="/pure/:code?" component={PureFrontDoor}/>
-                  <PrivateRoute roles="operator" path="/star/:code?">
-                    <StarEntry/>
-                  </PrivateRoute>
-
-
-                  <Route path="/entry/:code?" component={NewFrontDoor}/>
-                  <Route path="/test/:code?" render={(props) => (
-                    <NewFrontDoor test {...props} />
-                  )}/>
-
-                  <Route path="/rejected" component={Rejected} />
+                  <Route path="/entry/:code?">
+                    <Twilio><NewFrontDoor/></Twilio>
+                  </Route>
+                  <Route path="/test/:code?">
+                    <Twilio><NewFrontDoor test/></Twilio>
+                  </Route>
+                  <Route path="/rejected">
+                    <Twilio><Rejected/></Twilio>
+                  </Route>
 
                   <PrivateRoute roles="foh|operator" path="/code">
-                    <GetCode/>
+                    <Twilio><GetCode/></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="foh|operator" path="/foh/:code?">
-                    <FOH/>
+                    <Twilio><FOH/></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="foh|operator" path="/comm/:code?">
-                    <Comm/>
+                    <Twilio><Comm/></Twilio>
                   </PrivateRoute>
 
                   <PrivateRoute roles="operator" path="/ninja/:code?">
-                    <NinjaFrontDoor />
+                    <Twilio><Entry/></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/operator/:code?">
-                    <AutoJoin role="operator" /><BlindOperator />
+                    <Twilio><AutoJoin role="operator" /><BlindOperator /></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/focus/:code?">
-                    <AutoJoin role="focus" /><FocusGroup />
+                    <Twilio><AutoJoin role="focus" /><FocusGroup /></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/gallery/:code?">
-                    <AutoJoin role="gallery" options={{ maxTracks: '0' }} /><HalfGallery />
+                    <Twilio>
+                      <AutoJoin role="gallery" options={{ maxTracks: '0' }} />
+                      <HalfGallery />
+                    </Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/log/:code?">
-                    <Log/>
+                    <Twilio><Log/></Twilio>
                   </PrivateRoute>
                   <PrivateRoute roles="operator" path="/clear/:code?">
-                    <ClearRoom/>
+                    <Twilio><ClearRoom/></Twilio>
                   </PrivateRoute>
 
                   { /*
@@ -117,25 +124,24 @@ export default function App() {
                   */ }
 
                   <PrivateRoute roles="lurker|foh|operator" path="/lurk/:code?">
-                    <AutoJoin role="lurker" />
-                    <WithFacts><Broadcast /></WithFacts>
+                    <Twilio>
+                      <AutoJoin role="lurker" />
+                      <WithFacts><Broadcast /></WithFacts>
+                    </Twilio>
                   </PrivateRoute>
 
                   <PrivateRoute roles="operator" path="/testing/:code?">
-                    <Testing />
+                    <Twilio>
+                      <Testing />
+                    </Twilio>
                   </PrivateRoute>
 
                   <Route exact path="/" component={HomePage}/>
-
                   <Redirect to="/" />
 
                 </Switch>
               </Router>
             </div>
-          </RoomStateContextProvider>
-        </AudioStreamContextProvider>
-      </TwilioRoomContextProvider>
-      </UnsupportedBrowserWarning>
     </MuiThemeProvider>
   );
 

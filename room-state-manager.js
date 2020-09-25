@@ -3,8 +3,8 @@ const WebSocket = require('ws');
 const DEFAULT_GAIN = 0.8;
 const DEFAULT_DELAY = 0;
 
-const GROUPS = ['admitted', 'rejected', 'mutedInLobby', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded'];
-const SETTINGS = ['gain', 'delayTime', 'muteAll'];
+const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded'];
+const SETTINGS = ['doorsClosed', 'gain', 'delayTime', 'muteAll'];
 
 function tryToParse(string) {
   try { return JSON.parse(string) } catch { return undefined }
@@ -47,7 +47,7 @@ const useServer = (server) => {
   const newRoomState = () => ({
       admitted: [],
       rejected: [],
-      mutedInLobby: [],
+      doorsClosed: 'undefined',
       focusGroup: [],
       mutedInFocusGroup: [],
       gain: DEFAULT_GAIN,
@@ -58,12 +58,21 @@ const useServer = (server) => {
       helpNeeded: [],
   });
 
+  function getRoomState(roomName) {
+    if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
+    return roomStates[roomName];
+  }
+
+  function sendRoomStateUpdate(roomState, ws) {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ action: 'roomStateUpdate', payload: roomState }));
+    }
+  }
+
   function broadcastUpdate(roomName) {
-    const roomState = roomStates[roomName] || newRoomState();
+    const roomState = getRoomState(roomName);
     (clients[roomName] || []).forEach((ws) => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ action: 'roomStateUpdate', payload: roomState }));
-      }
+      sendRoomStateUpdate(roomState, ws);
     });
   }
 
@@ -75,6 +84,9 @@ const useServer = (server) => {
       let roomState = roomStates[roomName] || newRoomState();
       roomStates[roomName] = roomState;
       switch (action) {
+        case 'getRoomState':
+          sendRoomStateUpdate(getRoomState(roomName), ws);
+          return;
         case 'joinRoom':
           clients[roomName] = insureMembership(clients[roomName], ws);
           if (identity) roomState.userAgents[identity] = payload.userAgent;
@@ -84,11 +96,11 @@ const useServer = (server) => {
           removeParticipant(roomState, identity);
           break;
         case 'set':
-          for (let key in payload) {
+          Object.keys(payload).forEach((key) => {
             if (SETTINGS.includes(key)) {
               roomState[key] = payload[key];
             }
-          }
+          });
           break;
         case 'toggleMembership':
           if (GROUPS.includes(payload.group)) {

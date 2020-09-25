@@ -109,7 +109,7 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
             disabled={!consentGiven}
             onClick={onNeedHelp}
           >
-            I need help
+            It's not working
           </Button>
           <Button
             className={classes.button}
@@ -140,7 +140,7 @@ export function ThatsAll() {
   </Grid>);
 }
 
-export function PleaseEmail() {
+export function Sorry() {
   const classes = useStyles();
 
   return (<Grid container justify="center" alignItems="flex-start" className={classes.container}>
@@ -149,11 +149,14 @@ export function PleaseEmail() {
         <h2>Sorry you're having trouble...</h2>
       </Center>
       <Center>
-        Please email us at<br/>
-        <a style={{ color: 'white' }} href="mailto:help@thejourney-show.com">
-          help@thejourney-show.com
-        </a><br/>
-        and let us know what the issue is.
+        You might have better luck in a different browser.
+        The Journey is designed to run in the latest versions of
+        Chrome, Firefox, Microsoft Edge, and Safari.
+      </Center>
+      <Center>
+        In any case, come back at showtime!
+        Even if we can't get your camera and mic hooked up,
+        you will still be able to watch the show.
       </Center>
     </Paper>
   </Grid>);

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
-import { useRoomState } from '../../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../../contexts/AppStateContext';
 import { constrain } from '../../../utils/functional';
 
 interface AudioTrackProps {
@@ -8,7 +8,7 @@ interface AudioTrackProps {
 }
 
 export default function AudioTrack({ track }: AudioTrackProps) {
-  const [{ gain, muteAll }] = useRoomState();
+  const [{ gain, muteAll }] = useSharedRoomState();
   const audioEl = useRef<HTMLAudioElement>();
 
   const volume = muteAll ? 0 : constrain(0, 1)(gain);

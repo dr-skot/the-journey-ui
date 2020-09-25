@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
 
 export default function MuteAllButton() {
-  const [{ muteAll }, roomStateDispatch] = useRoomState();
+  const [{ muteAll }, roomStateDispatch] = useSharedRoomState();
 
   function toggleMuteAll() {
     roomStateDispatch('set', { muteAll: !muteAll });

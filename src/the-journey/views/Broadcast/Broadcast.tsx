@@ -7,7 +7,7 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
 import SignLanguageInterpreter from './components/SignLanguageInterpreter';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -39,7 +39,7 @@ export default function Broadcast() {
 
 function useHighPriorityInFocusGroup() {
   const [{ room }] = useTwilioRoomContext();
-  const [{ focusGroup }] = useRoomState();
+  const [{ focusGroup }] = useSharedRoomState();
 
   // change video priority when entering and leaving the focus group
   useEffect(() => {

@@ -9,7 +9,7 @@ import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Chat from '../../components/Chat/Chat';
 import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
-import { useRoomState } from '../../contexts/AppStateContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
 type Identity = Participant.Identity;
 
 interface MeetingProps {
@@ -18,7 +18,7 @@ interface MeetingProps {
 
 export default function Meeting({ group }: MeetingProps) {
   const [, dispatch] = useTwilioRoomContext();
-  const [, roomStateDispatch] = useRoomState();
+  const [, roomStateDispatch] = useSharedRoomState();
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const meeters = sortBy(
     useParticipants('includeMe').filter(inGroup(group)),

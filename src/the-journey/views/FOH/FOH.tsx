@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import SignIn from '../Entry/SignIn';
+import SignIn from './SignIn';
 import Meeting from './Meeting';
 import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Facts/WithFacts';
 import MenuedView from '../MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
-import { defaultRoom, isRole } from '../../utils/twilio';
+import { isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
+import useRoomName from '../../hooks/useRoomName';
 
 export default function FOH() {
   const [{ roomStatus }] = useTwilioRoomContext();
-  const match = useRouteMatch() as match<{ code?: string }>;
-  const roomName = match.params.code || defaultRoom();
+  const roomName = useRoomName();
 
   return roomStatus !== 'disconnected'
     ? <FOHView />
