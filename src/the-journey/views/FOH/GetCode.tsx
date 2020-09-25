@@ -13,6 +13,8 @@ import TimezonePicker from '../../components/TimezonePicker/TimezonePicker';
 import { timeToCodeWithTZ, timezones } from '../../utils/foh';
 import { isDev } from '../../utils/react-help';
 import { DateTime } from 'luxon';
+import { isSafari } from '../../utils/browser';
+import SimpleMessage from '../SimpleMessage';
 
 const Item = styled('div')(() => ({
   margin: '1em',
@@ -97,6 +99,14 @@ export default function GetCode() {
     const url = `${BASE_URL}/${path}/${code}`;
     return <a href={url}>{url}</a>;
   }
+
+  if (isSafari) return (
+    <SimpleMessage
+      title={'Please try another browser'}
+      paragraphs={[
+        <>Sorry, this page doesn't work in Safari.</>
+      ]} />
+  )
 
   return (
     <ThemeProvider theme={theme}>

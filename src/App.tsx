@@ -87,7 +87,7 @@ export default function App() {
                   </Route>
 
                   <PrivateRoute roles="foh|operator" path="/code">
-                    <Twilio><GetCode/></Twilio>
+                    <GetCode/>
                   </PrivateRoute>
                   <PrivateRoute roles="foh|operator" path="/foh/:code?">
                     <Twilio><FOH/></Twilio>
