@@ -80,7 +80,7 @@ export default function App() {
                     <Twilio><NewFrontDoor/></Twilio>
                   </Route>
                   <Route path="/test/:code?">
-                    <Twilio><NewFrontDoor test/></Twilio>
+                    <Twilio><Entry test/></Twilio>
                   </Route>
                   <Route path="/rejected">
                     <Twilio><Rejected/></Twilio>
