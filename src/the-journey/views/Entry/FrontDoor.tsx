@@ -3,7 +3,7 @@ import SimpleMessage from '../SimpleMessage';
 import useShowtime from '../../hooks/useShowtime';
 import Entry from './Entry';
 
-export default function FrontDoor({ test }: { test?: boolean }) {
+export default function FrontDoor() {
   const showtime = useShowtime();
 
   if (!showtime) return (
@@ -17,7 +17,7 @@ export default function FrontDoor({ test }: { test?: boolean }) {
 
   const { canEnter, punct, doorPolicy, local, venue } = showtime;
 
-  if (canEnter) return <Entry test={test}/>;
+  if (canEnter) return <Entry/>;
 
   return (
     <SimpleMessage

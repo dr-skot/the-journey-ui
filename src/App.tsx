@@ -25,7 +25,7 @@ import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrows
 import Log from './the-journey/views/Log/Log';
 import Comm from './the-journey/views/Comm/Comm';
 import PrivateRoute from './the-journey/components/Auth/PrivateRoute';
-import NewFrontDoor from './the-journey/views/Entry/FrontDoor';
+import FrontDoor from './the-journey/views/Entry/FrontDoor';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import Entry from './the-journey/views/Entry/Entry';
@@ -77,7 +77,7 @@ export default function App() {
                 <Switch>
 
                   <Route path="/entry/:code">
-                    <Twilio><NewFrontDoor/></Twilio>
+                    <Twilio><FrontDoor/></Twilio>
                   </Route>
                   <Route path="/test/:code?">
                     <Twilio><Entry test/></Twilio>

@@ -16,9 +16,8 @@ function invalidTimezone(tzIndex: number) {
 }
 function invalidCurtainTime(curtain: DateTime) {
   const now = DateTime.local();
-  return curtain < now.minus({ years: 1 }) ||
-    curtain > now.plus({ years: 1 }) ||
-    curtain.minute % 5 !== 0;
+  return curtain < now.minus({ years: 1 })
+    || curtain > now.plus({ years: 1 });
 }
 
 interface UseShowtimeResult {
