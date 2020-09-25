@@ -11,6 +11,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
 import useRoomName from '../../hooks/useRoomName';
+import Chat from '../../components/Chat/Chat';
 
 export default function FOH() {
   const [{ roomStatus }] = useTwilioRoomContext();
@@ -45,6 +46,7 @@ function FOHGallery() {
       <Subscribe profile="data-only" />
       <MenuedView>
         <Gallery />
+        <Chat />
       </MenuedView>
     </WithFacts>
   )
