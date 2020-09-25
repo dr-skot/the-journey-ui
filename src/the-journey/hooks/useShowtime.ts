@@ -11,6 +11,16 @@ const TIME_FORMAT = 'h:mma';
 const dateTimeOrNow = (iso: string | null) =>
   iso ? DateTime.fromISO(iso) : DateTime.local();
 
+function invalidTimezone(tzIndex: number) {
+  return tzIndex < 0
+}
+function invalidCurtainTime(curtain: DateTime) {
+  const now = DateTime.local();
+  return curtain < now.minus({ years: 1 }) ||
+    curtain > now.plus({ years: 1 }) ||
+    curtain.minute % 5 !== 0;
+}
+
 interface UseShowtimeResult {
   canEnter: boolean,
   punct: Punctuality,
@@ -24,12 +34,15 @@ export default function useShowtime() {
   const match = useRouteMatch() as match<{ code?: string }>;
   const code = match.params.code;
   const doorPolicy = DEFAULT_DOOR_POLICY;
+  const now = DateTime.local();
+
+  if (!code) return undefined;
 
   // decode code to get curtain time
-  const [time, tzIndex] = code ? codeToTimeWithTZ(code) : [undefined, -1];
-  const curtain = time
-    ? DateTime.fromJSDate(time)
-    : DateTime.local().plus({ minutes: 15 });
+  const [time, tzIndex] = codeToTimeWithTZ(code);
+  const curtain = DateTime.fromJSDate(time);
+
+  if (invalidTimezone(tzIndex) || invalidCurtainTime(curtain)) return undefined;
 
   const doorsClose = doorsClosed === 'undefined'
     ? curtain.plus({ minutes: doorPolicy.close })
@@ -38,7 +51,7 @@ export default function useShowtime() {
   // check for previously-saved entry, or use now
   const localStorageKey = `entered-${code}`;
   const alreadySaved = localStorage.getItem(localStorageKey);
-  const entryTime = dateTimeOrNow(alreadySaved);
+  const entryTime = alreadySaved ? DateTime.fromISO(alreadySaved) : now;
 
   // is entry time good?
   const punct = doorsClose < entryTime
@@ -68,7 +81,10 @@ export default function useShowtime() {
     day: curtain.setZone(timezone).toFormat(DAY_FORMAT),
     time: curtain.setZone(timezone).toFormat(TIME_FORMAT),
     timezone: friendlyTimezone(timezone),
-    doorsClose: doorsClose.setZone(timezone).toFormat(TIME_FORMAT),
+    // if curtain was more than an hour ago, door close time is not worth mentioning
+    doorsClose: now < curtain.plus({ hours: 1 })
+      ? doorsClose.setZone(timezone).toFormat(TIME_FORMAT)
+      : undefined,
   }
 
   console.log('useShowtime', { punct, canEnter, local, venue, doorPolicy, doorsClosed });

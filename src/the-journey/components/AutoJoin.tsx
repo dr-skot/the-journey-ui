@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { TwilioRoomContext } from '../contexts/TwilioRoomContext';
 import { defaultRoom, SettingsAdjust, UserRole } from '../utils/twilio';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
+import useRoomName from '../hooks/useRoomName';
 
 interface AutoJoinProps {
   roomName?: string,
@@ -16,8 +15,7 @@ interface AutoJoinProps {
 const AutoJoin = React.memo(({ roomName, username, role = 'lurker', withAudio, options,
                                    children }: AutoJoinProps) => {
   const [{ roomStatus, localTracks }, dispatch] = useContext(TwilioRoomContext);
-  const match = useRouteMatch() as match<{ code?: string }>;
-  const roomNameReally = roomName || match.params.code || defaultRoom();
+  const roomNameReally = roomName || useRoomName();
 
   // get audio tracks if withAudio
   useEffect(() => {

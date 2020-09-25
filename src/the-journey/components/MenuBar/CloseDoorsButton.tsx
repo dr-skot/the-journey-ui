@@ -17,7 +17,7 @@ export default function CloseDoorsButton() {
       style={{ margin: '0.5em' }}
       onClick={toggleCloseDoors}
       size="small" color="default" variant="contained">
-      { doorsClosed === 'undefined' ? 'Open Doors' : 'Close Doors' }
+      { doorsClosed === 'undefined' ? 'Close Doors' : 'Open Doors' }
     </Button>
   )
 }

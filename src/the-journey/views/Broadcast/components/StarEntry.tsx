@@ -1,16 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
-import { defaultRoom, insureHighPriorityVideo } from '../../../utils/twilio';
+import { insureHighPriorityVideo } from '../../../utils/twilio';
 import Broadcast from '../StarBroadcast';
 import SignIn from '../../FOH/SignIn';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
+import useRoomName from '../../../hooks/useRoomName';
 
 export default function StarEntry() {
   const [{ room, roomStatus }] = useContext(TwilioRoomContext);
-  const match = useRouteMatch() as match<{ code?: string }>;
-  const code = match.params.code;
+  const roomName = useRoomName();
 
   useEffect(() => {
     if (!room) return;
@@ -23,5 +20,5 @@ export default function StarEntry() {
 
   return roomStatus !== 'disconnected'
     ? <Broadcast />
-    : <SignIn roomName={code || defaultRoom()} role="star"/>
+    : <SignIn roomName={roomName} role="star"/>
 }
