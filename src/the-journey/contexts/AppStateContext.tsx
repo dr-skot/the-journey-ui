@@ -88,7 +88,7 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
     // then request room state right away, even before twilio room is joined
     dispatch('getRoomState', { roomName });
     return () => server.removeMessageListener(update);
-  }, [setRoomState]);
+  }, [setRoomState, roomName, dispatch]);
 
   // join and leave room
   useEffect(() => {

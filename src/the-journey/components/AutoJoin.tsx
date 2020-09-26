@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { TwilioRoomContext } from '../contexts/TwilioRoomContext';
-import { defaultRoom, SettingsAdjust, UserRole } from '../utils/twilio';
+import { SettingsAdjust, UserRole } from '../utils/twilio';
 import useRoomName from '../hooks/useRoomName';
 
 interface AutoJoinProps {
