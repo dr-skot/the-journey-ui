@@ -84,7 +84,6 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
 
   return <StateContext.Provider value={{ ...contextValue, getToken }}>{props.children}</StateContext.Provider>;
 }
-AppStateProvider.whyDidYouRender = true;
 
 export function useAppState() {
   const context = useContext(StateContext);

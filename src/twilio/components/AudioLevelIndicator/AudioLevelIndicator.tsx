@@ -5,9 +5,6 @@ import MicOff from '@material-ui/icons/MicOff';
 import useIsTrackEnabled from '../../../the-journey/hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
 
-// @ts-ignore
-MicOff.whyDidYouRender = false;
-
 let clipId = 0;
 const getUniqueClipId = () => clipId++;
 

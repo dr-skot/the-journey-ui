@@ -68,4 +68,3 @@ export default function useStreamNodes() {
 
   return nodes;
 }
-useStreamNodes.whyDidYouRender = true;

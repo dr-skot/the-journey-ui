@@ -34,6 +34,5 @@ const AutoJoin = React.memo(({ roomName, username, role = 'lurker', withAudio, o
 
   return roomStatus === 'disconnected' ? null : children || null;
 });
-AutoJoin.whyDidYouRender = false;
 
 export default AutoJoin;
