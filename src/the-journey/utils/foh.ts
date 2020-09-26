@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon';
 import { mod } from './functional';
+import { serverNow } from './ServerDate';
 
 export interface DoorPolicy { open: number, close: number };
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
 
 export const DEFAULT_DOOR_POLICY = { open: 20, close: 90 }
 
-export const punctuality = (curtain: DateTime, time: DateTime = DateTime.local(),
+export const punctuality = (curtain: DateTime, time: DateTime = serverNow(),
                             doorPolicy: DoorPolicy = DEFAULT_DOOR_POLICY) => {
   const minutes = curtain.diff(time).as('minutes');
   return minutes > doorPolicy.open ? 'early'

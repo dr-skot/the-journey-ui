@@ -4,18 +4,20 @@ import { DateTime } from 'luxon';
 import { cached } from '../utils/react-help';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useRouteMatch, match } from 'react-router-dom';
+import { serverNow } from '../utils/ServerDate';
+
+// TODO use server time instead of trusting client's clock
 
 const DAY_FORMAT = 'EEEE, MMMM d';
 const TIME_FORMAT = 'h:mma';
 
-const dateTimeOrNow = (iso: string | null) =>
-  iso ? DateTime.fromISO(iso) : DateTime.local();
+const LONGER_THAN_SHOW = 120;
 
 function invalidTimezone(tzIndex: number) {
   return tzIndex < 0
 }
 function invalidCurtainTime(curtain: DateTime) {
-  const now = DateTime.local();
+  const now = serverNow();
   return curtain < now.minus({ years: 1 })
     || curtain > now.plus({ years: 1 });
 }
@@ -33,9 +35,11 @@ export default function useShowtime() {
   const match = useRouteMatch() as match<{ code?: string }>;
   const code = match.params.code;
   const doorPolicy = DEFAULT_DOOR_POLICY;
-  const now = DateTime.local();
+  const now = serverNow();
 
   if (!code) return undefined;
+
+  console.log('useShowtime knows ServerDate is', now);
 
   // decode code to get curtain time
   const [time, tzIndex] = codeToTimeWithTZ(code);
@@ -48,12 +52,14 @@ export default function useShowtime() {
     : DateTime.fromISO(doorsClosed);
 
   // check for previously-saved entry, or use now
+  // TODO expire these codes from local storage
   const localStorageKey = `entered-${code}`;
   const alreadySaved = localStorage.getItem(localStorageKey);
   const entryTime = alreadySaved ? DateTime.fromISO(alreadySaved) : now;
 
   // is entry time good?
-  const punct = doorsClose < entryTime
+  const wayTooLate = curtain.plus({ minutes: LONGER_THAN_SHOW }) < now;
+  const punct = doorsClose < entryTime || wayTooLate
     ? 'too late'
     : punctuality(curtain, entryTime, doorPolicy);
   const canEnter = punct === 'on time' || punct === 'late';

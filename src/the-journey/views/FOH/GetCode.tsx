@@ -15,6 +15,7 @@ import { isDev } from '../../utils/react-help';
 import { DateTime } from 'luxon';
 import { isFirefox, isSafari } from '../../utils/browser';
 import SimpleMessage from '../SimpleMessage';
+import { serverNow } from '../../utils/ServerDate';
 
 const Item = styled('div')(() => ({
   margin: '1em',
@@ -56,7 +57,8 @@ const theme = createMuiTheme({
 });
 
 function defaultTime() {
-  const result = DateTime.local().set({ hour: 20 }).set({ minute: 0 }).toFormat("yyyy-MM-dd'T'HH:mm");
+  const now = serverNow();
+  const result = now.set({ hour: 20 }).set({ minute: 0 }).toFormat("yyyy-MM-dd'T'HH:mm");
   console.log('defaultTime', result);
   return result;
 }

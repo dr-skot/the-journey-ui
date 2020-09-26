@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
-import { DateTime } from 'luxon';
+import { serverNow } from '../../utils/ServerDate';
 
 export default function CloseDoorsButton() {
   const [{ doorsClosed }, roomStateDispatch] = useSharedRoomState();
 
   function toggleCloseDoors() {
     roomStateDispatch('set', {
-      doorsClosed: doorsClosed === 'undefined' ? DateTime.local().toJSON() : 'undefined',
+      doorsClosed: doorsClosed === 'undefined' ? serverNow().toJSON() : 'undefined',
     });
   }
 
