@@ -106,7 +106,25 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   useEffect(() => { setMuteAll(roomState.muteAll) },
     [roomState.muteAll, setMuteAll]);
 
-  const providerValue = cached('RoomStateContext.value').ifEqual([roomState, dispatch]);
+  const cachedIfEqual = (propName: keyof RoomState) =>
+    cached(`RoomState.${propName}`).ifEqual(roomState[propName])
+
+  const roomStateWithCaching = {
+    admitted: cachedIfEqual('admitted'),
+    rejected: cachedIfEqual('rejected'),
+    doorsClosed: cachedIfEqual('doorsClosed'),
+    focusGroup: cachedIfEqual('focusGroup'),
+    mutedInFocusGroup: cachedIfEqual('mutedInFocusGroup'),
+    gain: cachedIfEqual('gain'),
+    delayTime: cachedIfEqual('delayTime'),
+    muteAll: cachedIfEqual('muteAll'),
+    meetings: cachedIfEqual('meetings'),
+    userAgents: cachedIfEqual('userAgents'),
+    helpNeeded: cachedIfEqual('helpNeeded'),
+  };
+
+  const providerValue = cached('AppStateProvider.value')
+    .ifEqual([roomStateWithCaching, dispatch])
 
   return <AppStateContext.Provider value={providerValue as RoomStateContextValue}>
     {children}
