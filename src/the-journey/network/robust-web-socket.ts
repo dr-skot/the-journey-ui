@@ -7,6 +7,8 @@ import { tryToParse } from '../utils/functional';
 
 const DEFAULT_RETRY_INTERVAL = 3000;
 
+const READY_STATES = ['connecting', 'open', 'closing', 'closed'];
+
 interface Request {
   action: string,
   payload: any,
@@ -20,6 +22,7 @@ interface RobustWebSocket {
   webSocket: WebSocket,
   retryInterval: number,
   reconnecting: number,
+  unansweredPings: number,
 }
 
 const isPingPong = (message: Request) => !!message.action?.match(/^p[io]ng$/);
@@ -31,12 +34,14 @@ class RobustWebSocket {
     this.webSocket = this.getWebsocket();
     this.retryInterval = DEFAULT_RETRY_INTERVAL;
     this.reconnecting = 0;
+    this.unansweredPings = 0;
   }
 
   getWebsocket = () => {
     const webSocket = new WebSocket(this.url);
     webSocket.addEventListener('open', this.handleOpen);
     webSocket.addEventListener('message', this.handleMessage);
+    webSocket.addEventListener('error', this.handleError);
     webSocket.addEventListener('close', this.handleClose);
     return webSocket;
   };
@@ -56,6 +61,7 @@ class RobustWebSocket {
     const doIt = () => {
       // eslint-disable-next-line no-console
       if (!isPingPong(message)) console.log('websocket sending', message);
+      if (message.action === 'ping') this.unansweredPings += 1;
       webSocket.send(JSON.stringify(message));
     };
     if (this.isConnected()) doIt();
@@ -73,8 +79,15 @@ class RobustWebSocket {
     // eslint-disable-next-line no-console
     if (!isPingPong(message)) console.log(`websocket received ${message.action}`, { message });
     if (message.action === 'ping') this.send({ action: 'pong' });
+    if (message.action === 'pong') this.unansweredPings = 0;
     else this.messageListeners.forEach((listener) => listener(message));
   };
+
+  handleError = (errorEvent: Event) => {
+    console.log(errorEvent);
+    console.log("websocket ready state is", READY_STATES[this.webSocket.readyState]);
+    console.log("unanswered pings", this.unansweredPings);
+  }
 
   handleClose = (closeEvent: CloseEvent) => {
     // eslint-disable-next-line no-console

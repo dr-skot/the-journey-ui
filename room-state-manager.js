@@ -83,7 +83,11 @@ const useServer = (server) => {
       const { roomName, identity } = payload || {};
       let roomState = roomStates[roomName] || newRoomState();
       roomStates[roomName] = roomState;
+      if (action !== 'ping') conosole.log('websocket message', message);
       switch (action) {
+        case 'ping':
+          ws.send({ action: 'pong' });
+          return;
         case 'getRoomState':
           sendRoomStateUpdate(getRoomState(roomName), ws);
           return;
