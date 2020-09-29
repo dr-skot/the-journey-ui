@@ -292,3 +292,7 @@ export function insureHighPriorityVideo(me: LocalParticipant) {
     }
   });
 }
+
+export function isStaffed(room: Room) {
+  return Array.from(room.participants.values()).some(isRole('operator'));
+}

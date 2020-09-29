@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { mod } from './functional';
 import { serverNow } from './ServerDate';
 
-export interface DoorPolicy { open: number, close: number };
+export interface DoorPolicy { open: number, close: number }
 export type Punctuality = 'early' | 'on time' | 'late' | 'too late'
 
 export const DEFAULT_DOOR_POLICY = { open: 30, close: 90 }
@@ -14,11 +14,6 @@ export const punctuality = (curtain: DateTime, time: DateTime = serverNow(),
     : minutes < -doorPolicy.close ? 'too late'
     : minutes < 0 ? 'late' : 'on time';
 }
-
-export const formatTime = (time: DateTime) => ({
-  day: time.toFormat('dddd, MMMM D'),
-  time: time.toFormat('h:mma'),
-});
 
 // this isn't meant to be cryptography, it just encodes a to-the-minute timestamp
 // in a 6-letter string, not easily guessable, for use as a url parameter

@@ -6,10 +6,12 @@ import Broadcast from '../Broadcast/Broadcast';
 import useMeeting from '../../hooks/useMeeting';
 import Meeting from '../FOH/Meeting';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
-import { inGroup } from '../../utils/twilio';
+import { inGroup, isStaffed } from '../../utils/twilio';
 import GetMedia, { Sorry, ThatsAll } from './GetMedia';
 import NameForm from './NameForm';
 import useRoomName from '../../hooks/useRoomName';
+import { Room } from 'twilio-video';
+import SimpleMessage from '../SimpleMessage';
 
 function rejectedPath() {
   return window.location.pathname.replace('entry', 'rejected');
@@ -42,7 +44,8 @@ export default function Entry({ test }: { test?: boolean }) {
   if (inGroup(rejected)(room?.localParticipant)) return <Redirect to={rejectedPath()} />;
 
   if (!room) return <NameForm roomName={roomName}/>
-  console.log('got past room check');
+
+  if (!isStaffed(room)) return <UnstaffedRoomMessage/>;
 
   if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
 
@@ -52,4 +55,14 @@ export default function Entry({ test }: { test?: boolean }) {
   return roomStatus !== 'disconnected'
     ? meeting ? <Meeting group={meeting}/> : <Broadcast />
     : <SignIn roomName={roomName} role="audience"/>;
+}
+
+function UnstaffedRoomMessage() {
+  return <SimpleMessage
+    title="Empty theater!"
+    paragraphs={[
+      <>There doesn't seem to be a show running here.</>,
+      <>Please contact the box office for a valid show address.</>,
+    ]}
+  />
 }
