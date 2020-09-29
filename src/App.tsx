@@ -29,6 +29,7 @@ import FrontDoor from './the-journey/views/Entry/FrontDoor';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import Entry, { StaffCheck } from './the-journey/views/Entry/Entry';
+import Log2 from './the-journey/views/Log/Log2';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -113,6 +114,9 @@ export default function App() {
                   </PrivateRoute>
                   <PrivateRoute path="/log/:code?" roles="operator">
                     <Twilio><Log/></Twilio>
+                  </PrivateRoute>
+                  <PrivateRoute path="/log2/:code?" roles="operator">
+                    <Twilio><Log2/></Twilio>
                   </PrivateRoute>
                   <PrivateRoute path="/clear/:code?" roles="operator">
                     <Twilio><ClearRoom/></Twilio>
