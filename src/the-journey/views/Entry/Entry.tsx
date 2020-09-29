@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from './SignIn';
@@ -65,4 +65,11 @@ function UnstaffedRoomMessage() {
       <>Please contact the box office for a valid show address.</>,
     ]}
   />
+}
+
+export function StaffCheck({ children }: { children: ReactNode }) {
+  const [{ room }] = useTwilioRoomContext();
+  return room && !isStaffed(room)
+    ? <UnstaffedRoomMessage/>
+    : <>{ children }</>;
 }
