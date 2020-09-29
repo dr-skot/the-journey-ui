@@ -1,5 +1,9 @@
 const WebSocket = require('ws');
 
+// data expires after 5 days of no activity; check every day
+const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;
+const EXPIRY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
+
 const DEFAULT_GAIN = 0.8;
 const DEFAULT_DELAY = 0;
 
@@ -58,6 +62,18 @@ const useServer = (server) => {
       helpNeeded: [],
   });
 
+  // periodically purge old room state data
+  const lastActivity = {} // { roomName: unix-time }
+  const expiryCheck = setInterval(() => {
+    Object.keys(roomStates).forEach((key) => {
+      if (!lastActivity[key] || Date.now() - lastActivity[key] > EXPIRE_TIME) {
+        delete roomStates[key];
+        delete lastActivity[key];
+      }
+    }, EXPIRY_CHECK_INTERVAL);
+  });
+
+
   function getRoomState(roomName) {
     if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
     return roomStates[roomName];
@@ -83,6 +99,7 @@ const useServer = (server) => {
       const { roomName, identity } = payload || {};
       let roomState = roomStates[roomName] || newRoomState();
       roomStates[roomName] = roomState;
+      lastActivity[roomName] = Date.now();
       if (action !== 'ping') console.log('websocket message', message);
       switch (action) {
         case 'ping':
