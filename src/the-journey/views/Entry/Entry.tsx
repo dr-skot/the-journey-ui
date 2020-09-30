@@ -56,7 +56,7 @@ function UnstaffedRoomMessage() {
   return <SimpleMessage
     title="Empty theater!"
     paragraphs={[
-      <>There doesn't seem to be a show running here.</>,
+      <>There doesn’t seem to be a show running here.</>,
       <>Please contact the box office for a valid show address.</>,
     ]}
   />

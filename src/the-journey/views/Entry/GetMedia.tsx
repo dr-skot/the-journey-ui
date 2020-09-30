@@ -75,7 +75,7 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
     <Grid container justify="center" alignItems="flex-start" className={classes.container}>
       <Paper className={classes.paper} elevation={6}>
       <Center>
-          <h2>Welcome, {name}!<br/>Let's get your camera and mic ready.</h2>
+          <h2>Welcome, {name}!<br/>Let’s get your camera and mic ready.</h2>
       </Center>
         <div className={classes.mediaContainer}>
           <MiniVideoPreview/>
