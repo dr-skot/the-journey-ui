@@ -8,6 +8,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { UserRole } from '../../utils/twilio';
 import { Settings } from '../../contexts/settings/settingsReducer';
+import { random } from 'lodash';
+import LogRocket from 'logrocket';
 
 const Center = styled('div')({
   textAlign: 'center',
@@ -70,8 +72,6 @@ export default function NameForm({ roomName, role = 'audience', options= {} }: N
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    localStorage.setItem('username', username);
-    console.log('joining room...');
     dispatch('joinRoom', { roomName, role, username: username, options });
   };
 

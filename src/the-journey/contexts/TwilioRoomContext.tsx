@@ -5,6 +5,7 @@ import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } f
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { cached } from '../utils/react-help';
+import { logRocketIdentify } from '../utils/logRocket';
 
 interface TwilioState {
   error?: TwilioError,
@@ -81,8 +82,10 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
 
     case 'joinRoom':
       if (state.room) state.room.disconnect();
-      console.log('trying to join!')
-      joinRoom(payload.roomName, getIdentity(payload.role, payload.username),
+      logRocketIdentify(payload.username, payload.role);
+      const identity = getIdentity(payload.role, payload.username);
+      console.log('trying to join with identity', identity);
+      joinRoom(payload.roomName, identity,
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
           console.log('joined room!')
