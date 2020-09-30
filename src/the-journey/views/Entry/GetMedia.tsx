@@ -9,6 +9,7 @@ import MiniVideoPreview from './components/MiniVideoPreview';
 import LocalAudioLevelIndicator from './components/LocalAudioLevelIndicator';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getUsername } from '../../utils/twilio';
+import SimpleMessage from '../SimpleMessage';
 
 const Center = styled('div')({
   textAlign: 'center',
@@ -83,7 +84,7 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
         <Center>
           You should see yourself above,<br/>
           and the mic icon should turn green when you talk.<br/>
-          ...if not, try the menus below.
+          If not, try the menus below.
         </Center>
         <div>
           <div className={classes.listSection}>
@@ -101,6 +102,10 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
             control={<Checkbox checked={consentGiven} onChange={() => setConsentGiven(!consentGiven)} />}
             label="I consent to the use of my camera and mic"
           />
+        <Center>
+          (While your camera is on, our staff can see you,<br/>
+          and your image may appear in the show.)
+        </Center>
           <div>
           <Button
             className={classes.button}
@@ -109,7 +114,7 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
             disabled={!consentGiven}
             onClick={onNeedHelp}
           >
-            It's not working
+            Help
           </Button>
           <Button
             className={classes.button}
@@ -127,37 +132,32 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
 }
 
 export function ThatsAll() {
-  const classes = useStyles();
-  return (<Grid container justify="center" alignItems="flex-start" className={classes.container}>
-    <Paper className={classes.paper} elevation={6}>
-      <Center>
-        <h2>That's all there is to it!</h2>
-      </Center>
-      <Center>
-        We'll see you at the show.
-      </Center>
-    </Paper>
-  </Grid>);
+  return (
+    <SimpleMessage
+        title="That's all there is to it!"
+        paragraphs={[
+          <>We'll see you at the show.</>
+        ]}
+    />
+  )
 }
 
 export function Sorry() {
-  const classes = useStyles();
-
-  return (<Grid container justify="center" alignItems="flex-start" className={classes.container}>
-    <Paper className={classes.paper} elevation={6}>
-      <Center>
-        <h2>Sorry you're having trouble...</h2>
-      </Center>
-      <Center>
-        You might have better luck in a different browser.
-        The Journey is designed to run in the latest versions of
-        Chrome, Firefox, Microsoft Edge, and Safari.
-      </Center>
-      <Center>
-        In any case, come back at showtime!
-        Even if we can't get your camera and mic hooked up,
-        you will still be able to watch the show.
-      </Center>
-    </Paper>
-  </Grid>);
+  return (
+    <SimpleMessage
+      title="Sorry you're having trouble..."
+      paragraphs={[
+        <>
+          You might have better luck in a different browser.
+          THE JOURNEY is designed to run in the latest versions of
+          Chrome, Firefox, Microsoft Edge, and Safari .
+        </>,
+        <>
+          In any case, come back at showtime!
+          Even if we can't get your camera and mic hooked up,
+          you will still be able to watch the show.
+        </>
+      ]}
+    />
+  );
 }
