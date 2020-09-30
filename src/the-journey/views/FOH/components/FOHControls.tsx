@@ -41,7 +41,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   const reject = () => {
     roomStateDispatch('toggleMembership', { group: 'rejected', identity });
-    setTimeout(() => removeParticipant(participant, room).then(), 250);
+    setTimeout(() => removeParticipant(participant, room).then(), 100);
   }
 
   const toggleApproved = () =>
