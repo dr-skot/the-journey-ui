@@ -35,7 +35,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   const toggleMute = () => {
     setWaiting(true);
-    subscribe(room?.name || '', fohIdentity, 'spy', spying ? [] : [identity])
+    subscribe(room?.sid || '', me.sid, 'spy', spying ? [] : [identity])
       .finally(() => setWaiting(false));
   }
 

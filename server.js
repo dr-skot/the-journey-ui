@@ -137,25 +137,30 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
     .concat(moreRules)
     .concat(stars.map(star => ({ type: 'include', publisher: star })));
 
-  console.log('subscribe', req.params.room, req.params.user, req.params.policy);
+  // NOTE: special characters (in particular '/') do not seem to be supported
+  // by Twilio's REST server, in user-defined participant identities
+  // (nor, presumably, room names) -- even when they're URI encoded
+  // use SIDs to be safe
+  const room = encodeURIComponent(req.params.room);
+  const user = encodeURIComponent(req.params.user);
+  console.log('subscribe', room, user, req.params.policy);
 
-  const url = `https://video.twilio.com/v1/Rooms/${req.params.room}/Participants/${req.params.user}/SubscribeRules`;
+  const url = `https://video.twilio.com/v1/Rooms/${room}/Participants/${user}/SubscribeRules`;
   const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
   const rulesJson = JSON.stringify(rules);
 
-  const curl = `curl -X POST ${url} -u '${auth}' --data Rules='${rulesJson}' -H 'Content-Type: application/x-www-form-urlencoded'`;
-  console.log(curl);
+  // const curl = `curl -X POST ${url} -u '${auth}' --data Rules='${rulesJson}' -H 'Content-Type: application/x-www-form-urlencoded'`;
+  // console.log(curl);
 
   const params = new URLSearchParams();
   params.append('Rules', rulesJson);
 
   fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
     .then(response => {
-      console.log('success');
+      console.log(response);
       res.end(response.body.read());
     })
-  // TODO find out what's the right way to handle this
-  // .catch(error => { console.log(json); res.end(error.body.read()); });
+    .catch(error => { console.log(error); res.end(error.body.read()); });
 });
 
 app.get('/subscribe/*', (req, res) => {

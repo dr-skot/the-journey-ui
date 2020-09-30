@@ -155,7 +155,7 @@ export type SubscribeProfile =
 
 const TIMEOUT_DELAY = 5000;
 
-export function subscribe(room: string, participantId: string, policy: string = 'data_only',
+export function subscribe(roomSid: string, participantSid: string, policy: string = 'data_only',
                           focus: string[] = [], stars: string[] = []) {
   const headers = new window.Headers();
   const endpoint = process.env.REACT_APP_SUBSCRIBE_ENDPOINT || '/subscribe';
@@ -163,7 +163,7 @@ export function subscribe(room: string, participantId: string, policy: string = 
   const esc = encodeURIComponent;
 
   // TODO use a POST request for this
-  const params = `${esc(room)}/${esc(participantId)}/${esc(policy)}?focus=${focus.map(esc).join(',')}&stars=${stars.map(esc)}`;
+  const params = `${esc(roomSid)}/${esc(participantSid)}/${esc(policy)}?focus=${focus.map(esc).join(',')}&stars=${stars.map(esc)}`;
   const url = `${endpoint}/${params}`
 
   console.log(`fetching ${url}`);
@@ -265,12 +265,12 @@ function removeLocalVideoTrack(track: LocalVideoTrack | undefined = localVideoTr
 
 export function removeParticipant(participant: Participant, room?: Room) {
   if (!room) return Promise.reject('No room!');
-  return fetch(`/disconnect/${room.name}/${participant.identity}`);
+  return fetch(`/disconnect/${room.sid}/${participant.sid}`);
 }
 
 export function clearRoom(room?: Room) {
   if (!room) return Promise.reject('No room!');
-  return fetch(`/clear/${room.name}`);
+  return fetch(`/clear/${room.sid}`);
 }
 
 // for some reason typescript is saying LocalVideoTrackPublication has no prority or setPriority properties

@@ -137,7 +137,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
     case 'subscribe':
       if (state.room) {
         // console.log('requesting subscription change', payload);
-        subscribe(state.room.name, state.room.localParticipant.identity, payload.profile, payload.focus, payload.stars)
+        subscribe(state.room.sid, state.room.localParticipant.sid, payload.profile, payload.focus, payload.stars)
           .then();
       }
       break;
