@@ -4,7 +4,7 @@ import AutoJoin from '../../components/AutoJoin';
 import { RemoteParticipant } from 'twilio-video';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
 import Subscribe from '../../subscribers/Subscribe';
-import { getUsername, isRole } from '../../utils/twilio';
+import { getUsername } from '../../utils/twilio';
 
 type EventType = 'connect' | 'disconnect';
 
