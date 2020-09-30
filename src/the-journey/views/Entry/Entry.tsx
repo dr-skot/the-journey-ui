@@ -45,7 +45,7 @@ export default function Entry({ test }: { test?: boolean }) {
 
   if (!room) return <NameForm roomName={roomName}/>
 
-  if (!isStaffed(room)) return <UnstaffedRoomMessage/>;
+  if (!test && !isStaffed(room)) return <UnstaffedRoomMessage/>;
 
   if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
 
