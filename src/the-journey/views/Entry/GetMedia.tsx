@@ -134,9 +134,9 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
 export function ThatsAll() {
   return (
     <SimpleMessage
-        title="That's all there is to it!"
+        title="That’s all there is to it!"
         paragraphs={[
-          <>We'll see you at the show.</>
+          <>We’ll see you at the show.</>
         ]}
     />
   )
@@ -145,16 +145,16 @@ export function ThatsAll() {
 export function Sorry() {
   return (
     <SimpleMessage
-      title="Sorry you're having trouble..."
+      title="Sorry you’re having trouble..."
       paragraphs={[
         <>
           You might have better luck in a different browser.
           THE JOURNEY is designed to run in the latest versions of
-          Chrome, Firefox, Microsoft Edge, and Safari .
+          Chrome, Firefox, Microsoft Edge, and Safari.
         </>,
         <>
           In any case, come back at showtime!
-          Even if we can't get your camera and mic hooked up,
+          Even if we can’t get your camera and mic hooked up,
           you will still be able to watch the show.
         </>
       ]}

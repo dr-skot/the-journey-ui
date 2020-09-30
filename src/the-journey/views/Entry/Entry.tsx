@@ -12,7 +12,7 @@ import useRoomName from '../../hooks/useRoomName';
 import SimpleMessage from '../SimpleMessage';
 
 function rejectedPath() {
-  return window.location.pathname.replace('entry', 'rejected');
+  return window.location.pathname.replace(/entry|ninja/, 'rejected');
 }
 
 type MediaStatus = 'pending' | 'ready' | 'help-needed'

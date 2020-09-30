@@ -15,6 +15,7 @@ const useStyles = makeStyles({
     textAlign: 'center',
   },
   paragraph: {
+    textAlign: 'center',
     '& a': {
       color: 'inherit',
     }

@@ -80,7 +80,7 @@ export default function NameForm({ roomName, role = 'audience', options= {} }: N
     <Grid container justify="center" alignItems="flex-start" className={classes.container}>
       <Paper className={classes.paper} elevation={6}>
       <Center>
-          <h2>Welcome to The Journey</h2>
+          <h2>Welcome to THE JOURNEY</h2>
       </Center>
         <Center>
           Please enter your name<br/>
