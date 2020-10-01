@@ -1,15 +1,14 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import Broadcast from '../Broadcast/Broadcast';
 import useMeeting from '../../hooks/useMeeting';
-import Meeting from '../FOH/Meeting';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
 import { inGroup, isStaffed } from '../../utils/twilio';
 import GetMedia, { Sorry, ThatsAll } from './GetMedia';
 import NameForm from './NameForm';
 import useRoomName from '../../hooks/useRoomName';
 import SimpleMessage from '../SimpleMessage';
+import SafeRedirect from '../../components/SafeRedirect';
 
 function rejectedPath() {
   return window.location.pathname.replace(/entry|ninja/, 'rejected');
@@ -43,13 +42,16 @@ export default function Entry({ test }: { test?: boolean }) {
 
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName}/>
 
+  const { identity } = room.localParticipant;
+  sessionStorage.setItem('roomJoined', JSON.stringify({ identity, roomName }))
+
   if (!test && !isStaffed(room)) return <UnstaffedRoomMessage/>;
 
   if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
 
   if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <Sorry/> : <ThatsAll/>;
 
-  return meeting ? <Meeting group={meeting}/> : <Broadcast />
+  return <SafeRedirect push to="/show"/>;
 }
 
 function UnstaffedRoomMessage() {

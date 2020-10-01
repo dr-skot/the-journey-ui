@@ -157,7 +157,6 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
 
   fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
     .then(response => {
-      console.log(response);
       res.end(response.body.read());
     })
     .catch(error => { console.log(error); res.end(error.body.read()); });

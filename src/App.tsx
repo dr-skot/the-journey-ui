@@ -30,6 +30,7 @@ import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import Entry, { StaffCheck } from './the-journey/views/Entry/Entry';
 import Log2 from './the-journey/views/Log/Log2';
+import Show from './the-journey/views/Entry/new/Show';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -66,9 +67,7 @@ export default function App() {
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
 
-  // TODO reinstate reconnecting notification
-
-  console.log('RENDER APP')
+  console.log('RENDER APP', height);
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
@@ -76,6 +75,10 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+
+                  <Route path="/show/:code?">
+                    <Twilio><Show/></Twilio>
+                  </Route>
 
                   <Route path="/entry/:code">
                     <Twilio><FrontDoor/></Twilio>

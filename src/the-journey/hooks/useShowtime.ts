@@ -23,6 +23,7 @@ function invalidCurtainTime(curtain: DateTime) {
 }
 
 interface UseShowtimeResult {
+  code: string,
   canEnter: boolean,
   punct: Punctuality,
   doorPolicy: DoorPolicy,
@@ -92,10 +93,10 @@ export default function useShowtime() {
       : undefined,
   }
 
-  console.log('useShowtime', { punct, canEnter, local, venue, doorPolicy, doorsClosed });
+  console.log('useShowtime', { code, punct, canEnter, local, venue, doorPolicy, doorsClosed });
 
   return cached('useShowtime').ifEqual(
-    { punct, canEnter, local, venue, doorPolicy }
+    { punct, canEnter, local, venue, doorPolicy, code }
   ) as UseShowtimeResult;
 
 }

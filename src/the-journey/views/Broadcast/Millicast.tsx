@@ -4,6 +4,7 @@ import useHeight from '../../hooks/useHeight/useHeight';
 import fscreen from 'fscreen';
 import { remove } from '../../utils/functional';
 import { isFirefox } from '../../utils/browser';
+import CenteredInWindow from '../../components/CenteredInWindow';
 
 const ClickBlocker = styled('div')(() => ({
   position: 'absolute',
@@ -11,19 +12,6 @@ const ClickBlocker = styled('div')(() => ({
   width: '90vw',
   background: 'transparent',
 }));
-
-const Floater = styled('div')({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  zIndex: 10000000000000,
-});
-
-const Floated = styled('div')({
-  position: 'relative',
-  top: '-50%',
-  left: '-50%',
-});
 
 type VideoElementListener = (el: HTMLVideoElement) => void;
 type ResponseListener = (res: any) => void;
@@ -97,27 +85,21 @@ export default function Millicast() {
         e.stopPropagation()
       }} /> }
       { loading && !error && (
-        <Floater>
-          <Floated>
+        <CenteredInWindow>
             <CircularProgress />
-          </Floated>
-        </Floater>
+        </CenteredInWindow>
       )}
-      { needButton && (
-        <Floater>
-          <Floated>
+      { !loading && !error && needButton && (
+        <CenteredInWindow>
           <Button onClick={finalTouches} variant="contained" color="primary">
             click here<br/>to begin
           </Button>
-          </Floated>
-        </Floater>
+        </CenteredInWindow>
       ) }
       { error && (
-        <Floater>
-          <Floated>
-            <h1>Stream not available!</h1>
-          </Floated>
-        </Floater>
+        <CenteredInWindow>
+          <h1>Stream not available!</h1>
+        </CenteredInWindow>
       ) }
     </>
   );

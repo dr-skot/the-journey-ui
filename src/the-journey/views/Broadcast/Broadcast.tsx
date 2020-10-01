@@ -5,7 +5,6 @@ import Millicast from './Millicast';
 import { inGroup } from '../../utils/twilio';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
-import SignLanguageInterpreter from './components/SignLanguageInterpreter';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
 
@@ -31,7 +30,6 @@ export default function Broadcast() {
         <Main>
           <Millicast/>
         </Main>
-        <SignLanguageInterpreter />
       </Container>
     <HelpIsComingNotification />
   </>;
