@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import Broadcast from '../../Broadcast/Broadcast';
-import useMeeting from '../../../hooks/useMeeting';
-import Meeting from '../../FOH/Meeting';
-import { tryToParse } from '../../../utils/functional';
-import { useTwilioRoomContext } from '../../../contexts/TwilioRoomContext';
-import { useSharedRoomState } from '../../../contexts/AppStateContext';
-import SafeRedirect from '../../../components/SafeRedirect';
+import Broadcast from '../Broadcast/Broadcast';
+import useMeeting from '../../hooks/useMeeting';
+import Meeting from '../FOH/Meeting';
+import { tryToParse } from '../../utils/functional';
+import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
+import SafeRedirect from '../../components/SafeRedirect';
 
 const getSessionData = () => tryToParse(sessionStorage.getItem('roomJoined') || '') || {}
 
@@ -19,6 +19,8 @@ const ValidatedShow = () => {
   const [{ rejected }] = useSharedRoomState();
   const { meeting } = useMeeting();
   const { identity, roomName } = getSessionData();
+
+  console.log('RENDER: ValidatedShow')
 
   // TODO deal with room.localParticipant.identity !== identity ?
   useEffect(() => {

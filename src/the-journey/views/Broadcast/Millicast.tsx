@@ -41,6 +41,8 @@ export default function Millicast() {
   const [error, setError] = useState<any>();
   const [buttonClicked, setButtonClicked] = useState(false);
 
+  console.log('RENDER: Millicast');
+
   const onVideoReady = useCallback(() => {
     setLoading(false);
   }, [setLoading]);

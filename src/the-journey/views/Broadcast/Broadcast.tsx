@@ -23,6 +23,8 @@ const Main = styled('div')(() => ({
 export default function Broadcast() {
   useHighPriorityInFocusGroup();
 
+  console.log("RENDER: Broadcast");
+
   return <>
     <SubscribeToFocusGroupAudio/>
     <FocusGroupAudio/>

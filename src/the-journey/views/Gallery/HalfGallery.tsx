@@ -29,6 +29,15 @@ const Main = styled('div')({
 
 const half = (n: number) => Math.ceil(n / 2);
 
+const MenuButton = (label: string, onClick: () => void) => (
+  <Button
+    onClick={onClick}
+    style={{ margin: '0.5em' }}
+    size="small" color="default" variant="contained">
+    {label}
+  </Button>
+);
+
 function HalfGalleryView() {
   let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();
@@ -38,50 +47,24 @@ function HalfGalleryView() {
   const [galleryPage, setGalleryPage] = useState(1);
   const [halfSubscribe, setHalfSubscribe] = useState(false);
 
-  const menuExtras = (
-    <>
+  const menuExtras = <>
       { twoPage && (
         <>
           Video: subscribed to {halfSubscribe ? 'page' : 'all'}
-          <Button
-            onClick={() => setHalfSubscribe((prev) => !prev)}
-            style={{ margin: '0.5em' }}
-            size="small" color="default" variant="contained"
-          >
-            {`subscribe to ${halfSubscribe ? 'all' : 'page'}`}
-          </Button>
-        <Button
-          onClick={() => setGalleryPage((prev) => prev === 1 ? 2 : 1)}
-          style={{ margin: '0.5em' }}
-          size="small" color="default" variant="contained"
-        >
-          {`${galleryPage === 2 ? 'page 1' : 'page 2'}`}
-        </Button>
-          </>
+          { MenuButton(`subscribe to ${halfSubscribe ? 'all' : 'page'}`,
+            () => setHalfSubscribe((prev) => !prev)) }
+          { MenuButton(`${galleryPage === 2 ? 'page 1' : 'page 2'}`,
+            () => setGalleryPage((prev) => prev === 1 ? 2 : 1)) }
+        </>
       ) }
-      <Button
-        onClick={() => setTwoPage((prev) => !prev)}
-        style={{ margin: '0.5em' }}
-        size="small" color="default" variant="contained"
-      >
-        {`${twoPage ? 'one page' : 'two pages'}`}
-      </Button>
-    <Button
-      onClick={() => setHideBlanks((prev) => !prev)}
-      style={{ margin: '0.5em' }}
-      size="small" color="default" variant="contained"
-    >
-      {`${hideBlanks ? 'show' : 'hide'} blanks`}
-    </Button>
-      </>
-  )
-
-  console.log('HalfGallery is rerendering', { gallery });
+      { MenuButton(`${twoPage ? 'one page' : 'two pages'}`,
+        () => setTwoPage((prev) => !prev)) }
+      { MenuButton(`${hideBlanks ? 'show' : 'hide'} blanks`,
+        () => setHideBlanks((prev) => !prev))}
+  </>;
 
   const mid = half(gallery.length);
-  if (twoPage) {
-    gallery = galleryPage === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
-  }
+  if (twoPage) gallery = galleryPage === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
 
   const identities = getIdentities(gallery);
 
@@ -92,8 +75,6 @@ function HalfGalleryView() {
   };
 
   const final = cached('HalfGallery.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
-
-  console.log('HalfGallery passing', final === galleryProps ? 'cached' : 'uncached', 'gallery props', { final });
 
   return (
     <Container>

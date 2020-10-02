@@ -18,19 +18,18 @@ import Rejected from './the-journey/views/Entry/Rejected';
 import Testing from './the-journey/views/Testing/Testing';
 import FocusGroup from './the-journey/views/Focus/FocusGroup';
 import FOH from './the-journey/views/FOH/FOH';
-import BlindOperator from './the-journey/views/Operator/Operator';
+import Operator from './the-journey/views/Operator/Operator';
 import HalfGallery from './the-journey/views/Gallery/HalfGallery';
 import WithFacts from './the-journey/views/Facts/WithFacts';
 import ReconnectingNotification from './the-journey/components/ReconnectingNotification/ReconnectingNotification';
 import UnsupportedBrowserWarning from './the-journey/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
 import Log from './the-journey/views/Log/Log';
-import Comm from './the-journey/views/Comm/Comm';
-import FrontDoor from './the-journey/views/Entry/FrontDoor';
+import ShowtimeCheck from './the-journey/views/Entry/ShowtimeCheck';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
 import Entry from './the-journey/views/Entry/Entry';
 import Log2 from './the-journey/views/Log/Log2';
-import Show from './the-journey/views/Entry/new/Show';
+import Show from './the-journey/views/Entry/Show';
 import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
@@ -82,12 +81,12 @@ export default function App() {
                 <Switch>
                   <Route
                     path={(
-                      '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery' +
+                      '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery ' +
                       '/log /log2 /clear /testing'
                     ).split(' ')}
                     component={() =>
                     <Twilio>
-                      <Route path="/entry/:code"><FrontDoor/></Route>
+                      <Route path="/entry/:code"><ShowtimeCheck/></Route>
                       <Route path="/show/:code?"><Show/></Route>
                       <Route path="/test/:code?"><Entry test/></Route>
                       <Route path="/rejected"><Rejected/></Route>
@@ -103,7 +102,7 @@ export default function App() {
                       <PrivateRoute path="/foh/:code?" roles="foh|operator"><FOH/></PrivateRoute>
 
                       <PrivateRoute path="/operator/:code?" roles="operator">
-                        <AutoJoin role="operator"/><BlindOperator/>
+                        <AutoJoin role="operator"/><Operator/>
                       </PrivateRoute>
                       <PrivateRoute path="/focus/:code?" roles="operator">
                         <AutoJoin role="focus"/><FocusGroup/>

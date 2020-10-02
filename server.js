@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
-const Twilio = require('twilio');
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 const URLSearchParams = require('url').URLSearchParams;
@@ -128,7 +127,7 @@ const SUBSCRIBE_RULES = {
 }
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
-  if (req.params.policy === 'none') { res.end(); return; } // supprort this noop for completeness
+  if (req.params.policy === 'none') { res.end(); return; } // support this noop for completeness
   const focus = (req.query.focus || '').split(',') || [];
   const stars = (req.query.stars || '').split(',') || [];
   const basicRules = SUBSCRIBE_RULES.basic();
@@ -157,9 +156,9 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
 
   fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
     .then(response => {
-      res.end(response.body.read());
+      res.send(response.body.read());
     })
-    .catch(error => { console.log(error); res.end(error.body.read()); });
+    .catch(error => { console.log(error); res.send(error.body.read()); });
 });
 
 app.get('/subscribe/*', (req, res) => {
@@ -185,7 +184,7 @@ app.get('/disconnect/:room/:user', (req, res) => {
   fetch(url, { method: 'post', body: params, headers: { Authorization: `Basic ${base64(auth)}` } })
     .then(response => {
       console.log('success');
-      res.end(response.body.read());
+      res.send(response.body.read());
     })
 });
 
@@ -203,7 +202,7 @@ app.get('/clear/:room', (req, res) => {
   fetch(url, { method: 'post', body: params, headers: { Authorization: `Basic ${base64(auth)}` } })
     .then(response => {
       console.log('success');
-      res.end(response.body.read());
+      res.send(response.body.read());
     })
 })
 
@@ -217,10 +216,10 @@ app.get('/participants/:room', (req, res) => {
   fetch(url, { method: 'get', headers: { 'Authorization': `Basic ${base64(auth)}` } })
     .then(response => {
       console.log('success');
-      res.end(response.body.read());
+      res.send(response.body.read());
     })
   // TODO find out what's the right way to handle this
-    // .catch(error => { console.log(json); res.end(error.body.read()); });
+    // .catch(error => { console.log(json); res.send(error.body.read()); });
 })
 
 
@@ -233,7 +232,7 @@ app.get('/participants/:room', (req, res) => {
 app.put('/millicast/turn', (req, res) => {
   const turnUrl  = 'https://turn.millicast.com/webrtc/_turn';
   fetch(turnUrl, { method: 'put' }).then(response => {
-    res.end(response.body.read());
+    res.send(response.body.read());
   })
 });
 
@@ -245,7 +244,7 @@ app.post('/millicast/subscribe', (req, res) => {
     body: JSON.stringify(req.body),
     headers: { 'Content-Type': 'application/json' },
   }).then(response => {
-     res.end(response.body.read());
+     res.send(response.body.read());
   });
 });
 

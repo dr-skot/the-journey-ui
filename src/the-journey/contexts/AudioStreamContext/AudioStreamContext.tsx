@@ -60,7 +60,6 @@ export default function AudioStreamContextProvider({ children }: ProviderProps) 
 
   // connect up only the streams that are in the unmuted group
   useEffect(() => {
-    console.log('unmuted changed with audioOut', audioOut);
     const methods = [fallbackUnmuteGroup, ambitiousUnmuteGroup]
     const [activeMethod, inactiveMethod] = fallback ? methods : methods.reverse();
     inactiveMethod([], true, audioOut, gainValue);

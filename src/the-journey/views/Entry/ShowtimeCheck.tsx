@@ -3,7 +3,7 @@ import Entry from './Entry';
 import { Messages } from '../../messaging/messages';
 import useShowtime from '../../hooks/useShowtime';
 
-export default function FrontDoor() {
+export default function ShowtimeCheck() {
   // entry : validShow ? history push /name : gentleMessage
   // /name, verify has been to /entry: onSubmit history push /media
   // /medio, verify has name: onSubmit redirect to show

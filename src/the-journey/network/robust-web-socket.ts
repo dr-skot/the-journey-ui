@@ -62,6 +62,8 @@ class RobustWebSocket {
       // eslint-disable-next-line no-console
       if (!isPingPong(message)) console.log('websocket sending', message);
       if (message.action === 'ping') this.unansweredPings += 1;
+      if (this.unansweredPings > 4) console.log(`${this.unansweredPings} unanswered pings`);
+      if (this.unansweredPings > 9) this.handleClose(new CloseEvent('10 unanswered pings!'))
       webSocket.send(JSON.stringify(message));
     };
     if (this.isConnected()) doIt();

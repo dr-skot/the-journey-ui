@@ -30,9 +30,18 @@ const Main = styled('div')({
 
 const half = (n: number) => Math.ceil(n / 2);
 
+const MenuButton = (label: string, onClick: () => void) => (
+  <Button
+    onClick={onClick}
+    style={{ margin: '0.5em' }}
+    size="small" color="default" variant="contained">
+      {label}
+  </Button>
+);
+
 function OperatorView() {
-  const sharedRoom = useSharedRoomState();
-  const operatorControls = useOperatorControls();
+  const [{ focusGroup }] = useSharedRoomState();
+  const { toggleFocus } = useOperatorControls();
   let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();
 
@@ -41,46 +50,17 @@ function OperatorView() {
   const [paged, setPaged] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
 
-  const menuExtras = (
-    <>
-      { paged && (
-        <>
-        <Button
-          onClick={() => setPageNumber((prev) => prev === 1 ? 2 : 1)}
-          style={{ margin: '0.5em' }}
-          size="small" color="default" variant="contained"
-        >
-          {`${pageNumber === 2 ? 'page 1' : 'page 2'}`}
-        </Button>
-          </>
-      ) }
-      <Button
-        onClick={() => setPaged((prev) => !prev)}
-        style={{ margin: '0.5em' }}
-        size="small" color="default" variant="contained"
-      >
-        {`${paged ? 'one page' : 'two pages'}`}
-      </Button>
-    <Button
-      onClick={() => setHideBlanks((prev) => !prev)}
-      style={{ margin: '0.5em' }}
-      size="small" color="default" variant="contained"
-    >
-      {`${hideBlanks ? 'show' : 'hide'} blanks`}
-    </Button>
-      </>
-  )
-
-  const [{ focusGroup }] = sharedRoom;
-  const { toggleFocus } = operatorControls;
-
-  console.log('Operator is rerendering', { sharedRoom, focusGroup, operatorControls, gallery });
-
+  const menuExtras = <>
+      { paged && MenuButton(`${pageNumber === 2 ? 'page 1' : 'page 2'}`,
+        () => setPageNumber((prev) => prev === 1 ? 2 : 1)) }
+      { MenuButton(`${paged ? 'one page' : 'two pages'}`,
+        () => setPaged((prev) => !prev)) }
+      { MenuButton(`${hideBlanks ? 'show' : 'hide'} blanks`,
+        () => setHideBlanks((prev) => !prev)) }
+  </>;
 
   const mid = half(gallery.length);
-  if (paged) {
-    gallery = pageNumber === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
-  }
+  if (paged) gallery = pageNumber === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
 
   const galleryProps = {
     participants: gallery,
@@ -91,8 +71,6 @@ function OperatorView() {
   };
 
   const final = cached('Operator.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
-
-  console.log('Operator passing', final === galleryProps ? 'cached' : 'uncached', 'gallery props', { final });
 
   return (
     <Container>
@@ -116,10 +94,8 @@ function OperatorView() {
 export default function Operator() {
 
   return (
-    <>
       <WithFacts>
         <OperatorView />
       </WithFacts>
-    </>
   );
 }

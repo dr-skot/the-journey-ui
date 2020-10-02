@@ -296,9 +296,11 @@ export const ServerDate = (function(serverNow) {
 
     offset += delta;
 
+    /* suppress this verbose output
     if (delta)
       log("Offset adjusted by " + delta + " ms to " + offset + " ms (target: "
         + target.value + " ms).");
+     */
   }, 1000);
 
 // Synchronize whenever the page is shown again after losing focus.
