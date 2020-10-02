@@ -3,7 +3,7 @@ import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SimpleMessage from '../SimpleMessage';
 
 export default function Rejected() {
-  const [{ room  }] = useContext(TwilioRoomContext);
+  const [{ room }] = useContext(TwilioRoomContext);
   room?.disconnect();
   const retryUrl = window.location.toString().replace('rejected', 'entry');
   return <SimpleMessage

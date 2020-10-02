@@ -22,7 +22,7 @@ function invalidCurtainTime(curtain: DateTime) {
     || curtain > now.plus({ years: 1 });
 }
 
-interface UseShowtimeResult {
+export interface ShowtimeData {
   code: string,
   canEnter: boolean,
   punct: Punctuality,
@@ -97,6 +97,6 @@ export default function useShowtime() {
 
   return cached('useShowtime').ifEqual(
     { punct, canEnter, local, venue, doorPolicy, code }
-  ) as UseShowtimeResult;
+  ) as ShowtimeData;
 
 }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
-import { isRole } from '../../utils/twilio';
-import SignLanguageInterpreter from './components/SignLanguageInterpreter';
-import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
-import FlexibleGallery from '../Gallery/FlexibleGallery';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
-import SubscribeToFocusGroupAudioAndStar from '../../subscribers/SubscribeToFocusGroupAudioAndStar';
-import WithFacts from '../Facts/WithFacts';
-import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
+import { isRole } from '../../../utils/twilio';
+import SignLanguageInterpreter from './SignLanguageInterpreter';
+import HelpIsComingNotification from '../../Entry/components/HelpIsComingNotification';
+import FlexibleGallery from '../../Gallery/FlexibleGallery';
+import useParticipants from '../../../hooks/useParticipants/useParticipants';
+import SubscribeToFocusGroupAudioAndStar from '../../../subscribers/SubscribeToFocusGroupAudioAndStar';
+import WithFacts from '../../Facts/WithFacts';
+import PlayAllSubscribedAudio from '../../../components/audio/PlayAllSubscribedAudio';
 
 const Container = styled('div')(() => ({
   position: 'relative',

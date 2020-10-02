@@ -1,72 +1,28 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import useMeeting from '../../hooks/useMeeting';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
-import { inGroup, isStaffed } from '../../utils/twilio';
-import GetMedia, { Sorry, ThatsAll } from './GetMedia';
+import { isStaffed } from '../../utils/twilio';
+import GetMedia from './GetMedia';
 import NameForm from './NameForm';
 import useRoomName from '../../hooks/useRoomName';
-import SimpleMessage from '../SimpleMessage';
-import SafeRedirect from '../../components/SafeRedirect';
-
-function rejectedPath() {
-  return window.location.pathname.replace(/entry|ninja/, 'rejected');
-}
+import { Messages } from '../../messaging/messages';
 
 type MediaStatus = 'pending' | 'ready' | 'help-needed'
 
 export default function Entry({ test }: { test?: boolean }) {
   const [{ room, roomStatus }, dispatch] = useTwilioRoomContext();
-  const [{ rejected, helpNeeded }, roomStateDispatch] = useSharedRoomState();
-  const [mediaStatus, setMediaStatus] = useState<MediaStatus>('pending');
-  const { meeting } = useMeeting();
-
   const roomName = useRoomName() + (test ? '-test' : '');
-
-  const onNeedHelp = useCallback(() => {
-    setMediaStatus('help-needed');
-    roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
-  }, [setMediaStatus, roomStateDispatch]);
-
-  const onAllGood = useCallback(() => {
-    setMediaStatus('ready');
-  }, [setMediaStatus]);
 
   // get default media
   useEffect(() => dispatch('getLocalTracks'),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []);
 
-  if (inGroup(rejected)(room?.localParticipant)) return <Redirect to={rejectedPath()} />;
-
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName}/>
 
   const { identity } = room.localParticipant;
   sessionStorage.setItem('roomJoined', JSON.stringify({ identity, roomName }))
 
-  if (!test && !isStaffed(room)) return <UnstaffedRoomMessage/>;
+  if (!test && !isStaffed(room)) return Messages.UNSTAFFED_ROOM;
 
-  if (mediaStatus === 'pending') return <GetMedia onNeedHelp={onNeedHelp} onAllGood={onAllGood}/>
-
-  if (test) return helpNeeded.includes(room?.localParticipant.identity) ? <Sorry/> : <ThatsAll/>;
-
-  return <SafeRedirect push to="/show"/>;
-}
-
-function UnstaffedRoomMessage() {
-  return <SimpleMessage
-    title="Empty theater!"
-    paragraphs={[
-      <>There doesn’t seem to be a show running here.</>,
-      <>Please contact the box office for a valid show address.</>,
-    ]}
-  />
-}
-
-export function StaffCheck({ children }: { children: ReactNode }) {
-  const [{ room }] = useTwilioRoomContext();
-  return room && !isStaffed(room)
-    ? <UnstaffedRoomMessage/>
-    : <>{ children }</>;
+  return <GetMedia test={test}/>
 }

@@ -20,7 +20,7 @@ const ValidatedShow = () => {
   const { meeting } = useMeeting();
   const { identity, roomName } = getSessionData();
 
-  // TODO deal with error possibility room.localParticipant.identity !== identity ?
+  // TODO deal with room.localParticipant.identity !== identity ?
   useEffect(() => {
     if (roomStatus === 'disconnected') dispatch('joinRoom', { identity, roomName })
   }, [roomStatus]);

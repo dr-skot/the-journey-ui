@@ -1,7 +1,7 @@
 import React from 'react';
-import SimpleMessage from '../SimpleMessage';
-import useShowtime from '../../hooks/useShowtime';
 import Entry from './Entry';
+import { Messages } from '../../messaging/messages';
+import useShowtime from '../../hooks/useShowtime';
 
 export default function FrontDoor() {
   // entry : validShow ? history push /name : gentleMessage
@@ -12,29 +12,11 @@ export default function FrontDoor() {
   // use back button for getMedia
 
   const showtime = useShowtime();
+  if (!showtime) return Messages.INVALID_CODE;
+  if (!showtime.canEnter) return Messages.WRONG_TIME(showtime);
 
-  if (!showtime) return (
-    <SimpleMessage
-      title="Hmm..."
-      paragraphs={[
-        <>That doesn’t look like a valid show code.</>,
-        <>Please contact the box office for a valid show address.</>
-      ]}
-      />
-    );
+  // TODO check for empty room here
 
-  const { canEnter, punct, doorPolicy, local, venue } = showtime;
+  return <Entry/>;
 
-  if (canEnter) return <Entry/>;
-
-  return (
-    <SimpleMessage
-      title={`You’re ${punct}!`}
-      paragraphs={[
-        <>This show {punct.match(/late/) ? 'started' : 'starts'} at {local.time} on {local.day}.</>,
-        <>{punct === 'early' && `Doors open ${doorPolicy.open} min before showtime.`}</>,
-        <>{punct === 'too late' && venue.doorsClose && `Doors closed at ${venue.doorsClose}.`}</>,
-      ]}
-    />
-  );
 }

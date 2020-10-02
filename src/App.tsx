@@ -28,9 +28,10 @@ import Comm from './the-journey/views/Comm/Comm';
 import FrontDoor from './the-journey/views/Entry/FrontDoor';
 import HomePage from './the-journey/views/HomePage';
 import ClearRoom from './the-journey/views/Operator/ClearRoom';
-import Entry, { StaffCheck } from './the-journey/views/Entry/Entry';
+import Entry from './the-journey/views/Entry/Entry';
 import Log2 from './the-journey/views/Log/Log2';
 import Show from './the-journey/views/Entry/new/Show';
+import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -74,79 +75,57 @@ export default function App() {
         <Helmet><title>The Journey</title></Helmet>
             <div style={{ height }}>
               <Router>
+                <PrivateRoute path="/code" roles="foh|operator">
+                  <GetCode/>
+                </PrivateRoute>
+                <Route exact path="/" component={HomePage}/>
                 <Switch>
-
-                  <Route path="/show/:code?">
-                    <Twilio><Show/></Twilio>
-                  </Route>
-
-                  <Route path="/entry/:code">
-                    <Twilio><FrontDoor/></Twilio>
-                  </Route>
-                  <Route path="/test/:code?">
-                    <Twilio><Entry test/></Twilio>
-                  </Route>
-                  <Route path="/rejected">
-                    <Twilio><Rejected/></Twilio>
-                  </Route>
-
-                  <PrivateRoute path="/code" roles="foh|operator">
-                    <GetCode/>
-                  </PrivateRoute>
-                  <PrivateRoute path="/foh/:code?" roles="foh|operator" >
-                    <Twilio><FOH/></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/comm/:code?" roles="foh|operator">
-                    <Twilio><Comm/></Twilio>
-                  </PrivateRoute>
-
-                  <PrivateRoute path="/ninja/:code?" roles="operator">
-                    <Twilio><Entry/></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/operator/:code?" roles="operator">
-                    <Twilio><AutoJoin role="operator" /><BlindOperator /></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/focus/:code?" roles="operator">
-                    <Twilio><AutoJoin role="focus" /><FocusGroup /></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/gallery/:code?" roles="operator">
+                  <Route
+                    path={(
+                      '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery' +
+                      '/log /log2 /clear /testing'
+                    ).split(' ')}
+                    component={() =>
                     <Twilio>
-                      <AutoJoin role="gallery" options={{ maxTracks: '0' }} />
-                      <HalfGallery />
+                      <Route path="/entry/:code"><FrontDoor/></Route>
+                      <Route path="/show/:code?"><Show/></Route>
+                      <Route path="/test/:code?"><Entry test/></Route>
+                      <Route path="/rejected"><Rejected/></Route>
+                      <PrivateRoute path="/ninja/:code?" roles="operator"><Entry/></PrivateRoute>
+
+                      <PrivateRoute path="/lurk/:code?" roles="lurker|foh|operator">
+                        <AutoJoin role="lurker"/>
+                        <UnstaffedRoomCheck>
+                          <WithFacts><Broadcast/></WithFacts>
+                        </UnstaffedRoomCheck>
+                      </PrivateRoute>
+
+                      <PrivateRoute path="/foh/:code?" roles="foh|operator"><FOH/></PrivateRoute>
+
+                      <PrivateRoute path="/operator/:code?" roles="operator">
+                        <AutoJoin role="operator"/><BlindOperator/>
+                      </PrivateRoute>
+                      <PrivateRoute path="/focus/:code?" roles="operator">
+                        <AutoJoin role="focus"/><FocusGroup/>
+                      </PrivateRoute>
+                      <PrivateRoute path="/gallery/:code?" roles="operator">
+                        <AutoJoin role="gallery" options={{ maxTracks: '0' }}/>
+                        <HalfGallery/>
+                      </PrivateRoute>
+                      <PrivateRoute path="/log/:code?" roles="operator">
+                        <Log/>
+                      </PrivateRoute>
+                      <PrivateRoute path="/log2/:code?" roles="operator">
+                        <Log2/>
+                      </PrivateRoute>
+                      <PrivateRoute path="/clear/:code?" roles="operator">
+                        <ClearRoom/>
+                      </PrivateRoute>
+
+                      <PrivateRoute path="/testing/:code?" roles="operator"><Testing/></PrivateRoute>
                     </Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/log/:code?" roles="operator">
-                    <Twilio><Log/></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/log2/:code?" roles="operator">
-                    <Twilio><Log2/></Twilio>
-                  </PrivateRoute>
-                  <PrivateRoute path="/clear/:code?" roles="operator">
-                    <Twilio><ClearRoom/></Twilio>
-                  </PrivateRoute>
+                  }/>
 
-                  { /*
-                  <PrivateRoute roles="captioning" path="/captioning/:code?">
-                    <SignLanguageEntry />
-                  </PrivateRoute>
-                  */ }
-
-                  <PrivateRoute path="/lurk/:code?" roles="lurker|foh|operator">
-                    <Twilio>
-                      <AutoJoin role="lurker"/>
-                      <StaffCheck>
-                        <WithFacts><Broadcast /></WithFacts>
-                      </StaffCheck>
-                    </Twilio>
-                  </PrivateRoute>
-
-                  <PrivateRoute path="/testing/:code?" roles="operator">
-                    <Twilio>
-                      <Testing />
-                    </Twilio>
-                  </PrivateRoute>
-
-                  <Route exact path="/" component={HomePage}/>
                   <Redirect to="/" />
 
                 </Switch>

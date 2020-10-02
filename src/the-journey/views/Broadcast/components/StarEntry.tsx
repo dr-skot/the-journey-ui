@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
 import { insureHighPriorityVideo } from '../../../utils/twilio';
-import Broadcast from '../StarBroadcast';
+import Broadcast from './StarBroadcast';
 import SignIn from '../../FOH/SignIn';
 import useRoomName from '../../../hooks/useRoomName';
 

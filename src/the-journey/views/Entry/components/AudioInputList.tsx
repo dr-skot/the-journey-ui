@@ -19,8 +19,6 @@ export default function AudioInputList() {
   const audioInputDevices = useAudioInputDevices();
   const [{ localTracks }] = useTwilioRoomContext();
 
-  console.log('hi, Im AudioInputList');
-
   const localAudioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
   const mediaStreamTrack = useMediaStreamTrack(localAudioTrack);
   const localAudioInputDeviceId = mediaStreamTrack?.getSettings().deviceId;

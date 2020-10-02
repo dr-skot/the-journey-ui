@@ -9,7 +9,9 @@ import MiniVideoPreview from './components/MiniVideoPreview';
 import LocalAudioLevelIndicator from './components/LocalAudioLevelIndicator';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getUsername } from '../../utils/twilio';
-import SimpleMessage from '../SimpleMessage';
+import { useSharedRoomState } from '../../contexts/AppStateContext';
+import SafeRedirect from '../../components/SafeRedirect';
+import { Messages } from '../../messaging/messages';
 
 const Center = styled('div')({
   textAlign: 'center',
@@ -60,16 +62,17 @@ const useStyles = makeStyles({
   }
 });
 
-interface GetMediaProps {
-  onAllGood: () => void,
-  onNeedHelp: () => void,
-}
-
-export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
+export default function GetMedia({ test }: { test?: boolean }) {
   const classes = useStyles();
   const [{ room }] = useTwilioRoomContext();
+  const [, roomStateDispatch] = useSharedRoomState();
   const [consentGiven, setConsentGiven] = useState(false);
+  const [status, setStatus] = useState<'needHelp' | 'allGood'>();
   const name = getUsername(room?.localParticipant.identity || '');
+
+  if (status) return test
+    ? status === 'allGood' ? Messages.TEST_SORRY : Messages.TEST_ALL_GOOD
+    : <SafeRedirect push to="/show"/>;
 
   return <>
     <Grid container justify="center" alignItems="flex-start" className={classes.container}>
@@ -112,7 +115,10 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
             color="primary"
             variant="contained"
             disabled={!consentGiven}
-            onClick={onNeedHelp}
+            onClick={() => {
+              if (!test) roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
+              setStatus('needHelp');
+            }}
           >
             Help
           </Button>
@@ -121,7 +127,7 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
             color="primary"
             variant="contained"
             disabled={!consentGiven}
-            onClick={onAllGood}
+            onClick={() => setStatus('allGood')}
           >
             All good
           </Button>
@@ -129,35 +135,4 @@ export default function GetMedia({ onAllGood, onNeedHelp }: GetMediaProps) {
       </Paper>
     </Grid>
   </>
-}
-
-export function ThatsAll() {
-  return (
-    <SimpleMessage
-        title="That’s all there is to it!"
-        paragraphs={[
-          <>We’ll see you at the show.</>
-        ]}
-    />
-  )
-}
-
-export function Sorry() {
-  return (
-    <SimpleMessage
-      title="Sorry you’re having trouble..."
-      paragraphs={[
-        <>
-          You might have better luck in a different browser.
-          THE JOURNEY is designed to run in the latest versions of
-          Chrome, Firefox, Microsoft Edge, and Safari.
-        </>,
-        <>
-          In any case, come back at showtime!
-          Even if we can’t get your camera and mic hooked up,
-          you will still be able to watch the show.
-        </>
-      ]}
-    />
-  );
 }
