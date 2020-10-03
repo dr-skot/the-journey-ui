@@ -227,7 +227,7 @@ export function toggleVideoEnabled(room: Room | undefined, localTracks: (LocalVi
   }
 }
 
-function getLocalVideoTrack(newOptions?: CreateLocalTrackOptions) {
+export function getLocalVideoTrack(newOptions?: CreateLocalTrackOptions) {
   // In the DeviceSelector and FlipCameraButton components, a new video track is created,
   // then the old track is unpublished and the new track is published. Unpublishing the old
   // track and publishing the new track at the same time sometimes causes a conflict when the

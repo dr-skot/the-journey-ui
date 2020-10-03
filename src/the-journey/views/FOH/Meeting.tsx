@@ -17,13 +17,15 @@ interface MeetingProps {
 }
 
 export default function Meeting({ group }: MeetingProps) {
-  const [, dispatch] = useTwilioRoomContext();
+  const [{ localTracks }, dispatch] = useTwilioRoomContext();
   const [, roomStateDispatch] = useAppState();
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const meeters = sortBy(
     useParticipants('includeMe').filter(inGroup(group)),
     (p) => isRole('foh')(p) ? 1 : 0
   );
+
+  console.log('Meeting', { localTracks });
 
   if (meeters.length === 1) { // get out of the "meeting" if there's only one of me
     roomStateDispatch('endMeeting', { meeting: meeters });

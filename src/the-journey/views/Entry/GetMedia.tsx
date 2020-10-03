@@ -70,7 +70,9 @@ export default function GetMedia({ test }: { test?: boolean }) {
   const [consentGiven, setConsentGiven] = useState(false);
   const [status, setStatus] = useState<'needHelp' | 'allGood'>();
   const name = getUsername(room?.localParticipant.identity || '');
-  useLocalTracks();
+  const localTracks = useLocalTracks();
+
+  console.log('GetMedia', localTracks);
 
   if (status) return test
     ? status === 'allGood' ? Messages.TEST_SORRY : Messages.TEST_ALL_GOOD

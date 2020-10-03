@@ -17,9 +17,7 @@ export default function useMediaStreamTrack(track?: AudioTrack | VideoTrack) {
     if (track) {
       const handleStarted = () => setMediaStreamTrack(track.mediaStreamTrack);
       track.on('started', handleStarted);
-      return () => {
-        track.off('started', handleStarted);
-      };
+      return () => { track.off('started', handleStarted) };
     }
   }, [track]);
 

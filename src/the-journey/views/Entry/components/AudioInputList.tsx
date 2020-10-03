@@ -28,6 +28,8 @@ export default function AudioInputList() {
     localAudioTrack?.restart({ deviceId: { exact: newDeviceId } });
   }
 
+  console.log('AudioInputList: localAudioTrack', { localAudioTrack, localAudioInputDeviceId });
+
   return (
     <div className={classes.container}>
       <div className="inputSelect">
@@ -45,7 +47,7 @@ export default function AudioInputList() {
         ) : (
           <>
             <Typography variant="h6">Audio Input:</Typography>
-            <Typography>{localAudioTrack?.mediaStreamTrack.label || 'No Local Audio'}</Typography>
+            <Typography>{mediaStreamTrack?.label || 'No Local Audio'}</Typography>
           </>
         )}
       </div>
