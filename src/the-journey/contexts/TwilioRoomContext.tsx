@@ -92,6 +92,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
           console.log('joined room', room.name, 'with identity', identity);
+          room.setMaxListeners(31); // TODO find leak instead
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
         })
