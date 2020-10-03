@@ -7,5 +7,7 @@ export default function LocalAudioLevelIndicator() {
   const [{ localTracks }] = useContext(TwilioRoomContext);
   const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
 
+  console.log('LocalAudioLevelIndicator', audioTrack);
+
   return <AudioLevelIndicator size={30} audioTrack={audioTrack} />;
 }

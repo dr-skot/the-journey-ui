@@ -39,6 +39,8 @@ function AudioLevelIndicator({
   const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
   const mediaStreamTrack = useMediaStreamTrack(audioTrack);
 
+  console.log('AudioLevelIndicator', { audioTrack, mediaStreamTrack });
+
   useEffect(() => {
     if (audioTrack && mediaStreamTrack && isTrackEnabled) {
       // Here we create a new MediaStream from a clone of the mediaStreamTrack.
