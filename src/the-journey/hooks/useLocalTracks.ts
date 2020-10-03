@@ -16,6 +16,7 @@ export function useLocalTracks() {
   useEffect(() => {
     if (localTracks.length === 0) dispatch('getLocalTracks', { deviceIds: deviceIds })
   }, [localTracks]);
+
   useEffect(() => {
     if (room && room.localParticipant.tracks.size === 0 && localTracks.length !== 0) {
       publishTracks(room, localTracks);
