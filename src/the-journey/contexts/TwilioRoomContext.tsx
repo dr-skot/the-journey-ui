@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 import { createContext } from 'react';
 import { joinRoom, getLocalTracks, getIdentity, subscribe, toggleVideoEnabled } from '../utils/twilio';
-import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack } from 'twilio-video';
+import { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, LocalDataTrack, LocalTrack } from 'twilio-video';
 import { initialSettings, Settings, settingsReducer } from './settings/settingsReducer';
 import generateConnectionOptions from '../../twilio/utils/generateConnectionOptions/generateConnectionOptions';
 import { cached } from '../utils/react-help';
@@ -112,6 +112,19 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
         dispatch('setRoomStatus', { status: 'connecting' }));
       payload.room.on('reconnected', () =>
         dispatch('setRoomStatus', { status: 'connected' }));
+      payload.room.setMaxListeners(25);
+      payload.room.localParticipant.on('trackDisabled', (track: LocalTrack) =>
+        console.log('trackDisabled', track));
+      payload.room.localParticipant.on('trackEnabled', (track: LocalTrack) =>
+        console.log('trackEnabled', track));
+      payload.room.localParticipant.on('trackPublished', (track: LocalTrack) =>
+        console.log('trackPublished', track));
+      payload.room.localParticipant.on('trackPublicationFailed', (track: LocalTrack) =>
+        console.log('trackPublicationFailed', track));
+      payload.room.localParticipant.on('trackStarted', (track: LocalTrack) =>
+        console.log('trackStarted', track));
+      payload.room.localParticipant.on('trackStopped', (track: LocalTrack) =>
+        console.log('trackStopped', track));
       console.log('connected to room', payload.room, 'with participants', payload.room.participants)
       newState = {
         ...state, room: payload.room, roomStatus: 'connected',
