@@ -15,6 +15,7 @@ interface TwilioState {
 
   localTracks: (LocalAudioTrack | LocalVideoTrack)[],
   localDataTrack?: LocalDataTrack,
+  mediaPermissionDenied: boolean,
 
   activeSinkId: string,
   settings: Settings,
@@ -28,6 +29,7 @@ const initialState: TwilioState = {
 
   localTracks: [],
   localDataTrack: undefined,
+  mediaPermissionDenied: false,
 
   activeSinkId: 'default', // TODO study the significance of this
   settings: initialSettings,
@@ -73,11 +75,13 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       break;
 
     case 'gotLocalTracks':
-      newState = { ...state, localTracks: payload.tracks };
+      newState = { ...state, localTracks: payload.tracks, mediaPermissionDenied: false };
       break;
 
     case 'getLocalTracksFailed':
-      newState = { ...state, error: payload.error };
+      // TODO don't assume permission denied is the reason, check the error
+      console.log('getLocalTracksFailed', payload.error);
+      newState = { ...state, error: payload.error, mediaPermissionDenied: true };
       break;
 
     case 'joinRoom':

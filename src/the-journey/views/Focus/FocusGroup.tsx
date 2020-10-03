@@ -3,7 +3,7 @@ import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
 import { cached } from '../../utils/react-help';
 import { inGroup, sameIdentities } from '../../utils/twilio';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuedView from '../MenuedView';
@@ -14,7 +14,7 @@ import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 
 function FocusGroupView() {
-  const [{ focusGroup }] = useSharedRoomState();
+  const [{ focusGroup }] = useAppState();
   const group = sortBy(
     useParticipants().filter(inGroup(focusGroup)),
     (p) => focusGroup.indexOf(p.identity)

@@ -1,5 +1,5 @@
 import { codeToTimeWithTZ, DEFAULT_DOOR_POLICY, DoorPolicy, punctuality, Punctuality, timezones } from '../utils/foh';
-import { useSharedRoomState } from '../contexts/AppStateContext';
+import { useAppState } from '../contexts/AppStateContext';
 import { DateTime } from 'luxon';
 import { cached } from '../utils/react-help';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -32,7 +32,7 @@ export interface ShowtimeData {
 }
 
 export default function useShowtime() {
-  const [{ doorsClosed }] = useSharedRoomState();
+  const [{ doorsClosed }] = useAppState();
   const match = useRouteMatch() as match<{ code?: string }>;
   const code = match.params.code;
   const doorPolicy = DEFAULT_DOOR_POLICY;

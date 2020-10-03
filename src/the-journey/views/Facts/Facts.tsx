@@ -12,7 +12,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UnmuteButtons } from '../Testing/Testing';
 import VideoTrack from '../../components/VideoTrack/VideoTrack';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import { listKey } from '../../utils/react-help';
 
 const VideoWindow = styled('div')({
@@ -39,7 +39,7 @@ export function VideoPlayer({ track }: VideoPlayerProps) {
 
 export default function Facts() {
   const [{ room, localTracks }] = useTwilioRoomContext();
-  const sharedRoomState = useSharedRoomState();
+  const sharedRoomState = useAppState();
   const participants = useParticipants();
   useRerenderOnTrackSubscribed();
 

@@ -10,7 +10,7 @@ import TwilioRoomContextProvider, { useTwilioRoomContext } from './the-journey/c
 import { getUsername } from './the-journey/utils/twilio';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
 import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
-import RoomStateContextProvider from './the-journey/contexts/AppStateContext';
+import AppStateContextProvider from './the-journey/contexts/AppStateContext';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
 import Broadcast from './the-journey/views/Broadcast/Broadcast';
@@ -48,10 +48,10 @@ function Twilio({ children }: { children: ReactNode }) {
         <NameHelmet/>
         <AudioStreamContextProvider>
           <FallbackToAudioElements/>
-          <RoomStateContextProvider>
+          <AppStateContextProvider>
             <ReconnectingNotification />
             { children }
-          </RoomStateContextProvider>
+          </AppStateContextProvider>
         </AudioStreamContextProvider>
       </TwilioRoomContextProvider>
     </UnsupportedBrowserWarning>

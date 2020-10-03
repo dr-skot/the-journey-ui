@@ -4,7 +4,7 @@ import useMeeting from '../../hooks/useMeeting';
 import Meeting from '../FOH/Meeting';
 import { tryToParse } from '../../utils/functional';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import SafeRedirect from '../../components/SafeRedirect';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../constants';
 import { removeUndefineds } from '../../../twilio/utils';
@@ -20,7 +20,7 @@ export default function Show() {
 
 const ValidatedShow = () => {
   const [{ roomStatus }, dispatch] = useTwilioRoomContext();
-  const [{ rejected }] = useSharedRoomState();
+  const [{ rejected }] = useAppState();
   const { meeting } = useMeeting();
   const { identity, roomName } = getSessionData();
   const localTracks = useLocalTracks();

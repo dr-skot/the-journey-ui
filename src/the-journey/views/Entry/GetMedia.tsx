@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, styled } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,7 +9,7 @@ import MiniVideoPreview from './components/MiniVideoPreview';
 import LocalAudioLevelIndicator from './components/LocalAudioLevelIndicator';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { getUsername } from '../../utils/twilio';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import SafeRedirect from '../../components/SafeRedirect';
 import { Messages } from '../../messaging/messages';
 import { useLocalTracks } from '../../hooks/useLocalTracks';
@@ -65,8 +65,8 @@ const useStyles = makeStyles({
 
 export default function GetMedia({ test }: { test?: boolean }) {
   const classes = useStyles();
-  const [{ room }, dispatch] = useTwilioRoomContext();
-  const [, roomStateDispatch] = useSharedRoomState();
+  const [{ room, mediaPermissionDenied }] = useTwilioRoomContext();
+  const [, roomStateDispatch] = useAppState();
   const [consentGiven, setConsentGiven] = useState(false);
   const [status, setStatus] = useState<'needHelp' | 'allGood'>();
   const name = getUsername(room?.localParticipant.identity || '');
@@ -79,46 +79,70 @@ export default function GetMedia({ test }: { test?: boolean }) {
   return <>
     <Grid container justify="center" alignItems="flex-start" className={classes.container}>
       <Paper className={classes.paper} elevation={6}>
-      <Center>
-          <h2>Welcome, {name}!<br/>Let’s get your camera and mic ready.</h2>
-      </Center>
-        <div className={classes.mediaContainer}>
-          <MiniVideoPreview/>
-          <div className={classes.levelIndicator}><LocalAudioLevelIndicator /></div>
-        </div>
-        <Center>
-          You should see yourself above,<br/>
-          and the mic icon should turn green when you talk.<br/>
-          If not, try the menus below.
-        </Center>
+        { mediaPermissionDenied
+          ? <>
+            <Center>
+              <h2>Welcome, {name}!<br/></h2>
+            </Center>
+            <Center>
+              <h3>It looks like we don’t have permission to use your camera and microphpone.</h3>
+            </Center>
+            <Center>
+              For the full experience, please adjust your browser permissions.
+            </Center>
+            <div>
+              <Button
+                className={classes.button}
+                variant="contained"
+                onClick={() => window.location.reload()}
+              >
+                I've fixed the permissions
+              </Button>
+            </div>
+          </>
+          : <>
+            <Center>
+              <h2>Welcome, {name}!<br/>Let’s get your camera and mic ready.</h2>
+            </Center>
+            <div className={classes.mediaContainer}>
+              <MiniVideoPreview/>
+              <div className={classes.levelIndicator}><LocalAudioLevelIndicator /></div>
+            </div>
+            <Center>
+              You should see yourself above,<br/>
+              and the mic icon should turn green when you talk.<br/>
+              If not, try the menus below.
+            </Center>
+            <div>
+              <div className={classes.listSection}>
+                <AudioInputList />
+              </div>
+              <div className={classes.listSection}>
+                <VideoInputList />
+              </div>
+            </div>
+            <Center>
+              If everything looks good,<br/>
+              click the checkbox and the all good button!
+            </Center>
+            <FormControlLabel
+              control={<Checkbox checked={consentGiven} onChange={() => setConsentGiven(!consentGiven)} />}
+              label="I consent to the use of my camera and mic"
+            />
+            <Center>
+              (While your camera is on, our staff can see you,<br/>
+              and your image may appear in the show.)
+            </Center>
+          </>
+        }
         <div>
-          <div className={classes.listSection}>
-            <AudioInputList />
-          </div>
-          <div className={classes.listSection}>
-            <VideoInputList />
-          </div>
-        </div>
-        <Center>
-          If everything looks good,<br/>
-          click the checkbox and the all good button!
-        </Center>
-          <FormControlLabel
-            control={<Checkbox checked={consentGiven} onChange={() => setConsentGiven(!consentGiven)} />}
-            label="I consent to the use of my camera and mic"
-          />
-        <Center>
-          (While your camera is on, our staff can see you,<br/>
-          and your image may appear in the show.)
-        </Center>
-          <div>
           <Button
             className={classes.button}
             color="primary"
             variant="contained"
-            disabled={!consentGiven}
+            disabled={!consentGiven && !mediaPermissionDenied}
             onClick={() => {
-              if (!test) roomStateDispatch('toggleMembership', { group: 'helpNeeded' });
+              if (!test) roomStateDispatch('setMembership', { group: 'helpNeeded', value: true });
               setStatus('needHelp');
             }}
           >
@@ -128,13 +152,19 @@ export default function GetMedia({ test }: { test?: boolean }) {
             className={classes.button}
             color="primary"
             variant="contained"
-            disabled={!consentGiven}
-            onClick={() => setStatus('allGood')}
+            disabled={!consentGiven && !mediaPermissionDenied}
+            onClick={() => {
+              if (!test) roomStateDispatch('setMembership', { group: 'helpNeeded', value: false });
+              setStatus('allGood')
+            }}
           >
-            All good
+            { mediaPermissionDenied ? 'just watch': 'all good' }
           </Button>
         </div>
       </Paper>
     </Grid>
   </>
 }
+
+
+

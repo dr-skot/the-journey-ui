@@ -11,7 +11,7 @@ import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscrib
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 
 const Container = styled('div')({
   display: 'flex',
@@ -40,7 +40,7 @@ const MenuButton = (label: string, onClick: () => void) => (
 );
 
 function OperatorView() {
-  const [{ focusGroup }] = useSharedRoomState();
+  const [{ focusGroup }] = useAppState();
   const { toggleFocus } = useOperatorControls();
   let gallery = useParticipants().filter(isRole('audience'));
   useRerenderOnTrackSubscribed();

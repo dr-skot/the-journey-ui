@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import { serverNow } from '../../utils/ServerDate';
 
 export default function CloseDoorsButton() {
-  const [{ doorsClosed }, roomStateDispatch] = useSharedRoomState();
+  const [{ doorsClosed }, roomStateDispatch] = useAppState();
 
   function toggleCloseDoors() {
     roomStateDispatch('set', {

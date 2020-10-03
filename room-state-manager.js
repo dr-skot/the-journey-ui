@@ -27,10 +27,19 @@ function insureMembership(xs, x) {
   return xs;
 }
 
+function isMember(xs, x) {
+  return xs.indexOf(x) > -1;
+}
+
 function toggleMembership(xs, x) {
-  if (xs.indexOf(x) > -1) remove(xs, x);
+  if (isMember(xs, x)) remove(xs, x);
   else xs.push(x);
 }
+
+function setMembership(xs, x, value) {
+  if (isMember(xs, x) !== value) toggleMembership(xs, x);
+}
+
 
 function endMeetings(roomState, identity) {
   roomState.meetings = roomState.meetings.filter((meeting) => !meeting.includes(identity));
@@ -126,6 +135,11 @@ const useServer = (server) => {
         case 'toggleMembership':
           if (GROUPS.includes(payload.group)) {
             toggleMembership(roomState[payload.group], identity);
+          }
+          break;
+        case 'setMembership':
+          if (GROUPS.includes(payload.group)) {
+            setMembership(roomState[payload.group], identity, payload.value);
           }
           break;
         case 'clearMembership':

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import AutoJoin from '../../components/AutoJoin';
 import { RemoteParticipant } from 'twilio-video';
-import { useSharedRoomState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../contexts/AppStateContext';
 import Subscribe from '../../subscribers/Subscribe';
 import { getUsername } from '../../utils/twilio';
 
@@ -24,7 +24,7 @@ type Audience = Record<string, UserRecord>;
 
 export default function Log2() {
   const [{ room }] = useTwilioRoomContext();
-  const [{ userAgents }] = useSharedRoomState();
+  const [{ userAgents }] = useAppState();
   const [audience, setAudience] = useState<Audience>({})
   const [startTime] = useState(new Date())
 

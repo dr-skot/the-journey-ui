@@ -14,7 +14,7 @@ const serverUrl = isDev()
   : window.location.origin.replace(/^http/, 'ws');
 let server: RobustWebSocket;
 
-interface RoomState {
+interface AppState {
   admitted: Identity[],
   rejected: Identity[],
   doorsClosed: string,
@@ -28,7 +28,7 @@ interface RoomState {
   helpNeeded: Identity[],
 }
 type Dispatcher = (action: string, payload: any) => void;
-type RoomStateContextValue = [RoomState, Dispatcher];
+type AppStateContextValue = [AppState, Dispatcher];
 
 const initialState = {
   admitted: [],
@@ -42,27 +42,27 @@ const initialState = {
   meetings: [],
   userAgents: {},
   helpNeeded: [],
-} as RoomState;
+} as AppState;
 
 const initialStateChanger: Dispatcher = () => {};
-const initalContextValue: RoomStateContextValue = [initialState, initialStateChanger];
+const initalContextValue: AppStateContextValue = [initialState, initialStateChanger];
 
 export const AppStateContext = createContext(initalContextValue);
 
 interface ServerMessage {
   action?: string,
-  payload?: RoomState,
+  payload?: AppState,
 }
 
 interface ProviderProps {
   children: ReactNode,
 }
 
-export default function RoomStateContextProvider({ children }: ProviderProps) {
+export default function AppStateContextProvider({ children }: ProviderProps) {
   server = server || new RobustWebSocket(serverUrl);
   const [{ room }] = useContext(TwilioRoomContext);
   const roomName = useRoomName();
-  const [roomState, setRoomState] = useState<RoomState>(initialState);
+  const [appState, setAppState] = useState<AppState>(initialState);
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
@@ -81,14 +81,14 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   useEffect(() => {
     function update(message: ServerMessage) {
       if (message.action === 'roomStateUpdate' && message.payload) {
-        setRoomState(message.payload);
+        setAppState(message.payload);
       }
     }
     server.addMessageListener(update);
     // then request room state right away, even before twilio room is joined
     dispatch('getRoomState', { roomName });
     return () => server.removeMessageListener(update);
-  }, [setRoomState, roomName, dispatch]);
+  }, [setAppState, roomName, dispatch]);
 
   // join and leave room
   useEffect(() => {
@@ -99,17 +99,17 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   }, [room, dispatch]);
 
   // wire gain and delayTime to the audio streams
-  useEffect(() => { setGain(roomState.gain) },
-    [roomState.gain, setGain]);
-  useEffect(() => { setDelayTime(roomState.delayTime) },
-    [roomState.delayTime, setDelayTime]);
-  useEffect(() => { setMuteAll(roomState.muteAll) },
-    [roomState.muteAll, setMuteAll]);
+  useEffect(() => { setGain(appState.gain) },
+    [appState.gain, setGain]);
+  useEffect(() => { setDelayTime(appState.delayTime) },
+    [appState.delayTime, setDelayTime]);
+  useEffect(() => { setMuteAll(appState.muteAll) },
+    [appState.muteAll, setMuteAll]);
 
-  const cachedIfEqual = (propName: keyof RoomState) =>
-    cached(`RoomState.${propName}`).ifEqual(roomState[propName])
+  const cachedIfEqual = (propName: keyof AppState) =>
+    cached(`RoomState.${propName}`).ifEqual(appState[propName])
 
-  const roomStateWithCaching = {
+  const appStateWithCaching = {
     admitted: cachedIfEqual('admitted'),
     rejected: cachedIfEqual('rejected'),
     doorsClosed: cachedIfEqual('doorsClosed'),
@@ -124,11 +124,11 @@ export default function RoomStateContextProvider({ children }: ProviderProps) {
   };
 
   const providerValue = cached('AppStateProvider.value')
-    .ifEqual([roomStateWithCaching, dispatch])
+    .ifEqual([appStateWithCaching, dispatch])
 
-  return <AppStateContext.Provider value={providerValue as RoomStateContextValue}>
+  return <AppStateContext.Provider value={providerValue as AppStateContextValue}>
     {children}
   </AppStateContext.Provider>
 }
 
-export const useSharedRoomState = () => useContext(AppStateContext);
+export const useAppState = () => useContext(AppStateContext);
