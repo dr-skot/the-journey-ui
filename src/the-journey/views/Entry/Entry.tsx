@@ -9,13 +9,8 @@ import { Messages } from '../../messaging/messages';
 type MediaStatus = 'pending' | 'ready' | 'help-needed'
 
 export default function Entry({ test }: { test?: boolean }) {
-  const [{ room, roomStatus }, dispatch] = useTwilioRoomContext();
+  const [{ room, roomStatus }] = useTwilioRoomContext();
   const roomName = useRoomName() + (test ? '-test' : '');
-
-  // get default media
-  useEffect(() => dispatch('getLocalTracks'),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []);
 
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName}/>
 

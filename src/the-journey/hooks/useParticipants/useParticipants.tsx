@@ -13,6 +13,7 @@ export default function useParticipants(includeMe?: 'includeMe') {
   useEffect(() => {
     const update = () => setParticipants(Array.from(room?.participants.values() || []));
     update(); // important! populate when room goes from undefined to an actual Room
+    console.log("PARTICIPANT CONNECTED");
     room?.on('participantConnected', update);
     room?.on('participantDisconnected', update);
     return () => {

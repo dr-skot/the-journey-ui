@@ -8,7 +8,6 @@ import Video, {
   Track,
   LocalDataTrack,
   CreateLocalTrackOptions,
-  RemoteTrack,
   VideoBandwidthProfileOptions, LocalParticipant,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
@@ -59,20 +58,14 @@ export function connect(token: string, roomName: string, options: Video.ConnectO
 type Priorities = Record<Track.Kind, Track.Priority>;
 
 
-function publishTracks(room: Room, tracks: LocalTrack[]) {
-  console.log('publishing tracks... tracks are', tracks);
+export function publishTracks(room: Room, tracks: LocalTrack[]) {
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
-  console.log('got video track...');
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
-  console.log('got audio track...');
 
   const me = room.localParticipant;
-  console.log('got me...');
   const priorities: Priorities = isRole('star')(me)
     ? { video: 'high', audio: 'high', data: 'standard' }
     : { video: 'low', audio: 'standard', data: 'standard' };
-
-  console.log('publishing tracks with priorities', priorities);
 
   [videoTrack, audioTrack].forEach(track => {
     // Tracks can be supplied as arguments to the Video.connect() function and they will automatically be published.
@@ -105,22 +98,18 @@ export function getTracks(room: Room, kind: TrackFilter = undefined) {
   return tracks;
 }
 
-export function getSubscribedTracks(room: Room, kind: TrackFilter = undefined) {
-  const tracks: RemoteTrack[] = [];
-  room.participants.forEach(p => p.tracks.forEach(pub => {
-    if (pub.track && (!kind || pub.track.kind === kind)) tracks.push(pub.track);
-  }));
-  return tracks;
-}
-
-export function getLocalTracks({ audioOnly }: { audioOnly?: boolean } = {}) {
+export function getLocalTracks(deviceIds: { video?: string, audio?: string } = {}) {
   return Video.createLocalTracks({
-    video: audioOnly ? false : {
+    video: {
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
+      ...(deviceIds.video ? { deviceId: { exact: deviceIds.video } } : {}),
       name: `camera-${Date.now()}`,
     },
-    audio: true,
-  }).catch((error) => {
+    audio: {
+      ...(deviceIds.audio ? { deviceId: { exact: deviceIds.audio } } : {}),
+    },
+  })
+    .catch((error) => {
     console.log('error getting tracks', error);
     throw error;
   })
@@ -174,7 +163,7 @@ export function subscribe(roomSid: string, participantSid: string, policy: strin
   );
 
   return fetch(url, { headers })
-    .then(res => console.log(`${policy} subscribe successful, result`, res))
+    .then(() => console.log(`${policy} subscribe successful`))
     .catch(error => {
       console.log(`error subscribing to ${policy}:`, error);
       throw error;
@@ -273,7 +262,7 @@ export function clearRoom(room?: Room) {
   return fetch(`/clear/${room.sid}`);
 }
 
-// for some reason typescript is saying LocalVideoTrackPublication has no prority or setPriority properties
+// for some reason typescript is saying LocalVideoTrackPublication has no priority or setPriority properties
 // so we recast it to this
 interface PrioritySettable {
   priority: Track.Priority,
@@ -282,13 +271,9 @@ interface PrioritySettable {
 
 export function insureHighPriorityVideo(me: LocalParticipant) {
   me.videoTracks.forEach((pub) => {
-    console.log('got a video track');
-    if (pub.hasOwnProperty('setPriority') && pub.hasOwnProperty('priority'))
-      console.log('priority properties are okay');
-      const pubWithPriorities = pub as unknown as PrioritySettable;
-      if (pubWithPriorities.priority !== 'high') {
-        console.log('changing my video priority to high');
-        pubWithPriorities.setPriority('high');
+    const pubWithPriorities = pub as unknown as PrioritySettable;
+    if (pubWithPriorities.priority !== 'high') {
+      pubWithPriorities.setPriority('high');
     }
   });
 }

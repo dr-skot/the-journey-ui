@@ -61,7 +61,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       break;
 
     case 'getLocalTracks':
-      getLocalTracks(payload)
+      getLocalTracks(payload.deviceIds)
         .then(tracks => {
           dispatch('gotLocalTracks', { tracks });
           if (payload.then) payload.then(tracks);
@@ -84,11 +84,10 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       if (state.room) state.room.disconnect();
       const identity = payload.identity || getIdentity(payload.role, payload.username);
       LogRocket.identify(identity);
-      console.log('trying to join with identity', identity);
       joinRoom(payload.roomName, identity,
         generateConnectionOptions({...state.settings, ...payload.options }), state.localTracks)
         .then((room) => {
-          console.log('joined room!')
+          console.log('joined room', room.name, 'with identity', identity);
           dispatch('roomJoined', { room, ...payload });
           if (payload.then) payload.then(room);
         })

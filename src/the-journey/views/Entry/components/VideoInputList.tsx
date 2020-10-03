@@ -15,6 +15,7 @@ export default function VideoInputList() {
   const localVideoInputDeviceId = mediaStreamTrack?.getSettings().deviceId;
 
   function replaceTrack(newDeviceId: string) {
+    sessionStorage.setItem('videoDeviceId', newDeviceId);
     localVideoTrack.restart({
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
       deviceId: { exact: newDeviceId },

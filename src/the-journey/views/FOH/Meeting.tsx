@@ -6,10 +6,10 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import MenuedView from '../MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
-import Chat from '../../components/Chat/Chat';
 import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
+import Chat from '../../components/Chat/Chat2';
 type Identity = Participant.Identity;
 
 interface MeetingProps {

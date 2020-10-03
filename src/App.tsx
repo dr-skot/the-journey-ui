@@ -74,18 +74,19 @@ export default function App() {
         <Helmet><title>The Journey</title></Helmet>
             <div style={{ height }}>
               <Router>
+                <Switch>
                 <PrivateRoute path="/code" roles="foh|operator">
                   <GetCode/>
                 </PrivateRoute>
-                <Route exact path="/" component={HomePage}/>
-                <Switch>
+
+                  <Route exact path="/" component={HomePage}/>
                   <Route
                     path={(
                       '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery ' +
-                      '/log /log2 /clear /testing'
-                    ).split(' ')}
-                    component={() =>
+                      '/log /log2 /clear /testing /nothing'
+                    ).split(' ')}>
                     <Twilio>
+                      <Switch>
                       <Route path="/entry/:code"><ShowtimeCheck/></Route>
                       <Route path="/show/:code?"><Show/></Route>
                       <Route path="/test/:code?"><Entry test/></Route>
@@ -122,8 +123,10 @@ export default function App() {
                       </PrivateRoute>
 
                       <PrivateRoute path="/testing/:code?" roles="operator"><Testing/></PrivateRoute>
+                      <Redirect to="/" />
+                      </Switch>
                     </Twilio>
-                  }/>
+                  </Route>
 
                   <Redirect to="/" />
 

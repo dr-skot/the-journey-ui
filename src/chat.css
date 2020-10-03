@@ -39,3 +39,12 @@
 video:focus {
     outline: none;
 }
+
+.sc-user-input--file-icon-wrapper {
+    display: none;
+}
+
+.sc-header--team-name {
+    font-family: "DIN Alternate", "DIN Condensed", "Avenir Next", "Roboto", "Helvetica", "Arial", sans-serif;
+    letter-spacing: 0.7em;
+}

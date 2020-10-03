@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, styled } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,7 @@ import { getUsername } from '../../utils/twilio';
 import { useSharedRoomState } from '../../contexts/AppStateContext';
 import SafeRedirect from '../../components/SafeRedirect';
 import { Messages } from '../../messaging/messages';
+import { useLocalTracks } from '../../hooks/useLocalTracks';
 
 const Center = styled('div')({
   textAlign: 'center',
@@ -59,16 +60,17 @@ const useStyles = makeStyles({
     position: 'absolute',
     bottom: '1em',
     right: '1em',
-  }
+  },
 });
 
 export default function GetMedia({ test }: { test?: boolean }) {
   const classes = useStyles();
-  const [{ room }] = useTwilioRoomContext();
+  const [{ room }, dispatch] = useTwilioRoomContext();
   const [, roomStateDispatch] = useSharedRoomState();
   const [consentGiven, setConsentGiven] = useState(false);
   const [status, setStatus] = useState<'needHelp' | 'allGood'>();
   const name = getUsername(room?.localParticipant.identity || '');
+  useLocalTracks();
 
   if (status) return test
     ? status === 'allGood' ? Messages.TEST_SORRY : Messages.TEST_ALL_GOOD

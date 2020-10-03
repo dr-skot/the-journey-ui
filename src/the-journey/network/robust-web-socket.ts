@@ -46,6 +46,14 @@ class RobustWebSocket {
     return webSocket;
   };
 
+  closeWebsocket = (webSocket: WebSocket) => {
+    webSocket.removeEventListener('open', this.handleOpen);
+    webSocket.removeEventListener('message', this.handleMessage);
+    webSocket.removeEventListener('error', this.handleError);
+    webSocket.removeEventListener('close', this.handleClose);
+    webSocket.close();
+  };
+
   addMessageListener = (listener: WebSocketMessageListener) => {
     this.messageListeners.push(listener);
   };
@@ -68,7 +76,8 @@ class RobustWebSocket {
     };
     if (this.isConnected()) doIt();
     else {
-      webSocket.addEventListener('open', doIt);
+      const handler = () => { doIt(); webSocket.removeEventListener('open', handler); }
+      webSocket.addEventListener('open', handler);
       if (webSocket.readyState === WebSocket.CLOSED) this.handleClose(new CloseEvent('Discovered Closed'))
     }
   };
@@ -102,12 +111,6 @@ class RobustWebSocket {
     }, this.retryInterval);
   };
 
-  closeWebsocket = (webSocket: WebSocket) => {
-    webSocket.removeEventListener('open', this.handleOpen);
-    webSocket.removeEventListener('message', this.handleMessage);
-    webSocket.removeEventListener('close', this.handleClose);
-    webSocket.close();
-  };
 }
 
 export default RobustWebSocket;

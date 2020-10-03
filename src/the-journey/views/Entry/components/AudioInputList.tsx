@@ -24,6 +24,7 @@ export default function AudioInputList() {
   const localAudioInputDeviceId = mediaStreamTrack?.getSettings().deviceId;
 
   function replaceTrack(newDeviceId: string) {
+    sessionStorage.setItem('audioDeviceId', newDeviceId);
     localAudioTrack?.restart({ deviceId: { exact: newDeviceId } });
   }
 

@@ -1,8 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AudioStreamContext } from './AudioStreamContext';
 
 export default function FallbackToAudioElements() {
   const { setFallback } = useContext(AudioStreamContext);
-  setFallback(true);
+  useEffect(() => setFallback(true), []);
   return null;
 }

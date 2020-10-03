@@ -63,9 +63,13 @@ export default function Millicast() {
 
   const needButton = player && (player.muted || player.paused) && (!buttonClicked);
 
-  const finalTouches = () => {
-    player.muted = false;
-    player.play().finally();
+  const finalTouches = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (player) {
+      player.muted = false;
+      player.play().finally();
+    }
     if (iframeRef.current) fscreen.requestFullscreen(iframeRef.current);
     setButtonClicked(true);
   };
@@ -82,6 +86,11 @@ export default function Millicast() {
           width="100%" height="100%"
         />
       </div>
+      { error && (
+        <CenteredInWindow>
+          <h1>Stream not available!</h1>
+        </CenteredInWindow>
+      ) }
       { isFirefox && <ClickBlocker onClick={(e) => {
         console.log('click blocker!');
         e.stopPropagation()
@@ -96,11 +105,6 @@ export default function Millicast() {
           <Button onClick={finalTouches} variant="contained" color="primary">
             click here<br/>to begin
           </Button>
-        </CenteredInWindow>
-      ) }
-      { error && (
-        <CenteredInWindow>
-          <h1>Stream not available!</h1>
         </CenteredInWindow>
       ) }
     </>
