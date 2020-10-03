@@ -69,7 +69,9 @@ function AudioLevelIndicator({
       window.addEventListener('focus', reinitializeAnalyser);
 
       return () => {
+        alert('is it working?');
         stopAllMediaStreamTracks();
+        alert('how about now?');
         window.removeEventListener('focus', reinitializeAnalyser);
         audioTrack.off('stopped', stopAllMediaStreamTracks);
       };
