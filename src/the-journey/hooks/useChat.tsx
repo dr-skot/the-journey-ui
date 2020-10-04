@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import { tryToParse } from '../../utils/functional';
-import { getLocalDataTrack, getUsername } from '../../utils/twilio';
+import { TwilioRoomContext } from '../contexts/TwilioRoomContext';
+import { tryToParse } from '../utils/functional';
+import { getLocalDataTrack, getUsername } from '../utils/twilio';
 // @ts-ignore
 import { Launcher } from 'react-chat-window';
-import 'react-chat-widget/lib/styles.css';
-import '../../../chat.css';
 
 interface ChatMessage {
   author: string,
@@ -13,7 +11,7 @@ interface ChatMessage {
   data: { text?: string }
 }
 
-export default function Chat() {
+export default function useChat(id: string) {
   const [{ room }] = useContext(TwilioRoomContext);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessageCount, setNewMessageCount] = useState(0);
@@ -23,12 +21,12 @@ export default function Chat() {
     if (!room) return;
     function handleMessage(data: string) {
       const message = tryToParse(data) || {};
-      const { from, payload: { chat } } = message;
-      if (chat) {
+      const { from, payload } = message;
+      if (payload.chat && payload.id === id) {
         setMessages((prev) => [...prev, {
           author: getUsername(from),
           type: 'text',
-          data: { text: chat },
+          data: { text: payload.chat },
         }]);
         setNewMessageCount((prev) => prev + 1);
       }
@@ -44,11 +42,11 @@ export default function Chat() {
   const onMessageWasSent = (message: ChatMessage) => {
     if (!room) return;
     if (message.type === 'text' && message.data?.text)
-    getLocalDataTrack(room).then((track) =>
-      track.send(JSON.stringify({
-        from: me?.identity,
-        payload: { chat: message.data.text },
-      })));
+      getLocalDataTrack(room).then((track) =>
+        track.send(JSON.stringify({
+          from: me?.identity,
+          payload: { chat: message.data.text, id },
+        })));
     setMessages((prev) => [...prev, message]);
     setNewMessageCount(0);
   };
@@ -63,7 +61,7 @@ export default function Chat() {
         messageList={messages}
         newMessagesCount={newMessageCount}
         showEmoji={false}
-        />
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from './SignIn';
 import Meeting from './Meeting';
@@ -6,12 +6,13 @@ import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Facts/WithFacts';
 import MenuedView from '../MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
-import { isRole } from '../../utils/twilio';
+import { isRole, parseRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
 import useRoomName from '../../hooks/useRoomName';
-import Chat from '../../components/Chat/Chat';
+import Chat from '../../components/Chat/Chat2';
+import useChat from '../../hooks/useChat';
 
 export default function FOH() {
   const [{ roomStatus }] = useTwilioRoomContext();
@@ -25,16 +26,18 @@ export default function FOH() {
 
 function FOHView() {
   const { meeting } = useMeeting();
-  // TODO should PlayAllSubscribedAudio live in App.jsx?
+
+  const chat = useChat('foh');
+
   return (
     <>
       <PlayAllSubscribedAudio />
-      { meeting ? <Meeting group={meeting} /> : <FOHGallery /> }
+      { meeting ? <Meeting group={meeting} /> : <FOHGallery chat={chat} /> }
     </>
   );
 }
 
-function FOHGallery() {
+function FOHGallery({ chat }: { chat: ReactNode }) {
   const [, dispatch] = useTwilioRoomContext();
 
   // initialize by subscribing to gallery
@@ -46,7 +49,7 @@ function FOHGallery() {
       <Subscribe profile="data-only" />
       <MenuedView>
         <Gallery />
-        <Chat />
+        { chat }
       </MenuedView>
     </WithFacts>
   )

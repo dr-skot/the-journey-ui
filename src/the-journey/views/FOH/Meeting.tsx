@@ -10,6 +10,7 @@ import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 import { useAppState } from '../../contexts/AppStateContext';
 import Chat from '../../components/Chat/Chat2';
+import useChat from '../../hooks/useChat';
 type Identity = Participant.Identity;
 
 interface MeetingProps {
@@ -24,6 +25,7 @@ export default function Meeting({ group }: MeetingProps) {
     useParticipants('includeMe').filter(inGroup(group)),
     (p) => isRole('foh')(p) ? 1 : 0
   );
+  const chat = useChat(meeters[1]?.identity || 'none');
 
   console.log('Meeting', { localTracks });
 
@@ -41,7 +43,7 @@ export default function Meeting({ group }: MeetingProps) {
     <MenuedView>
       <FlexibleGallery participants={meeters}/>
       <Controls />
-      <Chat/>
+      { chat }
     </MenuedView>
   );
 }

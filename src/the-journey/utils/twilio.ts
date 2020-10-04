@@ -209,7 +209,7 @@ export const getUsername = (identity: string) =>
 export const getParticipants = (room?: Room) => room ?
   [room.localParticipant, ...Array.from(room.participants.values())] : [];
 
-const parseRole = (identity: string) => element(-2)(identity.split('|'));
+export const parseRole = (identity: string) => element(-2)(identity.split('|'));
 export const getRole = (p?: Participant) => p ? parseRole(p.identity) : undefined;
 
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;

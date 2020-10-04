@@ -21,7 +21,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   console.log('networkQualityLevel', { networkQualityLevel });
 
   if (!room) return null;
-  if (!isRole('foh')(room.localParticipant)) return null;
+  if (!isRole('foh')(room.localParticipant) || isRole('foh')(participant)) return null;
 
   return  (
     <>
