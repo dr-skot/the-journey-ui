@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from './SignIn';
 import Meeting from './Meeting';
@@ -6,7 +6,7 @@ import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Facts/WithFacts';
 import MenuedView from '../MenuedView';
 import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
-import { isRole, parseRole } from '../../utils/twilio';
+import { isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';

@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
 import { cached } from '../../../utils/react-help';
-import useParticipants from '../../../hooks/useParticipants/useParticipants'
-import { isRole } from '../../../utils/twilio';
 import { useAppState } from '../../../contexts/AppStateContext';
 import useAudience from '../../../hooks/useAudience';
 

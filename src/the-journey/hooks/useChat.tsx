@@ -37,7 +37,7 @@ export default function useChat(id: string) {
       room.off('trackMessage', handleMessage)
       me?.dataTracks?.forEach((pub) => pub.unpublish());
     };
-  }, [room, me])
+  }, [room, me, id])
 
   const onMessageWasSent = (message: ChatMessage) => {
     if (!room) return;

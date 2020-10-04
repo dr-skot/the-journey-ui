@@ -3,9 +3,8 @@ import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGaller
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from './FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
-import { getIdentities, isRole } from '../../utils/twilio';
+import { getIdentities } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
