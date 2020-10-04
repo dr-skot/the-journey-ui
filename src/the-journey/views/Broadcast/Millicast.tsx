@@ -67,6 +67,7 @@ export default function Millicast() {
     e.preventDefault();
     e.stopPropagation();
     if (player) {
+      // player.controls = false;
       player.muted = false;
       player.play().finally();
     }
@@ -96,9 +97,7 @@ export default function Millicast() {
         e.stopPropagation()
       }} /> }
       { loading && !error && (
-        <CenteredInWindow>
-            <CircularProgress />
-        </CenteredInWindow>
+        <CenteredInWindow><CircularProgress/></CenteredInWindow>
       )}
       { !loading && !error && needButton && (
         <CenteredInWindow>

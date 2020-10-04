@@ -5,7 +5,7 @@ import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { muppetImage } from '../Muppet';
 import { getUsername } from '../../../utils/twilio';
-import FOHControls from '../../../views/FOH/components/FOHControls';
+import FOHControls from '../../../views/FOH/components/FOHControls/FOHControls';
 import MuteInFocusGroupButton from './MuteInFocusGroupButton/MuteInFocusGroupButton';
 
 const useStyles = makeStyles((theme: Theme) =>

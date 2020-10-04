@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { publishTracks } from '../utils/twilio';
 import { removeUndefineds } from '../../twilio/utils';
 
+// TODO organize this so the hook rerenders when the deviceId changes
 const getStoredDeviceIds = () => ({
   video: sessionStorage.getItem('videoDeviceId') || undefined,
   audio: sessionStorage.getItem('audioDeviceId') || undefined,
@@ -15,7 +16,7 @@ export function useLocalTracks() {
 
   useEffect(() => {
     if (localTracks.length === 0) dispatch('getLocalTracks', { deviceIds: deviceIds })
-  }, [localTracks]);
+  }, [localTracks, deviceIds, dispatch]);
 
   useEffect(() => {
     if (room && room.localParticipant.tracks.size === 0 && localTracks.length !== 0) {

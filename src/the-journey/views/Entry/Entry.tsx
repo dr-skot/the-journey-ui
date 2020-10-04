@@ -1,15 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import { isStaffed } from '../../utils/twilio';
+import { checkForOperator } from '../../utils/twilio';
 import GetMedia from './GetMedia';
 import NameForm from './NameForm';
 import useRoomName from '../../hooks/useRoomName';
 import { Messages } from '../../messaging/messages';
 import { useLocalTracks } from '../../hooks/useLocalTracks';
+import CenteredInWindow from '../../components/CenteredInWindow';
+import { CircularProgress } from '@material-ui/core';
 
-type MediaStatus = 'pending' | 'ready' | 'help-needed'
+type RoomCheck = 'checking' | 'good' | 'empty';
 
 export default function Entry({ test }: { test?: boolean }) {
+  const [roomCheck, setRoomCheck] = useState<RoomCheck>('checking');
+  const roomName = useRoomName();
+
+  if (test) return <StaffedRoomEntry test/>;
+
+  // check for unstaffed room
+  checkForOperator(roomName)
+    .then((hasOperator) => setRoomCheck(hasOperator ? 'good' : 'empty'))
+    .catch(() => setRoomCheck('empty'));
+
+  switch (roomCheck) {
+    case 'checking':
+      return <CenteredInWindow><CircularProgress/></CenteredInWindow>;
+    case 'good':
+      return <StaffedRoomEntry/>
+    case 'empty':
+      return Messages.UNSTAFFED_ROOM;
+  }
+}
+
+function StaffedRoomEntry({ test }: { test?: boolean }) {
   const [{ room, roomStatus }] = useTwilioRoomContext();
   const roomName = useRoomName() + (test ? '-test' : '');
   useLocalTracks();
@@ -18,8 +41,6 @@ export default function Entry({ test }: { test?: boolean }) {
 
   const { identity } = room.localParticipant;
   sessionStorage.setItem('roomJoined', JSON.stringify({ identity, roomName }))
-
-  if (!test && !isStaffed(room)) return Messages.UNSTAFFED_ROOM;
 
   return <GetMedia test={test}/>
 }

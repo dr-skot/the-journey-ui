@@ -174,6 +174,28 @@ export function subscribe(roomSid: string, participantSid: string, policy: strin
 }
 
 
+export function checkForOperator(roomName: string) {
+  const headers = new window.Headers();
+  const endpoint = process.env.REACT_APP_PARTICIPANTS_ENDPOINT || '/participants';
+
+  const url = `${endpoint}/${encodeURIComponent(roomName)}`;
+  console.log(`fetching ${url}`);
+
+  const timeoutId = setTimeout(
+    () => console.log(`fetch ${url} no answer after ${TIMEOUT_DELAY}ms`)
+    , TIMEOUT_DELAY
+  );
+
+  return fetch(url, { headers })
+    .then((response) => response.json())
+    .then(({ participants }) => participants.some(isRole('operator')))
+    .catch((error) => {
+      console.log(`error fetching participants for room ${roomName}:`, error);
+      throw error;
+    })
+    .finally(() => clearTimeout(timeoutId));
+}
+
 
 export type UserRole =
   'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus' | 'log' | 'comm'
@@ -187,7 +209,8 @@ export const getUsername = (identity: string) =>
 export const getParticipants = (room?: Room) => room ?
   [room.localParticipant, ...Array.from(room.participants.values())] : [];
 
-export const getRole = (p?: Participant) => p ? element(-2)(p.identity.split('|')) : undefined;
+const parseRole = (identity: string) => element(-2)(identity.split('|'));
+export const getRole = (p?: Participant) => p ? parseRole(p.identity) : undefined;
 
 export const isRole = (type: UserRole) => (p?: Participant) => getRole(p) === type;
 

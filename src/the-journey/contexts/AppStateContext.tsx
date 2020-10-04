@@ -24,6 +24,7 @@ interface AppState {
   delayTime: number,
   muteAll: boolean,
   meetings: Group[];
+  meetable: Identity[],
   userAgents: Record<Identity, string>;
   helpNeeded: Identity[],
 }
@@ -40,6 +41,7 @@ const initialState = {
   delayTime: DEFAULT_DELAY,
   muteAll: false,
   meetings: [],
+  meetable: [],
   userAgents: {},
   helpNeeded: [],
 } as AppState;
@@ -119,6 +121,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
     delayTime: cachedIfEqual('delayTime'),
     muteAll: cachedIfEqual('muteAll'),
     meetings: cachedIfEqual('meetings'),
+    meetable: cachedIfEqual('meetable'),
     userAgents: cachedIfEqual('userAgents'),
     helpNeeded: cachedIfEqual('helpNeeded'),
   };

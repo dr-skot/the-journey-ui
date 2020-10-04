@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { addResponseMessage, deleteMessages, Widget } from 'react-chat-widget';
 import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { tryToParse } from '../../utils/functional';
 import { getLocalDataTrack, getUsername } from '../../utils/twilio';
@@ -19,9 +18,6 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessageCount, setNewMessageCount] = useState(0);
   const me = room?.localParticipant;
-
-  // start clean
-  useEffect(() => deleteMessages(Infinity), []);
 
   useEffect(() => {
     if (!room) return;
