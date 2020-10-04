@@ -226,6 +226,9 @@ export const inGroup = (group: string[] = []) => (p?: Participant) => !!p && gro
 export const sameIdentities = (a: Participant[], b: Participant[]) =>
   isEqual(sortedIdentities(a), sortedIdentities(b));
 
+export const inGroups = (groups: string[][]) => (p?: Participant) =>
+  !!p && groups.some((group) => group.includes(p.identity));
+
 //
 // local video toggle
 //`
