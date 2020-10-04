@@ -25,22 +25,24 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   return  (
     <>
-    <div style={{ width: '100%', textAlign: 'right' }}>
-      <NetworkQualityLevel qualityLevel={networkQualityLevel} />
-      <CameraMicButton participant={participant}/>
-    </div>
+      <div style={{ width: '100%', textAlign: 'right' }}>
+        <NetworkQualityLevel qualityLevel={networkQualityLevel} />
+      </div>
+      <div style={{ width: '100%', textAlign: 'right' }}>
+        <CameraMicButton participant={participant}/>
+      </div>
       <div style={{ width: '100%', textAlign: 'right', opacity: '90%', marginBottom: 2 }}>
         <MeetingButton participant={participant}/>
       </div>
-    <div style={{ opacity: '90%' }}>
-      <div style={{ float: 'right' }}>
-        <ApproveButton participant={participant}/>
+      <div style={{ opacity: '90%' }}>
+        <div style={{ float: 'right' }}>
+          <ApproveButton participant={participant}/>
+        </div>
+        <div>
+          <RejectButton participant={participant}/>
+        </div>
       </div>
-      <div>
-        <RejectButton participant={participant}/>
-      </div>
-    </div>
-      </>
+    </>
   )
 }
 
