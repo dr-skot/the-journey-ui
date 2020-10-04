@@ -1,7 +1,6 @@
 import { isMobile } from '../../../utils';
 import { useEffect, useRef } from 'react';
-import useLocalVideoToggle from '../../../../the-journey/hooks/useLocalVideoToggle/useLocalVideoToggle';
-import useVideoContext from '../../../../the-journey/hooks/useVideoContext';
+import useLocalVideoToggle from '../../../../the-journey/hooks/useLocalVideoToggle/useLocalVideoToggle';import { useTwilioRoomContext } from '../../../../the-journey/contexts/TwilioRoomContext';
 
 /*
   This component adds a visibilitychange handler to the document when
@@ -14,7 +13,7 @@ import useVideoContext from '../../../../the-journey/hooks/useVideoContext';
 */
 
 export default function AttachVisibilityHandler() {
-  const { room } = useVideoContext();
+  const [{ room }] = useTwilioRoomContext();
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const shouldRepublishVideoOnForeground = useRef(false);
 

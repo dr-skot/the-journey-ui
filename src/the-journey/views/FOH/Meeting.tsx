@@ -9,7 +9,6 @@ import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Controls from '../../components/Controls/Controls';
 import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
 import { useAppState } from '../../contexts/AppStateContext';
-import Chat from '../../components/Chat/Chat2';
 import useChat from '../../hooks/useChat';
 type Identity = Participant.Identity;
 
