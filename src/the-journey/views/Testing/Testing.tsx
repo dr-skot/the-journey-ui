@@ -9,6 +9,7 @@ import AudioElement from './AudioElement';
 import AudioNode from './AudioNode';
 import AutoJoin from '../../components/AutoJoin';
 import Subscribe from '../../subscribers/Subscribe';
+import CloningAudioNode from './CloningAudioNode';
 
 let globalRoom: Room | undefined;
 
@@ -16,6 +17,7 @@ interface UnmuteButtonsProps { track: RemoteAudioTrack | null }
 export function UnmuteButtons({ track }: UnmuteButtonsProps) {
   const [elementMuted, setElementMuted] = useState(true);
   const [nodeMuted, setNodeMuted] = useState(true);
+  const [cloningNodeMuted, setCloningNodeMuted] = useState(true);
 
   return track
     ? (
@@ -26,8 +28,12 @@ export function UnmuteButtons({ track }: UnmuteButtonsProps) {
       <Button onClick={() => setNodeMuted(!nodeMuted)} variant="outlined">
         {`${nodeMuted ? 'audio' : 'destroy'} node`}
       </Button>
+      <Button onClick={() => setCloningNodeMuted(!cloningNodeMuted)} variant="outlined">
+        {`${cloningNodeMuted ? 'audio' : 'destroy'} cloning node`}
+      </Button>
       { !elementMuted && <AudioElement track={track} /> }
       { !nodeMuted && <AudioNode track={track} /> }
+      { !cloningNodeMuted && <CloningAudioNode track={track} /> }
     </>
     ) : <span>null track</span>;
 }

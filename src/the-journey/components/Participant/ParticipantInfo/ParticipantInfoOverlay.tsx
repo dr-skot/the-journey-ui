@@ -3,7 +3,6 @@ import React, { MouseEventHandler } from 'react';
 import SelectionNumber from './SelectionNumber/SelectionNumber';
 import KeyIcon from './KeyIcon/KeyIcon';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { muppetImage } from '../Muppet';
 import { getUsername } from '../../../utils/twilio';
 import FOHControls from '../../../views/FOH/components/FOHControls/FOHControls';
 import MuteInFocusGroupButton from './MuteInFocusGroupButton/MuteInFocusGroupButton';
@@ -77,15 +76,13 @@ interface ParticipantInfoProps {
   mutable?: boolean;
 }
 
-export default function ParticipantInfoOverlay({
+export default function ParticipantInfoOverlay(props: ParticipantInfoProps) {
+  const {
     participant, onClick = () => {}, selectedIndex, children, width, height, hotKey, mutable
-  }: ParticipantInfoProps) {
+  } = props;
   const classes = useStyles();
 
-  // TODO is this ok? are users going to see muppets?
-  const explicitStyle = width && height
-    ? { width, height, backgroundImage: `url(${muppetImage(participant)})` }
-    : {};
+  const explicitStyle = width && height ? { width, height } : {};
 
   // TODO add foh && to maybe not render FOHControls?
   return (
@@ -96,21 +93,21 @@ export default function ParticipantInfoOverlay({
       data-cy-participant={participant.sid}
     >
       <div className={classes.borderer}>
-      <div className={classes.infoContainer}>
-        <div className={classes.infoRow}>
-          <h4 className={classes.identity}>
-            {getUsername(participant.identity)}
-          </h4>
+        <div className={classes.infoContainer}>
+          <div className={classes.infoRow}>
+            <h4 className={classes.identity}>
+              {getUsername(participant.identity)}
+            </h4>
+          </div>
+          <div>
+            { mutable && <MuteInFocusGroupButton identity={participant.identity} /> }
+            <FOHControls participant={participant} />
+            {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
+            {hotKey && <KeyIcon keyName={hotKey} />}
+          </div>
         </div>
-        <div>
-          { mutable && <MuteInFocusGroupButton identity={participant.identity} /> }
-          <FOHControls participant={participant} />
-          {selectedIndex > 0 && <SelectionNumber number={selectedIndex} />}
-          {hotKey && <KeyIcon keyName={hotKey} />}
-        </div>
+        {children}
       </div>
-      {children}
-        </div>
     </div>
   );
 }

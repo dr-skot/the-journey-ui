@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 import { Participant } from 'twilio-video';
-import { isRole, removeParticipant } from '../../../../utils/twilio';
+import { isRole } from '../../../../utils/twilio';
 import { useTwilioRoomContext } from '../../../../contexts/TwilioRoomContext';
-import { useAppState } from '../../../../contexts/AppStateContext';
 import CameraMicButton from './CameraMicButton';
 import MeetingButton from './MeetingButton';
 import ApproveButton from './ApproveButton';
 import RejectButton from './RejectButton';
+import useParticipantNetworkQualityLevel
+  from '../../../../../twilio/hooks/useParticipantNetworkQualityLevel/useParticipantNetworkQualityLevel';
+import NetworkQualityLevel from '../../../../../twilio/components/NetworkQualityLevel/NetworkQualityLevel';
 
 interface FOHControlsProps {
   participant: Participant;
@@ -15,6 +16,9 @@ interface FOHControlsProps {
 
 export default function FOHControls({ participant }: FOHControlsProps) {
   const [{ room }] = useTwilioRoomContext();
+  const networkQualityLevel = useParticipantNetworkQualityLevel(participant);
+
+  console.log('networkQualityLevel', { networkQualityLevel });
 
   if (!room) return null;
   if (!isRole('foh')(room.localParticipant)) return null;
@@ -22,6 +26,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   return  (
     <>
     <div style={{ width: '100%', textAlign: 'right' }}>
+      <NetworkQualityLevel qualityLevel={networkQualityLevel} />
       <CameraMicButton participant={participant}/>
     </div>
       <div style={{ width: '100%', textAlign: 'right', opacity: '90%', marginBottom: 2 }}>

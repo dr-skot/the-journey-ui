@@ -9,7 +9,7 @@ interface AudioTrackProps {
 
 const nodes: AudioNode[] = [];
 
-export default function AudioNode({ track }: AudioTrackProps) {
+export default function CloningAudioNode({ track }: AudioTrackProps) {
   const audioContext = useAudioContext();
   const [outputNode, setOutputNode] = useState<AudioNode>();
 
@@ -25,7 +25,7 @@ export default function AudioNode({ track }: AudioTrackProps) {
     console.log('audiocontext?')
     if (!audioContext || !outputNode) return;
     console.log('yes, setting up node for', track.mediaStreamTrack);
-    const mediaStreamTrack = track.mediaStreamTrack //.clone(); // use a clone?? is this the key?
+    const mediaStreamTrack = track.mediaStreamTrack.clone(); // use a clone?? is this the key?
     mediaStreamTrack.enabled = true;
     console.log('after enabled = true', mediaStreamTrack);
     const stream = new MediaStream([mediaStreamTrack])

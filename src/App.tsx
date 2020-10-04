@@ -31,6 +31,7 @@ import Entry from './the-journey/views/Entry/Entry';
 import Log2 from './the-journey/views/Log/Log2';
 import Show from './the-journey/views/Entry/Show';
 import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
+import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -75,6 +76,9 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
+                  <Route path="/pop">
+                    <PopulateDemo/>
+                  </Route>
                 <PrivateRoute path="/code" roles="foh|operator">
                   <GetCode/>
                 </PrivateRoute>

@@ -35,6 +35,9 @@ export default function Entry({ test }: { test?: boolean }) {
 function StaffedRoomEntry({ test }: { test?: boolean }) {
   const [{ room, roomStatus }] = useTwilioRoomContext();
   const roomName = useRoomName() + (test ? '-test' : '');
+
+  // it would make more sense to delay this until the GetMedia view, but
+  // when I move it there some iPads fail to acquire the microphone
   useLocalTracks();
 
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName}/>
