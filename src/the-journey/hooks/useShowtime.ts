@@ -2,9 +2,8 @@ import { codeToTimeWithTZ, DEFAULT_DOOR_POLICY, DoorPolicy, punctuality, Punctua
 import { useAppState } from '../contexts/AppStateContext';
 import { DateTime } from 'luxon';
 import { cached } from '../utils/react-help';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
 import { serverNow } from '../utils/ServerDate';
+import useCode from './useCode';
 
 // TODO use server time instead of trusting client's clock
 
@@ -33,8 +32,7 @@ export interface ShowtimeData {
 
 export default function useShowtime() {
   const [{ doorsClosed }] = useAppState();
-  const match = useRouteMatch() as match<{ code?: string }>;
-  const code = match.params.code;
+  const code = useCode();
   const doorPolicy = DEFAULT_DOOR_POLICY;
   const now = serverNow();
 

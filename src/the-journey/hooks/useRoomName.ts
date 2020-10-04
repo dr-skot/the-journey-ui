@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRouteMatch, match } from 'react-router-dom';
 import { defaultRoom } from '../utils/twilio';
+import useCode from './useCode';
 
 export default function useRoomName() {
-  const match = useRouteMatch() as match<{ code?: string }>;
-  return match.params.code || defaultRoom();
+  return useCode() || defaultRoom();
 }

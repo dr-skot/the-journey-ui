@@ -1,19 +1,14 @@
 import React, { useContext } from 'react';
 import { TwilioRoomContext } from '../../../contexts/TwilioRoomContext';
-import { RouteComponentProps } from 'react-router-dom';
-import { defaultRoom } from '../../../utils/twilio';
 import Broadcast from '../Broadcast';
 import SignIn from '../../FOH/SignIn';
+import useRoomName from '../../../hooks/useRoomName';
 
-interface CodeParam {
-  code?: string;
-}
-
-export default function SignLanguageEntry({ match }: RouteComponentProps<CodeParam>) {
+export default function SignLanguageEntry() {
   const [{ roomStatus }] = useContext(TwilioRoomContext);
-  const code = match.params.code;
+  const roomName = useRoomName();
 
   return roomStatus !== 'disconnected'
     ? <Broadcast />
-    : <SignIn roomName={code || defaultRoom()} role="sign-interpreter"/>
+    : <SignIn roomName={roomName} role="sign-interpreter"/>
 }

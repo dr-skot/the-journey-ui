@@ -24,6 +24,11 @@ export function initializeAnalyser(stream: MediaStream) {
   return analyser;
 }
 
+function mstInfo(mst?: MediaStreamTrack) {
+  return mst ? `MST ${mst.id}: ${mst.readyState}` : 'MST undefined';
+}
+
+
 function AudioLevelIndicator({
   size,
   audioTrack,
@@ -39,7 +44,7 @@ function AudioLevelIndicator({
   const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
   const mediaStreamTrack = useMediaStreamTrack(audioTrack);
 
-  console.log('AudioLevelIndicator', { audioTrack, mediaStreamTrack });
+  console.log('AudioLevelIndicator', { audioTrack, mediaStreamTrack: mstInfo(mediaStreamTrack) });
 
   useEffect(() => {
     if (audioTrack && mediaStreamTrack && isTrackEnabled) {
@@ -52,7 +57,10 @@ function AudioLevelIndicator({
       // we stop the cloned track that is stored in 'newMediaStream'. It is important that we stop
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
-      const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach(track => track.stop());
+      const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach((track) => {
+        console.log('stopAllMediaStreamTracks stopping track', track);
+        track.stop()
+      });
       audioTrack.on('stopped', stopAllMediaStreamTracks);
 
       const reinitializeAnalyser = () => {
@@ -69,9 +77,9 @@ function AudioLevelIndicator({
       window.addEventListener('focus', reinitializeAnalyser);
 
       return () => {
-        alert('is it working?');
+        // alert('is it working?');
         stopAllMediaStreamTracks();
-        alert('how about now?');
+        // alert('how about now?');
         window.removeEventListener('focus', reinitializeAnalyser);
         audioTrack.off('stopped', stopAllMediaStreamTracks);
       };
