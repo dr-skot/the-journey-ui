@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactComponentElement, ReactNode, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { arrayFixedLength } from '../../utils/functional';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import Nobody from './components/Nobody';
@@ -87,13 +87,4 @@ function Gallery({ size, content, contentComponent, blankComponent }: GalleryPro
       } ) }
     </Container>
   );
-}
-
-function populateGrid(size: number, content: any[]) {
-  if (size !== 30) return arrayFixedLength(size)(content);
-  const grid = arrayFixedLength(size)([]);
-  const order = [8, 9, 14, 15, 20, 21, 7, 10, 13, 16, 6, 11, 12, 17, 19, 22,
-    2, 3, 26, 27, 1, 4, 0, 5, 18, 23, 25, 28, 24, 29];
-  content.forEach((item, i) => { grid[order[i]] = content });
-  return grid;
 }
