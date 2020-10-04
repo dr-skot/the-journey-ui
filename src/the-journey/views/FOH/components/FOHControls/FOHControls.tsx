@@ -25,7 +25,7 @@ export default function FOHControls({ participant }: FOHControlsProps) {
 
   return  (
     <>
-      <div style={{ width: '100%', textAlign: 'right' }}>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <NetworkQualityLevel qualityLevel={networkQualityLevel} />
       </div>
       <div style={{ width: '100%', textAlign: 'right' }}>
