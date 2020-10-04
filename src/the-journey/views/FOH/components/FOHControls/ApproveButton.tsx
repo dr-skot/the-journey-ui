@@ -21,5 +21,4 @@ export default function ApproveButton({ participant } : { participant: Participa
     size="small" variant="contained">
     { approved ? 'Approved' : 'Approve' }
   </Button>
-
 }

@@ -20,6 +20,9 @@ export default function MeetingButton({ participant } : { participant: Participa
   const toggleMeeting = () => {
     roomStateDispatch(meeting ? 'endMeeting' : 'startMeeting',
       { meeting: [participant.identity, foh.identity] });
+    if (needsHelp) { // enda help call on meeting start
+      roomStateDispatch('toggleMembership', { group: 'helpNeeded', identity: participant.identity });
+    }
   }
 
   return <Button onClick={toggleMeeting}
