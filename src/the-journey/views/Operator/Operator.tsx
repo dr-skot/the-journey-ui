@@ -4,14 +4,13 @@ import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGaller
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
-import { isRole } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 import { useAppState } from '../../contexts/AppStateContext';
+import useAudience from '../../hooks/useAudience';
 
 const Container = styled('div')({
   display: 'flex',
@@ -42,7 +41,7 @@ const MenuButton = (label: string, onClick: () => void) => (
 function OperatorView() {
   const [{ focusGroup }] = useAppState();
   const { toggleFocus } = useOperatorControls();
-  let gallery = useParticipants().filter(isRole('audience'));
+  let gallery = useAudience();
   useRerenderOnTrackSubscribed();
 
   // TODO consolidaate this with MinGallery

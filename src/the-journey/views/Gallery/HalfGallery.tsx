@@ -10,6 +10,7 @@ import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscrib
 import WithFacts from '../Facts/WithFacts';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
+import useAudience from '../../hooks/useAudience';
 
 
 const Container = styled('div')({
@@ -39,7 +40,7 @@ const MenuButton = (label: string, onClick: () => void) => (
 );
 
 function HalfGalleryView() {
-  let gallery = useParticipants().filter(isRole('audience'));
+  let gallery = useAudience();
   useRerenderOnTrackSubscribed();
 
   const [hideBlanks, setHideBlanks] = useState(false);

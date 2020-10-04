@@ -4,6 +4,7 @@ import { cached } from '../../../utils/react-help';
 import useParticipants from '../../../hooks/useParticipants/useParticipants'
 import { isRole } from '../../../utils/twilio';
 import { useAppState } from '../../../contexts/AppStateContext';
+import useAudience from '../../../hooks/useAudience';
 
 // both with and without shift key
 // first half of this string will be used for the labels
@@ -16,7 +17,7 @@ interface OperatorData {
 }
 
 export default function useOperatorControls() {
-  let participants = useParticipants().filter(isRole('audience'));
+  let participants = useAudience();
   const [, roomStateDispatch] = useAppState();
   const [forceGallery, setForceGallery] = useState(false);
   const [forceHotKeys, setForceHotKeys] = useState(true);
