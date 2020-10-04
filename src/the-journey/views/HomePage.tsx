@@ -15,7 +15,7 @@ export default function HomePage() {
   return <>
     <div style={{ position: 'absolute', height, width: '100%', background: 'black' }}>
       <video ref={videoRef} width="100%" height="100%" src={
-        'http://s3.amazonaws.com/thejourney-show/trailer.m4v'
+        'https://s3.amazonaws.com/thejourney-show/trailer.m4v'
       } autoPlay controls />
     </div>
     { needButton && (
