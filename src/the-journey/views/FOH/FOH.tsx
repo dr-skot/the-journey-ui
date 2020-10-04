@@ -11,7 +11,6 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
 import useRoomName from '../../hooks/useRoomName';
-import Chat from '../../components/Chat/Chat2';
 import useChat from '../../hooks/useChat';
 
 export default function FOH() {
