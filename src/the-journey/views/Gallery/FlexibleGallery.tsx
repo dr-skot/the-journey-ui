@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { getBoxSize } from '../../utils/galleryBoxes';
 import { Participant as IParticipant } from 'twilio-video';
 import ParticipantVideoWindow from '../../components/Participant/ParticipantVideoWindow';
@@ -6,6 +6,7 @@ import { styled } from '@material-ui/core/styles';
 import Nobody, { Blanks } from './components/Nobody';
 import { arrayFixedLength } from '../../utils/functional';
 import { listKey } from '../../utils/react-help';
+import useRerenderOnResize from '../../hooks/useRerenderOnResize';
 
 export const GALLERY_SIZE = 30;
 export const ASPECT_RATIO = 16/9;
@@ -27,29 +28,15 @@ export interface FlexibleGalleryProps {
   onClick?: (participant: IParticipant, e: MouseEvent) => void;
   blanks?: Blanks,
   muteControls?: boolean,
-  rightAlign?: boolean,
+  order?: number[],
 }
 
 export default function FlexibleGallery({ participants, fixedLength = 0, selection = [], hotKeys = '',
-                                          onClick = () => {}, blanks, muteControls
-                         }: FlexibleGalleryProps) {
+                                          onClick = () => {}, blanks, muteControls, order
+                                        }: FlexibleGalleryProps) {
+  useRerenderOnResize();
   const [container, setContainer] = useState<HTMLElement | null>();
   const containerRef = (node: HTMLElement | null) => setContainer(node)
-  const [, rerender] = useState(false);
-
-  // rerender on resize
-  useEffect(() => {
-    const forceRender = () => rerender((prev) => !prev);
-    window.addEventListener('resize', forceRender);
-    window.addEventListener('fullscreenchange', forceRender);
-    return () => {
-      window.removeEventListener('resize', forceRender);
-      window.removeEventListener('fullscreenchange', forceRender);
-    }
-  }, [])
-
-  // console.log('FlexibleGallery render', { participants, fixedLength, selection, hotKeys, onClick, container });
-  // reportEqual({ prefix: 'FlexibleGallery', participants, fixedLength, selection, hotKeys, onClick, container });
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
@@ -57,23 +44,27 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
   const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
   const selectedIndex = (p: IParticipant) => selection ? selection.indexOf(p.identity) + 1 : 0;
 
+  const boxOrder = order || boxes.map((_, i) => i + 1);
+
   return (
     <Container ref={containerRef}>
-      { boxes.map((participant, i) => (
-        participant ? (
-        <ParticipantVideoWindow
-          key={participant.sid}
-          participant={participant}
-          selectedIndex={selectedIndex(participant)}
-          hotKey={hotKeys && hotKeys[i]}
-          width={boxSize.width}
-          height={boxSize.height}
-          onClick={(e) => onClick(participant, e as unknown as MouseEvent)}
-          mutable={muteControls}
-        />
+      { boxOrder.map((n) => {
+        const i = n - 1;
+        const participant = boxes[i];
+        return participant ? (
+          <ParticipantVideoWindow
+            key={participant.sid}
+            participant={participant}
+            selectedIndex={selectedIndex(participant)}
+            hotKey={hotKeys && hotKeys[i]}
+            width={boxSize.width}
+            height={boxSize.height}
+            onClick={(e) => onClick(participant, e as unknown as MouseEvent)}
+            mutable={muteControls}
+          />
         ) : <Nobody width={boxSize.width} height={boxSize.height} index={i}
-                    key={listKey('nobody', i)} blanks={blanks} />
-      )) }
+                    key={listKey('nobody', i)} blanks={blanks}/>
+      }) }
     </Container>
   );
 }

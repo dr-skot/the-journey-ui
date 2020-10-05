@@ -30,9 +30,9 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function HalfGalleryView() {
-  useRerenderOnTrackSubscribed();
+  useRerenderOnTrackSubscribed(); // TODO is this necessary?
   const [halfSubscribe, setHalfSubscribe] = useState(false);
-  const { gallery, paged, hideBlanks, menuButtons } = usePagedAudience();
+  const { gallery, paged, hideBlanks, menuButtons, order } = usePagedAudience();
 
   const menuExtras = <>
     { paged && <>
@@ -48,6 +48,7 @@ function HalfGalleryView() {
   const galleryProps = {
     participants: gallery,
     fixedLength: hideBlanks ? undefined : paged ? half(GALLERY_SIZE) : GALLERY_SIZE,
+    order,
   };
 
   const final = cached('HalfGallery.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
@@ -60,6 +61,7 @@ function HalfGalleryView() {
         <FlexibleGallery
           participants={final.participants}
           fixedLength={final.fixedLength}
+          order={final.order}
           blanks="nothing"
         />
       </Main>

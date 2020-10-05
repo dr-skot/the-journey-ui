@@ -5,9 +5,7 @@ import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { cached } from '../../utils/react-help';
-import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Facts/WithFacts';
-import Subscribe from '../../subscribers/Subscribe';
 import { useAppState } from '../../contexts/AppStateContext';
 import usePagedAudience, { twoPageSplit } from '../Gallery/usePagedAudience';
 
@@ -29,10 +27,9 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function OperatorView() {
-  useRerenderOnTrackSubscribed();
   const [{ focusGroup }] = useAppState();
   const { toggleFocus } = useOperatorControls();
-  const { gallery, paged, pageNumber, hideBlanks, menuButtons } = usePagedAudience();
+  const { gallery, paged, pageNumber, hideBlanks, menuButtons, order } = usePagedAudience();
 
   const galleryProps = {
     participants: gallery,
@@ -40,13 +37,13 @@ function OperatorView() {
     fixedLength: hideBlanks ? undefined : paged ? half(GALLERY_SIZE) : GALLERY_SIZE,
     hotKeys: paged ? twoPageSplit(pageNumber, KEYS.split('')).join('') : KEYS,
     onClick: toggleFocus,
+    order,
   };
 
   const final = cached('Operator.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
 
   return (
     <Container>
-      <Subscribe profile="data-only" />
       <MenuBar extras={menuButtons}/>
       <Main>
         <FlexibleGallery
@@ -55,6 +52,7 @@ function OperatorView() {
           fixedLength={final.fixedLength}
           hotKeys={final.hotKeys}
           onClick={final.onClick}
+          order={final.order}
           muteControls={true}
         />
       </Main>
