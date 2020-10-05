@@ -75,7 +75,7 @@ export default function GetMedia({ test }: { test?: boolean }) {
   console.log('GetMedia', localTracks);
 
   if (status) return test
-    ? status === 'allGood' ? Messages.TEST_SORRY : Messages.TEST_ALL_GOOD
+    ? status === 'allGood' ? Messages.TEST_ALL_GOOD : Messages.TEST_SORRY
     : <SafeRedirect push to="/show"/>;
 
   return <>
