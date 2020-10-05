@@ -9,6 +9,32 @@ import CenteredInWindow from '../../components/CenteredInWindow';
 import { Button } from '@material-ui/core';
 import { listKey } from '../../utils/react-help';
 
+const ORDERS = [
+  [  1,  2,  3,  4,  5,  6,
+    7,  8,  9, 10, 11, 12,
+    13, 14, 15, 16, 17, 18,
+    19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30 ],
+
+  [ 25, 23, 17, 18, 24, 26,
+    11,  7,  1,  2,  8, 12,
+    13,  9,  3,  4, 10, 14,
+    21, 15,  5,  6, 16, 22,
+    29, 27, 19, 20, 28, 30 ],
+
+  [ 25, 23, 11, 12, 24, 26,
+    15,  7,  1,  2,  8, 16,
+    17,  9,  3,  4, 10, 18,
+    21, 19,  5,  6, 20, 22,
+    29, 27, 13, 14, 28, 30 ],
+
+  [ 25, 23,  7,  8, 24, 26,
+    15, 11,  1,  2, 12, 16,
+    17, 13,  3,  4, 14, 18,
+    21, 19,  5,  6, 20, 22,
+    29, 27,  9, 10, 28, 30 ],
+];
+
 const Container = styled('div')(() => ({
   flex: '1 1 0',
   display: 'flex',
@@ -20,16 +46,27 @@ const Container = styled('div')(() => ({
 
 export default function PopulateDemo() {
   const [muppets, setMuppets] = useState<boolean[]>([]);
+  const [order, setOrder] = useState(0);
 
   return <>
-    <Gallery size={30} content={muppets} contentComponent={MuppetBox} blankComponent={BlankBox}/>
+    <Gallery size={30} order={ORDERS[order]} content={muppets} contentComponent={MuppetBox} blankComponent={BlankBox}/>
     <CenteredInWindow>
-      <Button variant="contained" onClick={() => setMuppets([ ...muppets, true ])}>
-        +
+      <div style={{ textAlign: 'center' }}>
+        <Button style={{ margin: 2 }} variant="contained" onClick={() => setMuppets([]) }>
+          clear
+        </Button>
+      <div>
+        <Button style={{ margin: 2 }} variant="contained" onClick={() => setMuppets([ ...muppets, true ])}>
+          +
+        </Button>
+        <Button style={{ margin: 2 }} variant="contained" onClick={() => setMuppets(muppets.slice(0, -1))}>
+          -
+        </Button>
+      </div>
+      <Button style={{ margin: 2 }} variant="contained" onClick={() => setOrder((order + 1) % ORDERS.length) }>
+        order {order + 1}
       </Button>
-      <Button variant="contained" onClick={() => setMuppets(muppets.slice(0, -1))}>
-        -
-      </Button>
+      </div>
     </CenteredInWindow>
     </>
 }
@@ -51,9 +88,10 @@ interface GalleryProps {
   content: any[],
   contentComponent: BoxComponent,
   blankComponent: BoxComponent,
+  order: number[],
 }
 
-function Gallery({ size, content, contentComponent, blankComponent }: GalleryProps) {
+function Gallery({ size, content, contentComponent, blankComponent, order }: GalleryProps) {
   const [container, setContainer] = useState<HTMLElement | null>();
   const containerRef = (node: HTMLElement | null) => setContainer(node)
   const [, rerender] = useState(false);
@@ -71,17 +109,14 @@ function Gallery({ size, content, contentComponent, blankComponent }: GalleryPro
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
-  const boxes = arrayFixedLength(size)(content);
+  let boxes = arrayFixedLength(size)(content);
   console.log('boxes', boxes.length)
   const { width, height } = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
 
-  const order = [8, 9, 14, 15, 20, 21, 7, 10, 13, 16, 6, 11, 12, 17, 19, 22,
-    2, 3, 26, 27, 18, 23, 1, 4, 0, 5, 25, 28, 24, 29];
-
   return (
     <Container ref={containerRef}>
-      { boxes.map((_, slot) => {
-        const index = order.indexOf(slot);
+      { order.map((n) => {
+        const index = n - 1;
         const boxContent = boxes[index];
         return (boxContent ? contentComponent : blankComponent)({ width, height, index, content: boxContent })
       } ) }
