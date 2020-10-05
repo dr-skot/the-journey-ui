@@ -1,5 +1,5 @@
 import useOperatorControls, { KEYS } from './hooks/useOperatorControls';
-import React, { useState } from 'react';
+import React from 'react';
 import FlexibleGallery, { FlexibleGalleryProps } from '../Gallery/FlexibleGallery';
 import MenuBar from '../../components/MenuBar/MenuBar';
 import { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
@@ -7,10 +7,9 @@ import { styled } from '@material-ui/core/styles';
 import { cached } from '../../utils/react-help';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Facts/WithFacts';
-import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 import { useAppState } from '../../contexts/AppStateContext';
-import useAudience from '../../hooks/useAudience';
+import usePagedAudience, { twoPageSplit } from '../Gallery/usePagedAudience';
 
 const Container = styled('div')({
   display: 'flex',
@@ -29,43 +28,17 @@ const Main = styled('div')({
 
 const half = (n: number) => Math.ceil(n / 2);
 
-const MenuButton = (label: string, onClick: () => void) => (
-  <Button
-    onClick={onClick}
-    style={{ margin: '0.5em' }}
-    size="small" color="default" variant="contained">
-      {label}
-  </Button>
-);
-
 function OperatorView() {
+  useRerenderOnTrackSubscribed();
   const [{ focusGroup }] = useAppState();
   const { toggleFocus } = useOperatorControls();
-  let gallery = useAudience();
-  useRerenderOnTrackSubscribed();
-
-  // TODO consolidaate this with MinGallery
-  const [hideBlanks, setHideBlanks] = useState(false);
-  const [paged, setPaged] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  const menuExtras = <>
-      { paged && MenuButton(`${pageNumber === 2 ? 'page 1' : 'page 2'}`,
-        () => setPageNumber((prev) => prev === 1 ? 2 : 1)) }
-      { MenuButton(`${paged ? 'one page' : 'two pages'}`,
-        () => setPaged((prev) => !prev)) }
-      { MenuButton(`${hideBlanks ? 'show' : 'hide'} blanks`,
-        () => setHideBlanks((prev) => !prev)) }
-  </>;
-
-  const mid = half(gallery.length);
-  if (paged) gallery = pageNumber === 1 ? gallery.slice(0, mid) : gallery.slice(mid);
+  const { gallery, paged, pageNumber, hideBlanks, menuButtons } = usePagedAudience();
 
   const galleryProps = {
     participants: gallery,
     selection: focusGroup,
     fixedLength: hideBlanks ? undefined : paged ? half(GALLERY_SIZE) : GALLERY_SIZE,
-    hotKeys: paged ? (pageNumber === 1 ? KEYS.slice(0, mid) : KEYS.slice(mid)) : KEYS,
+    hotKeys: paged ? twoPageSplit(pageNumber, KEYS.split('')).join('') : KEYS,
     onClick: toggleFocus,
   };
 
@@ -74,7 +47,7 @@ function OperatorView() {
   return (
     <Container>
       <Subscribe profile="data-only" />
-      <MenuBar extras={menuExtras}/>
+      <MenuBar extras={menuButtons}/>
       <Main>
         <FlexibleGallery
           participants={final.participants}
