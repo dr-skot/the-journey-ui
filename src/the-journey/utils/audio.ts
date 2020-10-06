@@ -69,7 +69,6 @@ export function setDocumentVolume(value: number) {
   const volume = constrain(0, 1)(value);
   document.querySelectorAll('audio').forEach((element) => {
     const volumeSettable = element as { volume: number };
-    console.log('AudioTrack setting volume after creation to', volume);
     volumeSettable.volume = volume;
   })
 }
