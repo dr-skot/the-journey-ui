@@ -23,8 +23,7 @@ export default function Entry({ test }: { test?: boolean }) {
     .catch((error) => {
       console.log('error checking room', error);
       setRoomCheck('good')
-    });
-   */
+    })
 
   switch (roomCheck) {
     case 'checking':
