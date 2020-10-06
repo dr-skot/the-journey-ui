@@ -52,7 +52,7 @@ export default function useChat(id: string) {
   };
 
   return (
-    <div>
+    <div style={{ zIndex: 10000 }}>
       <Launcher
         agentProfile={{
           teamName: "THE JOURNEY",

@@ -70,7 +70,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
 
   // ping server periodically to keep alive
   useEffect(() => {
-    const intervalId = window.setInterval(() => server.send({ action: 'ping' }), 5000);
+    const intervalId = window.setInterval(() => server.send({ action: 'ping' }), 10000);
     return () => window.clearInterval(intervalId);
   }, []);
 

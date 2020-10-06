@@ -19,10 +19,10 @@ export default function Entry({ test }: { test?: boolean }) {
 
   // check for unstaffed room
   checkForOperator(roomName)
-    .then((hasOperator) => setRoomCheck(hasOperator ? 'good' : 'good'))
+    .then((hasOperator) => setRoomCheck(hasOperator ? 'good' : 'empty'))
     .catch((error) => {
       console.log('error checking room', error);
-      setRoomCheck('good')
+      setRoomCheck('good'); // don't reject just because the checker's broken
     })
 
   switch (roomCheck) {

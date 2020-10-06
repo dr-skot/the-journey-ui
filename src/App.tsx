@@ -32,6 +32,7 @@ import Log2 from './the-journey/views/Log/Log2';
 import Show from './the-journey/views/Entry/Show';
 import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
+import TwilioMin from './the-journey/views/Testing/TwilioMin';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -42,7 +43,7 @@ export function NameHelmet() {
   return <Helmet><title>{me ? `${getUsername(me.identity)} : ` : ''}The Journey</title></Helmet>
 }
 
-function Twilio({ children }: { children: ReactNode }) {
+export function Twilio({ children }: { children: ReactNode }) {
   return (
     <UnsupportedBrowserWarning>
       <TwilioRoomContextProvider>
@@ -76,12 +77,12 @@ export default function App() {
             <div style={{ height }}>
               <Router>
                 <Switch>
-                  <Route path="/pop">
-                    <PopulateDemo/>
-                  </Route>
-                <PrivateRoute path="/code" roles="foh|operator">
-                  <GetCode/>
-                </PrivateRoute>
+                  <Route path="/pop" component={PopulateDemo}/>
+                  <Route path="/min" component={TwilioMin}/>
+
+                  <PrivateRoute path="/code" roles="foh|operator">
+                    <GetCode/>
+                  </PrivateRoute>
 
                   <Route exact path="/" component={HomePage}/>
                   <Route
