@@ -5,14 +5,13 @@ import Facts from './Facts';
 
 const Floater = styled('div')({
   position: 'absolute',
-  top: 10,
-  left: '25%',
+  top: 15,
+  left: 20,
   zIndex: 10000000000000,
 });
 
 const Floated = styled('div')({
   position: 'relative',
-  left: '-50%',
 });
 
 

@@ -64,7 +64,7 @@ export default function Facts() {
   })
 
   return (
-    <div style={{margin: '2em'}}>
+    <div style={{margin: '5em 2em 2em 2em'}}>
       <h1>Some Facts</h1>
       <h3>My name's [{name}]</h3>
       <h3>I'm user type [{role}] in a room called [{room.name}] that I joined at {timestamp}</h3>
