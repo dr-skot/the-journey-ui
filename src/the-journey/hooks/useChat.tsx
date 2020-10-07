@@ -48,11 +48,11 @@ export default function useChat(id: string) {
           payload: { chat: message.data.text, id },
         })));
     setMessages((prev) => [...prev, message]);
-    setNewMessageCount(0);
+    // setNewMessageCount(0); // this is done on click of launcher now...?
   };
 
   return (
-    <div style={{ zIndex: 10000 }}>
+    <div onClick={() => setNewMessageCount(0)} style={{ zIndex: 10000 }}>
       <Launcher
         agentProfile={{
           teamName: "THE JOURNEY",
