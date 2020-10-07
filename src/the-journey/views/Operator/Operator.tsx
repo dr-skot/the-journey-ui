@@ -31,7 +31,7 @@ function OperatorView() {
   const { toggleFocus } = useOperatorControls();
   const { gallery, paged, pageNumber, hideBlanks, menuButtons, order } = usePagedAudience();
 
-  console.log('operator up to date');
+  console.log('operator up to date!');
 
   const galleryProps = {
     participants: gallery,
