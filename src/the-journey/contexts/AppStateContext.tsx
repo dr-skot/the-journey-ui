@@ -28,7 +28,7 @@ interface AppState {
   userAgents: Record<Identity, string>;
   helpNeeded: Identity[],
 }
-type Dispatcher = (action: string, payload: any) => void;
+type Dispatcher = (action: string, payload?: any) => void;
 type AppStateContextValue = [AppState, Dispatcher];
 
 const initialState = {
@@ -68,16 +68,19 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
-  // ping server periodically to keep alive
-  useEffect(() => {
-    const intervalId = window.setInterval(() => server.send({ action: 'ping' }), 10000);
-    return () => window.clearInterval(intervalId);
-  }, []);
-
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
     server.send({ action, payload: { identity: me, roomName: room?.name, ...payload } });
   },  [me, room]);
+
+  // ping server periodically to keep alive... and get updated room state in case it's gone stale
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      server.send({ action: 'ping' });
+      dispatch('getRoomState');
+    }, 10000);
+    return () => window.clearInterval(intervalId);
+  }, [dispatch]);
 
   // receive room state updates
   useEffect(() => {

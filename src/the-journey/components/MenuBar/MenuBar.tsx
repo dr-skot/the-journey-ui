@@ -1,7 +1,6 @@
 import React, { ReactNode, useContext } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { TwilioRoomContext } from '../../contexts/TwilioRoomContext';
-// import DelayControl from './DelayControl';
 import GainControl from './GainControl';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,6 +10,8 @@ import { getRole } from '../../utils/twilio';
 import MuteAllButton from './MuteAllButton';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import CloseDoorsButton from './CloseDoorsButton';
+import UpdateDataButton from './UpdateDataButton';
+// import DelayControl from './DelayControl';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +78,7 @@ export default function MenuBar({ extras }: MenuBarProps) {
             { extras }
             { role === 'foh' && <CloseDoorsButton/> }
             { role === 'operator' && roomStatus === 'connected' && <><GainControl/><MuteAllButton/></> }
+            <UpdateDataButton/>
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

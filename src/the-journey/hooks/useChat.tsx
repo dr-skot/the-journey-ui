@@ -26,7 +26,7 @@ export default function useChat(id: string) {
         setMessages((prev) => [...prev, {
           author: getUsername(from),
           type: 'text',
-          data: { text: payload.chat },
+          data: { text: `${getUsername(from)}: ${payload.chat}`},
         }]);
         setNewMessageCount((prev) => prev + 1);
       }
