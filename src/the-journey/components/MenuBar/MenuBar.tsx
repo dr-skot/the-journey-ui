@@ -10,7 +10,6 @@ import { getRole } from '../../utils/twilio';
 import MuteAllButton from './MuteAllButton';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import CloseDoorsButton from './CloseDoorsButton';
-import UpdateDataButton from './UpdateDataButton';
 // import DelayControl from './DelayControl';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,29 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       marginLeft: 'auto',
     },
-    form: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-      [theme.breakpoints.up('md')]: {
-        marginLeft: '2.2em',
-      },
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      maxWidth: 200,
-    },
     loadingSpinner: {
       marginLeft: '1em',
-    },
-    displayName: {
-      margin: '1.1em 0.6em',
-      minWidth: '200px',
-      fontWeight: 600,
-    },
-    joinButton: {
-      margin: '1em',
     },
   })
 );
@@ -78,7 +56,6 @@ export default function MenuBar({ extras }: MenuBarProps) {
             { extras }
             { role === 'foh' && <CloseDoorsButton/> }
             { role === 'operator' && roomStatus === 'connected' && <><GainControl/><MuteAllButton/></> }
-            <UpdateDataButton/>
             <ToggleFullscreenButton />
           </div>
         </Toolbar>
