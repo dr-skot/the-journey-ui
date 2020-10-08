@@ -41,7 +41,7 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
-  let boxOrder = order || range(1, 31);
+  let boxOrder = order || range(1, (fixedLength || participants.length) + 1);
   boxOrder = fixedLength ? arrayFixedLength(fixedLength)(boxOrder) : boxOrder;
   const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxOrder.length);
   const selectedIndex = (p: IParticipant) => selection ? selection.indexOf(p.identity) + 1 : 0;
@@ -53,7 +53,7 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
         const participant = participants[i];
         return participant ? (
           <ParticipantVideoWindow
-            key={participant.sid} 
+            key={participant.sid}
             participant={participant}
             selectedIndex={selectedIndex(participant)}
             hotKey={hotKeys && hotKeys[i]}

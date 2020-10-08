@@ -34,4 +34,11 @@ describe('FlexibleGallery', () => {
       expect(() => getByText(`participant${n+1}`)).toThrow();
     });
   })
+  it('should display the participants in ordinary order if no order is provided', () => {
+    const { getByText } = render(<FlexibleGallery participants={mockParticipants} fixedLength={30}/>);
+    range(1, 30).forEach((n) => {
+      expect(getByText(`participant${n}`)).toBeDefined();
+      expect(() => getByText(`participant${n+1}`)).toThrow();
+    });
+  })
 })
