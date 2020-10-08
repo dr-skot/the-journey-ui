@@ -40,17 +40,16 @@ export default function FlexibleGallery({ participants, fixedLength = 0, selecti
 
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
-  const boxes = fixedLength ? arrayFixedLength(fixedLength)(participants) : participants;
-  const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
+  let boxOrder = order || participants.map((_, i) => i + 1);
+  boxOrder = fixedLength ? arrayFixedLength(fixedLength)(boxOrder) : boxOrder;
+  const boxSize = getBoxSize(containerSize, ASPECT_RATIO, boxOrder.length);
   const selectedIndex = (p: IParticipant) => selection ? selection.indexOf(p.identity) + 1 : 0;
-
-  const boxOrder = order || boxes.map((_, i) => i + 1);
 
   return (
     <Container ref={containerRef}>
       { boxOrder.map((n) => {
         const i = n - 1;
-        const participant = boxes[i];
+        const participant = participants[i];
         return participant ? (
           <ParticipantVideoWindow
             key={participant.sid}
