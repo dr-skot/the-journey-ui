@@ -41,7 +41,6 @@ export default function usePagedAudience() {
   </>;
 
   let gallery = useAudience();
-  // if (paged) gallery = twoPageSplit(pageNumber, gallery);
 
   let order = GALLERY_ORDERS[orderIndex];
   if (paged) order = columnSplit(GALLERY_COLUMN_COUNT, pageNumber, order);
