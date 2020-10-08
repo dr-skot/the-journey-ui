@@ -44,8 +44,16 @@ video:focus {
     display: none;
 }
 
-.sc-header--team-name {
+div.sc-header--team-name {
     font-family: "DIN Alternate", "DIN Condensed", "Avenir Next", "Roboto", "Helvetica", "Arial", sans-serif;
     letter-spacing: 0.7em;
 }
 
+.sc-message--avatar {
+    display: none;
+}
+
+.sc-message--text {
+    font-family: "DIN Alternate", "DIN Condensed", "Avenir Next", "Roboto", "Helvetica", "Arial", sans-serif;
+    padding: 10px 15px;
+}
