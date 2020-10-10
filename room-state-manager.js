@@ -1,5 +1,7 @@
 const WebSocket = require('ws');
 
+console.log("new room state");
+
 // data expires after 5 days of no activity; check every day
 const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;
 const EXPIRY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
@@ -7,7 +9,7 @@ const EXPIRY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
 const DEFAULT_GAIN = 0.8;
 const DEFAULT_DELAY = 0;
 
-const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded', 'meetable'];
+const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded', 'notReady', 'excluded'];
 const SETTINGS = ['doorsClosed', 'gain', 'delayTime', 'muteAll'];
 
 function tryToParse(string) {
@@ -66,10 +68,11 @@ const useServer = (server) => {
       gain: DEFAULT_GAIN,
       delayTime: DEFAULT_DELAY,
       muteAll: false,
-      meetable: [],
       meetings: [],
       userAgents: {},
       helpNeeded: [],
+      notReady: [],
+      excluded: [],
   });
 
   // periodically purge old room state data

@@ -113,6 +113,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       payload.room.on('reconnected', () =>
         dispatch('setRoomStatus', { status: 'connected' }));
       payload.room.setMaxListeners(25);
+      /*
       payload.room.localParticipant.on('trackDisabled', (track: LocalTrack) =>
         console.log('trackDisabled', track));
       payload.room.localParticipant.on('trackEnabled', (track: LocalTrack) =>
@@ -125,6 +126,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
         console.log('trackStarted', track));
       payload.room.localParticipant.on('trackStopped', (track: LocalTrack) =>
         console.log('trackStopped', track));
+       */
       console.log('connected to room', payload.room, 'with participants', payload.room.participants)
       newState = {
         ...state, room: payload.room, roomStatus: 'connected',

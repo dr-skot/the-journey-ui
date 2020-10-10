@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, styled } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -144,7 +144,10 @@ export default function GetMedia({ test }: { test?: boolean }) {
             variant="contained"
             disabled={!consentGiven && !mediaPermissionDenied}
             onClick={() => {
-              if (!test) roomStateDispatch('setMembership', { group: 'helpNeeded', value: true });
+              if (!test) {
+                roomStateDispatch('setMembership', { group: 'helpNeeded', value: true });
+                roomStateDispatch('setMembership', { group: 'notReady', value: false })
+              }
               setStatus('needHelp');
             }}
           >
@@ -156,7 +159,10 @@ export default function GetMedia({ test }: { test?: boolean }) {
             variant="contained"
             disabled={!consentGiven && !mediaPermissionDenied}
             onClick={() => {
-              if (!test) roomStateDispatch('setMembership', { group: 'helpNeeded', value: false });
+              if (!test) {
+                roomStateDispatch('setMembership', { group: 'helpNeeded', value: false });
+                roomStateDispatch('setMembership', { group: 'notReady', value: false })
+              }
               setStatus('allGood')
             }}
           >

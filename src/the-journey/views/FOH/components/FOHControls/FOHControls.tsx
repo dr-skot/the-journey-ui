@@ -9,6 +9,7 @@ import RejectButton from './RejectButton';
 import useParticipantNetworkQualityLevel
   from '../../../../../twilio/hooks/useParticipantNetworkQualityLevel/useParticipantNetworkQualityLevel';
 import NetworkQualityLevel from '../../../../../twilio/components/NetworkQualityLevel/NetworkQualityLevel';
+import ExcludeButton from './ExcludeButton';
 
 interface FOHControlsProps {
   participant: Participant;
@@ -31,14 +32,13 @@ export default function FOHControls({ participant }: FOHControlsProps) {
       <div style={{ width: '100%', textAlign: 'right' }}>
         <CameraMicButton participant={participant}/>
       </div>
-      <div style={{ width: '100%', textAlign: 'right', opacity: '90%', marginBottom: 2 }}>
-        <MeetingButton participant={participant}/>
-      </div>
       <div style={{ opacity: '90%' }}>
         <div style={{ float: 'right' }}>
+          <MeetingButton participant={participant}/><br/>
           <ApproveButton participant={participant}/>
         </div>
         <div>
+          <ExcludeButton participant={participant}/><br/>
           <RejectButton participant={participant}/>
         </div>
       </div>

@@ -10,8 +10,8 @@ export default function RejectButton({ participant }: { participant: Participant
   const [, appStateDispatch] =  useAppState();
 
   const reject = () => {
-    appStateDispatch('toggleMembership',
-      { group: 'rejected', identity: participant.identity });
+    appStateDispatch('setMembership',
+      { group: 'rejected', identity: participant.identity, value: true });
     // give user 1/10 sec to redirect to rejection page before kicking them out of Twilio room
     setTimeout(() => {
       removeParticipant(participant, room).then(() => {

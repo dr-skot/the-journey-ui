@@ -15,18 +15,19 @@ const serverUrl = isDev()
 let server: RobustWebSocket;
 
 interface AppState {
-  admitted: Identity[],
-  rejected: Identity[],
+  admitted: Group,
+  rejected: Group,
   doorsClosed: string,
-  mutedInFocusGroup: Identity[],
-  focusGroup: Identity[],
+  mutedInFocusGroup: Group,
+  focusGroup: Group,
   gain: number,
   delayTime: number,
   muteAll: boolean,
   meetings: Group[];
-  meetable: Identity[],
   userAgents: Record<Identity, string>;
-  helpNeeded: Identity[],
+  helpNeeded: Group,
+  notReady: Group,
+  excluded: Group,
 }
 type Dispatcher = (action: string, payload?: any) => void;
 type AppStateContextValue = [AppState, Dispatcher];
@@ -41,9 +42,10 @@ const initialState = {
   delayTime: DEFAULT_DELAY,
   muteAll: false,
   meetings: [],
-  meetable: [],
   userAgents: {},
   helpNeeded: [],
+  notReady: [],
+  excluded: [],
 } as AppState;
 
 const initialStateChanger: Dispatcher = () => {};
@@ -124,9 +126,10 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
     delayTime: cachedIfEqual('delayTime'),
     muteAll: cachedIfEqual('muteAll'),
     meetings: cachedIfEqual('meetings'),
-    meetable: cachedIfEqual('meetable'),
     userAgents: cachedIfEqual('userAgents'),
     helpNeeded: cachedIfEqual('helpNeeded'),
+    notReady: cachedIfEqual('notReady'),
+    excluded: cachedIfEqual('excluded'),
   };
 
   const providerValue = cached('AppStateProvider.value')

@@ -25,7 +25,7 @@ export default function Nobody({ width, height, index, blanks }: NobodyProps) {
   const classes = useStyles();
   const image = `url(${muppetImageForIdx(index + 1)})`; // muppets start at 1 not 0
   return (
-    <div className={classes.nobody} style={{
+    <div aria-label="nobody" className={classes.nobody} style={{
       width, height,
       backgroundColor: blanks === 'muppet' ? paletteColor(index) : '',
       border: blanks === 'nothing' ? '' : '0.5px solid black',

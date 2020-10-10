@@ -25,13 +25,13 @@ const ValidatedShow = () => {
   console.log('RENDER: ValidatedShow');
   console.log('localTracks', localTracks);
 
-  // be meetable while you're here, and not when you're not
+  // when you're here, you're ready; when you're not, you're not
   useEffect(() => {
-    appStateDispatch('setMembership', { group: 'meetable', value: true });
+    appStateDispatch('setMembership', { group: 'notReady', value: false });
     return () => {
-      appStateDispatch('setMembership', { group: 'meetable', value: false });
+      appStateDispatch('setMembership', { group: 'notReady', value: true });
     }
-  }, [appStateDispatch])
+  }, [])
 
   useEffect(() => {
     if (roomStatus === 'disconnected' && localTracks.length > 0) {

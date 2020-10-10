@@ -35,10 +35,17 @@ describe('FlexibleGallery', () => {
     });
   })
   it('should display the participants in ordinary order if no order is provided', () => {
-    const { getByText } = render(<FlexibleGallery participants={mockParticipants} fixedLength={30}/>);
+    const { debug, getByText } = render(<FlexibleGallery participants={mockParticipants} fixedLength={30}/>);
     range(1, 30).forEach((n) => {
       expect(getByText(`participant${n}`)).toBeDefined();
-      expect(() => getByText(`participant${n+1}`)).toThrow();
     });
   })
+  it('should show empty placeholders if fixed length', () => {
+    const { getAllByLabelText } = render(<FlexibleGallery participants={[]} fixedLength={30}/>);
+    expect(getAllByLabelText('nobody').length).toBe(30);
+  });
+  it('should not show empty placeholders if not fixed length', () => {
+    const { getByLabelText } = render(<FlexibleGallery participants={[]}/>);
+    expect(() => getByLabelText('nobody')).toThrow();
+  });
 })

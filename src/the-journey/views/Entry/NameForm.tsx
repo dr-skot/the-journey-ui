@@ -6,8 +6,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-import { UserRole } from '../../utils/twilio';
+import { getIdentity, UserRole } from '../../utils/twilio';
 import { Settings } from '../../contexts/settings/settingsReducer';
+import { useAppState } from '../../contexts/AppStateContext';
 
 const Center = styled('div')({
   textAlign: 'center',
@@ -59,6 +60,7 @@ interface NameFormProps {
 export default function NameForm({ roomName, role = 'audience', options= {} }: NameFormProps) {
   const classes = useStyles();
   const [{ roomStatus }, dispatch] = useTwilioRoomContext();
+  const [, roomStateDispatch] = useAppState();
 
   const [username, setUsername] = useState<string>(localStorage.getItem('username') || '');
 
@@ -70,9 +72,10 @@ export default function NameForm({ roomName, role = 'audience', options= {} }: N
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch('joinRoom', { roomName, role, username: username, options });
+    const identity = getIdentity(role, username);
+    dispatch('joinRoom', { roomName, identity, options });
+    roomStateDispatch('setMembership', { group: 'notReady', identity, value: true });
   };
-
 
   return <>
     <Grid container justify="center" alignItems="flex-start" className={classes.container}>
