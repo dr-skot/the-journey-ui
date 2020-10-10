@@ -1,7 +1,5 @@
 const WebSocket = require('ws');
 
-console.log("new room state");
-
 // data expires after 5 days of no activity; check every day
 const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;
 const EXPIRY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
@@ -77,6 +75,7 @@ function removeEmptyRoommateGroups(roommates) {
 
 const useServer = (server) => {
   const wss = new WebSocket.Server({ server });
+  console.log("websocket server starting up");
 
   const clients = {}; // { roomName: wsConnection[] }
   const roomStates = {}; // { roomName: roomState }
@@ -115,15 +114,12 @@ const useServer = (server) => {
   }
 
   function sendRoomStateUpdate(roomState, ws) {
-    console.log('sending fucking roomstate update');
     if (ws.readyState === WebSocket.OPEN) {
-      console.log('sending fucking roomstate update!');
       ws.send(JSON.stringify({ action: 'roomStateUpdate', payload: roomState }));
     }
   }
 
   function broadcastUpdate(roomName) {
-    console.log('fucking broadcast');
     const roomState = getRoomState(roomName);
     (clients[roomName] || []).forEach((ws) => {
       sendRoomStateUpdate(roomState, ws);
@@ -132,66 +128,70 @@ const useServer = (server) => {
 
   wss.on('connection', (ws) => {
     ws.on('message', async (message) => {
-      const request = tryToParse(message);
-      const { action, payload } = request || {};
-      const { roomName, identity } = payload || {};
-      let roomState = roomStates[roomName] || newRoomState();
-      roomStates[roomName] = roomState;
-      lastActivity[roomName] = Date.now();
-      if (action !== 'ping') console.log('websocket message', message);
-      switch (action) {
-        case 'ping':
-          ws.send(JSON.stringify({ action: 'pong' }));
-          return;
-        case 'getRoomState':
-          sendRoomStateUpdate(getRoomState(roomName), ws);
-          return;
-        case 'joinRoom':
-          clients[roomName] = insureMembership(clients[roomName], ws);
-          if (identity) roomState.userAgents[identity] = payload.userAgent;
-          break;
-        case 'leaveRoom':
-          remove(clients[roomName], ws);
-          removeParticipant(roomState, identity);
-          break;
-        case 'set':
-          Object.keys(payload).forEach((key) => {
-            if (SETTINGS.includes(key)) {
-              roomState[key] = payload[key];
+      try {
+        const request = tryToParse(message);
+        const { action, payload } = request || {};
+        const { roomName, identity } = payload || {};
+        let roomState = roomStates[roomName] || newRoomState();
+        roomStates[roomName] = roomState;
+        lastActivity[roomName] = Date.now();
+        if (action !== 'ping') console.log('websocket message', message);
+        switch (action) {
+          case 'ping':
+            ws.send(JSON.stringify({ action: 'pong' }));
+            return;
+          case 'getRoomState':
+            sendRoomStateUpdate(getRoomState(roomName), ws);
+            return;
+          case 'joinRoom':
+            clients[roomName] = insureMembership(clients[roomName], ws);
+            if (identity) roomState.userAgents[identity] = payload.userAgent;
+            break;
+          case 'leaveRoom':
+            remove(clients[roomName], ws);
+            removeParticipant(roomState, identity);
+            break;
+          case 'set':
+            Object.keys(payload).forEach((key) => {
+              if (SETTINGS.includes(key)) {
+                roomState[key] = payload[key];
+              }
+            });
+            break;
+          case 'toggleMembership':
+            if (GROUPS.includes(payload.group)) {
+              toggleMembership(roomState[payload.group], identity);
             }
-          });
-          break;
-        case 'toggleMembership':
-          if (GROUPS.includes(payload.group)) {
-            toggleMembership(roomState[payload.group], identity);
-          }
-          break;
-        case 'setMembership':
-          if (GROUPS.includes(payload.group)) {
-            setMembership(roomState[payload.group], identity, payload.value);
-          }
-          break;
-        case 'clearMembership':
-          if (GROUPS.includes(payload.group)) {
-            roomState[payload.group] = [];
-          }
-          break;
-        case 'startMeeting':
-          if (payload.meeting) {
-            payload.meeting.forEach((identity) => endMeetings(roomState, identity));
-            roomState.meetings.push(payload.meeting);
-          }
-          break;
-        case 'endMeeting':
-          if (payload.meeting) {
-            payload.meeting.forEach((identity) => endMeetings(roomState, identity));
-          }
-          break;
-        case 'roommateRotate':
-          roommateRotate(roomState.roommates, identity);
-          break;
+            break;
+          case 'setMembership':
+            if (GROUPS.includes(payload.group)) {
+              setMembership(roomState[payload.group], identity, payload.value);
+            }
+            break;
+          case 'clearMembership':
+            if (GROUPS.includes(payload.group)) {
+              roomState[payload.group] = [];
+            }
+            break;
+          case 'startMeeting':
+            if (payload.meeting) {
+              payload.meeting.forEach((identity) => endMeetings(roomState, identity));
+              roomState.meetings.push(payload.meeting);
+            }
+            break;
+          case 'endMeeting':
+            if (payload.meeting) {
+              payload.meeting.forEach((identity) => endMeetings(roomState, identity));
+            }
+            break;
+          case 'roommateRotate':
+            roommateRotate(roomState.roommates, identity);
+            break;
+        }
+        broadcastUpdate(roomName);
+      } catch (e) {
+        console.error(e);
       }
-      broadcastUpdate(roomName);
     });
 
     ws.send(JSON.stringify({ message: 'connected!' }));
