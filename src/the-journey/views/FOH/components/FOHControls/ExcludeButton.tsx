@@ -1,7 +1,5 @@
 import { Participant } from 'twilio-video';
-import { useTwilioRoomContext } from '../../../../contexts/TwilioRoomContext';
 import { useAppState } from '../../../../contexts/AppStateContext';
-import { removeParticipant } from '../../../../utils/twilio';
 import { Button } from '@material-ui/core';
 import React from 'react';
 

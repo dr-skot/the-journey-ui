@@ -51,8 +51,29 @@ function removeParticipant(roomState, identity) {
   GROUPS.forEach((group) => remove(roomState[group], identity));
   delete roomState.userAgents[identity];
   endMeetings(roomState, identity);
+  pullRoommate(roomState, identity); removeEmptyRoommateGroups(roomState);
 }
 
+function roommateRotate(roommates, identity) {
+  const roomNumber = pullRoommate(roommates, identity);
+  const wasAloneInRoom = roomNumber > 0 && roommates[roomNumber - 1].length === 0;
+  // if we weren't alone in the last room, join or create next room
+  if (!wasAloneInRoom || roomNumber < roommates.length) {
+    roommates[roomNumber] = roommates[roomNumber] || [];
+    roommates[roomNumber].push(identity);
+  }
+  removeEmptyRoommateGroups(roommates);
+}
+
+function pullRoommate(roommates, identity) {
+  const roomNumber = 1 + roommates.findIndex((group) => group.includes(identity));
+  if (roomNumber > 0) remove(roommates[roomNumber - 1], identity);
+  return roomNumber;
+}
+
+function removeEmptyRoommateGroups(roommates) {
+  roommates.filter((group) => group.length === 0).forEach((empty) => remove(roommates, empty));
+}
 
 const useServer = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -60,19 +81,20 @@ const useServer = (server) => {
   const clients = {}; // { roomName: wsConnection[] }
   const roomStates = {}; // { roomName: roomState }
   const newRoomState = () => ({
-      admitted: [],
-      rejected: [],
-      doorsClosed: 'undefined',
-      focusGroup: [],
-      mutedInFocusGroup: [],
-      gain: DEFAULT_GAIN,
-      delayTime: DEFAULT_DELAY,
-      muteAll: false,
-      meetings: [],
-      userAgents: {},
-      helpNeeded: [],
-      notReady: [],
-      excluded: [],
+    admitted: [],
+    rejected: [],
+    doorsClosed: 'undefined',
+    focusGroup: [],
+    mutedInFocusGroup: [],
+    gain: DEFAULT_GAIN,
+    delayTime: DEFAULT_DELAY,
+    muteAll: false,
+    meetings: [],
+    userAgents: {},
+    helpNeeded: [],
+    notReady: [],
+    excluded: [],
+    roommates: [],
   });
 
   // periodically purge old room state data
@@ -93,12 +115,15 @@ const useServer = (server) => {
   }
 
   function sendRoomStateUpdate(roomState, ws) {
+    console.log('sending fucking roomstate update');
     if (ws.readyState === WebSocket.OPEN) {
+      console.log('sending fucking roomstate update!');
       ws.send(JSON.stringify({ action: 'roomStateUpdate', payload: roomState }));
     }
   }
 
   function broadcastUpdate(roomName) {
+    console.log('fucking broadcast');
     const roomState = getRoomState(roomName);
     (clients[roomName] || []).forEach((ws) => {
       sendRoomStateUpdate(roomState, ws);
@@ -161,6 +186,9 @@ const useServer = (server) => {
           if (payload.meeting) {
             payload.meeting.forEach((identity) => endMeetings(roomState, identity));
           }
+          break;
+        case 'roommateRotate':
+          roommateRotate(roomState.roommates, identity);
           break;
       }
       broadcastUpdate(roomName);

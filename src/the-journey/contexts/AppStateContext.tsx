@@ -28,6 +28,7 @@ interface AppState {
   helpNeeded: Group,
   notReady: Group,
   excluded: Group,
+  roommates: Group[],
 }
 type Dispatcher = (action: string, payload?: any) => void;
 type AppStateContextValue = [AppState, Dispatcher];
@@ -46,6 +47,7 @@ const initialState = {
   helpNeeded: [],
   notReady: [],
   excluded: [],
+  roommates: [],
 } as AppState;
 
 const initialStateChanger: Dispatcher = () => {};
@@ -130,6 +132,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
     helpNeeded: cachedIfEqual('helpNeeded'),
     notReady: cachedIfEqual('notReady'),
     excluded: cachedIfEqual('excluded'),
+    roommates: cachedIfEqual('roommates'),
   };
 
   const providerValue = cached('AppStateProvider.value')

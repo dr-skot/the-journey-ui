@@ -8,7 +8,7 @@ import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 
 export default function TwilioMin() {
-  return <SimpleJoin/>
+  return true ? <SimpleJoin/> : <JoinInApp/>;
 }
 
 function JoinInApp() {

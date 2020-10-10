@@ -33,6 +33,7 @@ import Show from './the-journey/views/Entry/Show';
 import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
 import TwilioMin from './the-journey/views/Testing/TwilioMin';
+import Roommates from './the-journey/views/FOH/Roommates';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -88,7 +89,7 @@ export default function App() {
                   <Route
                     path={(
                       '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery ' +
-                      '/log /log2 /clear /testing /nothing'
+                      '/log /log2 /clear /testing /nothing /roommates'
                     ).split(' ')}>
                     <Twilio>
                       <Switch>
@@ -106,6 +107,9 @@ export default function App() {
                       </PrivateRoute>
 
                       <PrivateRoute path="/foh/:code?" roles="foh|operator"><FOH/></PrivateRoute>
+                        <PrivateRoute path="/roommates/:code?" roles="foh|operator">
+                          <AutoJoin role="foh"/><Roommates/>
+                        </PrivateRoute>
 
                       <PrivateRoute path="/operator/:code?" roles="operator">
                         <AutoJoin role="operator"/><Operator/>

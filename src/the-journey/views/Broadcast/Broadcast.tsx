@@ -4,7 +4,7 @@ import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import Millicast from './Millicast';
 import { inGroup } from '../../utils/twilio';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import SubscribeToFocusGroupAudio from '../../subscribers/SubscribeToFocusGroupAudio';
+import SubscribeToFocusGroupAudioMinusRoommates from '../../subscribers/SubscribeToFocusGroupAudioMinusRoommates';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
 import { useAppState } from '../../contexts/AppStateContext';
 
@@ -26,7 +26,7 @@ export default function Broadcast() {
   console.log("RENDER: Broadcast");
 
   return <>
-    <SubscribeToFocusGroupAudio/>
+    <SubscribeToFocusGroupAudioMinusRoommates/>
     <FocusGroupAudio/>
       <Container>
         <Main>
