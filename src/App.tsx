@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
-import useHeight from './the-journey/hooks/useHeight/useHeight';
+// import useHeight from './the-journey/hooks/useHeight/useHeight';
 import TwilioRoomContextProvider, { useTwilioRoomContext } from './the-journey/contexts/TwilioRoomContext';
 import { getUsername } from './the-journey/utils/twilio';
 import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
@@ -68,14 +68,14 @@ export default function App() {
   // not the viewport. This looks bad when the mobile browsers location bar is open.
   // We will dynamically set the height with 'window.innerHeight', which means that this
   // will look good on mobile browsers even after the location bar opens or closes.
-  const height = useHeight();
+  // const height = useHeight();
 
-  console.log('RENDER APP', height);
+  console.log('RENDER APP');
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
         <Helmet><title>The Journey</title></Helmet>
-            <div style={{ height }}>
+            <div style={{ height: '100vh' }}>
               <Router>
                 <Switch>
                   <Route path="/pop" component={PopulateDemo}/>

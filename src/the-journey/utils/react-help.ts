@@ -27,3 +27,4 @@ export function cached<T>(key: string) {
     ifEqual: (value: T) => cached(key).if(isEqual)(value) as T,
   });
 }
+

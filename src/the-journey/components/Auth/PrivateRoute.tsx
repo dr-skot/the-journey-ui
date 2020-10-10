@@ -16,7 +16,7 @@ export default function PrivateRoute({ roles, children, ...rest }: PrivateRouteP
 
   const renderChildren = authorizedRole && roles.split('|').includes(authorizedRole);
 
-  console.log('PrivateRoute', { renderChildren, authorizedRole })
+  // console.log('PrivateRoute', { renderChildren, authorizedRole })
 
   return (
     <Route

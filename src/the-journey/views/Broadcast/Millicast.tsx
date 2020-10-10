@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, CircularProgress, styled } from '@material-ui/core';
-import useHeight from '../../hooks/useHeight/useHeight';
 import fscreen from 'fscreen';
 import { remove } from '../../utils/functional';
 import { isFirefox } from '../../utils/browser';
@@ -35,7 +34,7 @@ window.onMillicastError = (response: any) => {
 }
 
 export default function Millicast() {
-  const height = useHeight();
+  // const height = useHeight();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>();
@@ -77,7 +76,7 @@ export default function Millicast() {
 
   return (
     <>
-      <div style={{ position: 'absolute', height, width: '100%', background: 'black' }}>
+      <div style={{ position: 'absolute', height: '100vh', width: '100%', background: 'black' }}>
         <iframe
           title={'The Journey'}
           style={{ opacity: loading || error ? 0 : 1 }}

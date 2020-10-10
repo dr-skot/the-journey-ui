@@ -9,7 +9,7 @@ import useRoomName from '../hooks/useRoomName';
 type Identity = Participant.Identity;
 export type Group = Identity[];
 
-const serverUrl = isDev()
+const serverUrl = isDev() || window.location.origin.match(/localhost/)
   ? 'ws:/localhost:8081'
   : window.location.origin.replace(/^http/, 'ws');
 let server: RobustWebSocket;
@@ -74,6 +74,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
 
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
+    console.log('dispatch', action, payload);
     server.send({ action, payload: { identity: me, roomName: room?.name, ...payload } });
   },  [me, room]);
 

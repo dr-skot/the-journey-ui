@@ -12,7 +12,7 @@ const getStoredDeviceIds = () => ({
 export function useLocalTracks() {
   const [{ room, localTracks }, dispatch] = useTwilioRoomContext();
   const deviceIds = removeUndefineds(getStoredDeviceIds());
-  console.log('useLocalTracks', { localTracks, deviceIds });
+  // console.log('useLocalTracks', { localTracks, deviceIds });
 
   useEffect(() => {
     if (localTracks.length === 0) dispatch('getLocalTracks', { deviceIds: deviceIds })

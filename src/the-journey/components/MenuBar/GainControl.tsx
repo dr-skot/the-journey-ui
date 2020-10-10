@@ -6,7 +6,6 @@ export default function GainControl() {
   const [{ gain }, roomStateDispatch] = useAppState();
 
   const setGain = (e: any) => {
-    console.log('setGain', e.target.value);
     roomStateDispatch('set', { gain: e.target.value });
   }
 

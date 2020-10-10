@@ -38,8 +38,6 @@ export default function useShowtime() {
 
   if (!code) return undefined;
 
-  console.log('useShowtime knows ServerDate is', now);
-
   // decode code to get curtain time
   const [time, tzIndex] = codeToTimeWithTZ(code);
   const curtain = DateTime.fromJSDate(time);

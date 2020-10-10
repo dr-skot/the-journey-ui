@@ -26,8 +26,6 @@ export default function Meeting({ group }: MeetingProps) {
   );
   const chat = useChat(meeters[1]?.identity || 'none');
 
-  console.log('Meeting', { localTracks });
-
   if (meeters.length === 1) { // get out of the "meeting" if there's only one of me
     roomStateDispatch('endMeeting', { meeting: meeters });
   }

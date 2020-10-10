@@ -21,13 +21,12 @@ const Main = styled('div')(() => ({
 }));
 
 export default function Broadcast() {
-  useHighPriorityInFocusGroup();
-
   console.log("RENDER: Broadcast");
 
   return <>
     <SubscribeToFocusGroupAudioMinusRoommates/>
     <FocusGroupAudio/>
+    <HighPriorityInFocusGroup/>
       <Container>
         <Main>
           <Millicast/>
@@ -37,7 +36,7 @@ export default function Broadcast() {
   </>;
 }
 
-function useHighPriorityInFocusGroup() {
+function HighPriorityInFocusGroup() {
   const [{ room }] = useTwilioRoomContext();
   const [{ focusGroup }] = useAppState();
 
@@ -53,4 +52,6 @@ function useHighPriorityInFocusGroup() {
       videoTrackPub.setPriority(priority);
     }
   }, [focusGroup, room]);
+
+  return null;
 }

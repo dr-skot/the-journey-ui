@@ -58,7 +58,6 @@ function AudioLevelIndicator({
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
       const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach((track) => {
-        console.log('stopAllMediaStreamTracks stopping track', track);
         track.stop()
       });
       audioTrack.on('stopped', stopAllMediaStreamTracks);

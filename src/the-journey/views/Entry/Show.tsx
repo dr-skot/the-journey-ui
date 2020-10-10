@@ -23,7 +23,6 @@ const ValidatedShow = () => {
   const localTracks = useLocalTracks();
 
   console.log('RENDER: ValidatedShow');
-  console.log('localTracks', localTracks);
 
   // when you're here, you're ready; when you're not, you're not
   useEffect(() => {
@@ -34,7 +33,7 @@ const ValidatedShow = () => {
   }, [appStateDispatch]);
 
   useEffect(() => {
-    if (roomStatus === 'disconnected' && localTracks.length > 0) {
+    if (roomStatus === 'disconnected' && localTracks.length > 0) { // TODO is this localTracks check necessary?
       dispatch('joinRoom', { identity, roomName })
     }
   }, [roomStatus, localTracks, identity, roomName, dispatch]);

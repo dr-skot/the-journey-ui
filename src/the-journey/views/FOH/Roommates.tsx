@@ -74,7 +74,6 @@ export default function Roommates() {
     setRoommates(mates.filter((group) => group.length > 0));
   }
 
-  console.log('hello?');
   return <div>
     { participants.map((name) => {
       const roomNumber = getRoomNumber(name);

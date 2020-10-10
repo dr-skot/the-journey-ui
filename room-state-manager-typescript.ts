@@ -1,4 +1,3 @@
-const WebSocket = require('ws');
 
 // data expires after 5 days of no activity; check every day
 const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;
@@ -10,49 +9,49 @@ const DEFAULT_DELAY = 0;
 const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded', 'notReady', 'excluded'];
 const SETTINGS = ['doorsClosed', 'gain', 'delayTime', 'muteAll'];
 
-function tryToParse(string) {
+function tryToParse(string: string) {
   try { return JSON.parse(string) } catch { return undefined }
 }
 
-function remove(xs, x) {
+function remove(xs: any[], x: any) {
   const i = xs.indexOf(x);
   if (i === -1) return;
   xs.splice(i, 1);
   remove(xs, x); // get all of them
 }
 
-function insureMembership(xs, x) {
+function insureMembership(xs: any[], x: any) {
   if (!xs) return [x];
   if (xs.indexOf(x) === -1) xs.push(x);
   return xs;
 }
 
-function isMember(xs, x) {
+function isMember(xs: any[], x: any) {
   return xs.indexOf(x) > -1;
 }
 
-function toggleMembership(xs, x) {
+function toggleMembership(xs: any[], x: any) {
   if (isMember(xs, x)) remove(xs, x);
   else xs.push(x);
 }
 
-function setMembership(xs, x, value) {
+function setMembership(xs: any[], x: any, value: boolean) {
   if (isMember(xs, x) !== value) toggleMembership(xs, x);
 }
 
 
-function endMeetings(roomState, identity) {
-  roomState.meetings = roomState.meetings.filter((meeting) => !meeting.includes(identity));
+function endMeetings(roomState: any, identity: string) {
+  roomState.meetings = roomState.meetings.filter((meeting: string[]) => !meeting.includes(identity));
 }
 
-function removeParticipant(roomState, identity) {
+function removeParticipant(roomState: any, identity: string) {
   GROUPS.forEach((group) => remove(roomState[group], identity));
   delete roomState.userAgents[identity];
   endMeetings(roomState, identity);
   pullRoommate(roomState, identity); removeEmptyRoommateGroups(roomState);
 }
 
-function roommateRotate(roommates, identity) {
+function roommateRotate(roommates: string[][], identity: string) {
   const roomNumber = pullRoommate(roommates, identity);
   const wasAloneInRoom = roomNumber > 0 && roommates[roomNumber - 1].length === 0;
   // if we weren't alone in the last room, join or create next room
@@ -63,26 +62,21 @@ function roommateRotate(roommates, identity) {
   removeEmptyRoommateGroups(roommates);
 }
 
-function pullRoommate(roommates, identity) {
+function pullRoommate(roommates: string[][], identity: string) {
   const roomNumber = 1 + roommates.findIndex((group) => group.includes(identity));
   if (roomNumber > 0) remove(roommates[roomNumber - 1], identity);
   return roomNumber;
 }
 
-function removeEmptyRoommateGroups(roommates) {
+function removeEmptyRoommateGroups(roommates: string[][]) {
   roommates.filter((group) => group.length === 0).forEach((empty) => remove(roommates, empty));
 }
 
-const useServer = (server) => {
-  const wss = new WebSocket.Server({ server });
-  initWebSocketServer(wss);
-}
-
-const initWebSocketServer = (wss) => {
+export const initWebSocketServer = (wss: any) => {
   console.log("websocket server starting up");
 
-  const clients = {}; // { roomName: wsConnection[] }
-  const roomStates = {}; // { roomName: roomState }
+  const clients: Record<string, any> = {}; // { roomName: wsConnection[] }
+  const roomStates: Record<string, any> = {}; // { roomName: roomState }
   const newRoomState = () => ({
     admitted: [],
     rejected: [],
@@ -101,8 +95,8 @@ const initWebSocketServer = (wss) => {
   });
 
   // periodically purge old room state data
-  const lastActivity = {} // { roomName: unix-time }
-  const expiryCheck = setInterval(() => {
+  const lastActivity: Record<string, number> = {} // { roomName: unix-time }
+  setInterval(() => {
     Object.keys(roomStates).forEach((key) => {
       if (!lastActivity[key] || Date.now() - lastActivity[key] > EXPIRE_TIME) {
         delete roomStates[key];
@@ -112,26 +106,29 @@ const initWebSocketServer = (wss) => {
   });
 
 
-  function getRoomState(roomName) {
+  function getRoomState(roomName: string) {
     if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
     return roomStates[roomName];
   }
 
-  function sendRoomStateUpdate(roomState, ws) {
+  function sendRoomStateUpdate(roomState: any, ws: any) {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ action: 'roomStateUpdate', payload: roomState }));
     }
   }
 
-  function broadcastUpdate(roomName) {
+  function broadcastUpdate(roomName: string) {
+    console.log('broadcasting update!');
     const roomState = getRoomState(roomName);
-    (clients[roomName] || []).forEach((ws) => {
+    (clients[roomName] || []).forEach((ws: any) => {
       sendRoomStateUpdate(roomState, ws);
     });
   }
 
-  wss.on('connection', (ws) => {
-    ws.on('message', async (message) => {
+  wss.on('connection', (ws: any) => {
+    console.log('got connection');
+    ws.on('message', async (message: string) => {
+      console.log('got message!');
       try {
         const request = tryToParse(message);
         const { action, payload } = request || {};
@@ -179,13 +176,13 @@ const initWebSocketServer = (wss) => {
             break;
           case 'startMeeting':
             if (payload.meeting) {
-              payload.meeting.forEach((identity) => endMeetings(roomState, identity));
+              payload.meeting.forEach((identity: string) => endMeetings(roomState, identity));
               roomState.meetings.push(payload.meeting);
             }
             break;
           case 'endMeeting':
             if (payload.meeting) {
-              payload.meeting.forEach((identity) => endMeetings(roomState, identity));
+              payload.meeting.forEach((identity: string) => endMeetings(roomState, identity));
             }
             break;
           case 'roommateRotate':
@@ -202,5 +199,4 @@ const initWebSocketServer = (wss) => {
   });
 }
 
-exports.useServer = useServer;
 exports.initWebSocketServer = initWebSocketServer;

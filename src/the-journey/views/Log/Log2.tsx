@@ -74,7 +74,7 @@ export default function Log2() {
       <AutoJoin role="log" />
       <Subscribe profile="data-only" />
       <h1>Room {room?.name}, sid {room?.sid}</h1>
-      <h2>Log from {startTime.toLocaleTimeString()}</h2>
+      <h2>Log from {startTime.toLocaleTimeString()} on {startTime.toLocaleDateString()}</h2>
       { Object.keys(audience).map((name) => {
         const { userAgents, events } = audience[name];
         return <>

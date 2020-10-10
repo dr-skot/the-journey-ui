@@ -20,8 +20,6 @@ export default function FOHControls({ participant }: FOHControlsProps) {
   const [{ room }] = useTwilioRoomContext();
   const networkQualityLevel = useParticipantNetworkQualityLevel(participant);
 
-  console.log('networkQualityLevel', { networkQualityLevel });
-
   if (!room) return null;
   if (!isRole('foh')(room.localParticipant) || isRole('foh')(participant)) return null;
 

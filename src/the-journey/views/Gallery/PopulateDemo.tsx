@@ -116,7 +116,6 @@ function Gallery({ size, content, contentComponent, blankComponent, order }: Gal
   const containerSize = { width: container?.clientWidth || 0, height: container?.clientHeight || 0 };
 
   let boxes = arrayFixedLength(size)(content);
-  console.log('boxes', boxes.length)
   const { width, height } = getBoxSize(containerSize, ASPECT_RATIO, boxes.length);
 
   return (

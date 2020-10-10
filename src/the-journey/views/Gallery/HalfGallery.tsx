@@ -30,7 +30,7 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function HalfGalleryView() {
-  useRerenderOnTrackSubscribed(); // TODO is this necessary?
+  useRerenderOnTrackSubscribed(); // TODO is this necessary? only for non-fixed I think
   const [halfSubscribe, setHalfSubscribe] = useState(false);
   const { gallery, paged, hideBlanks, menuButtons, order } = usePagedAudience();
 

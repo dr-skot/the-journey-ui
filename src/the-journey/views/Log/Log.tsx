@@ -79,7 +79,7 @@ export default function Log() {
     <div style={{margin: '2em'}}>
       <AutoJoin role="log" />
       <Subscribe profile="data-only" />
-      <h1>Log from {startTime.toLocaleTimeString()}</h1>
+      <h1>Log from {startTime.toLocaleTimeString()} on {startTime.toLocaleDateString()}</h1>
       { log.map((line, i) => (
         <p key={listKey('log', i)}>{line}</p>
       )) }
