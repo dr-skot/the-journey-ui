@@ -22,7 +22,7 @@ export default function RejectButton({ participant }: { participant: Participant
 
   return <Button
     onClick={reject}
-    size="small" color="secondary" variant="contained">
+    size="small" color="primary" variant="contained">
     Reject
   </Button>
 }

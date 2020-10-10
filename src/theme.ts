@@ -27,6 +27,9 @@ export default createMuiTheme({
     primary: {
       main: '#F22F46',
     },
+    secondary: {
+      main: '#F7C77B',
+    },
   },
   sidebarWidth: 260,
   sidebarMobileHeight: 90,

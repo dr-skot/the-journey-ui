@@ -31,8 +31,7 @@ const ValidatedShow = () => {
     return () => {
       appStateDispatch('setMembership', { group: 'notReady', value: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [appStateDispatch]);
 
   useEffect(() => {
     if (roomStatus === 'disconnected' && localTracks.length > 0) {

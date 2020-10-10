@@ -11,9 +11,11 @@ export default function ExcludeButton({ participant }: { participant: Participan
       { group: 'excluded', identity: participant.identity });
   }
 
+  const isExcluded = excluded.includes(participant.identity);
+
   return <Button
     onClick={toggleExcluded}
-    size="small" color="default" variant="contained">
-    { excluded?.includes(participant.identity) ? 'include' : 'exclude' }
+    size="small" color={ isExcluded ? 'secondary' : 'default' } variant="contained">
+    { isExcluded ? 'hidden!' : 'hide' }
   </Button>
 }
