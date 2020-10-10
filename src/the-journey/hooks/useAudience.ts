@@ -1,7 +1,7 @@
 import useParticipants from './useParticipants/useParticipants';
-import { inGroup, inGroups, isRole } from '../utils/twilio';
+import { inGroups, isRole } from '../utils/twilio';
 import { useAppState } from '../contexts/AppStateContext';
-import { and, not } from '../utils/functional';
+import { and, not } from '../utils/functional';``
 
 export default function useAudience() {
   const [{ helpNeeded, notReady, excluded, meetings }] = useAppState();
