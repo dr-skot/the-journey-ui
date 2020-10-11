@@ -1,4 +1,7 @@
 const WebSocket = require('ws');
+const query = require('./mysql-persist-json');
+
+console.log('query', query);
 
 // data expires after 5 days of no activity; check every day
 const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;

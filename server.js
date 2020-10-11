@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -10,8 +12,6 @@ const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 const URLSearchParams = require('url').URLSearchParams;
 const roomStateManager = require('./room-state-manager');
-
-require('dotenv').config();
 
 const USE_HTTPS = false;
 // const USE_HTTPS = isDev();

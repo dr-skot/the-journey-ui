@@ -31,8 +31,11 @@ const tryToParse = (json) => {
   }
 };
 
+// TODO make a module parameter somehow
+const urlString = process.env.CLEARDB_DATABASE_URL;
+
 // parse URL and create connection object
-const dbURL = new URL(process.env.DATABASE_URL);
+const dbURL = new URL(urlString);
 const dbConfig = {
   host: dbURL.host,
   user: dbURL.username,
@@ -73,21 +76,21 @@ const query = (sql, vars = {}) => new Promise((resolve, reject) => {
 });
 
 // returns an id not already in the database
-export async function availableId() {
+async function availableId() {
   const id = `${Math.floor(Math.random() * 900000 + 100000)}`; // 6 random digits
   const ids = await query(SQL.FIND_ID, { id });
   return ids.length > 0 ? availableId() : id;
 }
 
-export const insertData = (id, data) => (
+const insertData = (id, data) => (
   query(SQL.INSERT_JSON, { id, json: JSON.stringify(data) })
 );
 
-export const saveData = (id, data) => (
+const saveData = (id, data) => (
   query(SQL.UPDATE_GAME, { id, json: JSON.stringify(data) })
 );
 
-export const getData = (id) => (
+const getData = (id) => (
   query(SQL.FETCH_JSON, { id }).then((entries) => {
     if (entries.length === 0) throw new Error('Not found');
     const data = tryToParse(entries[0].game);
@@ -96,7 +99,7 @@ export const getData = (id) => (
   })
 );
 
-export const getAllData = (id) => (
+const getAllData = (id) => (
   query(SQL.FETCH_ALL).then((rows) => {
     const result = {}
     rows.forEach((row) => {
@@ -126,5 +129,6 @@ query(SQL.INSURE_TABLE)
   .catch((error) => { throw new Error(error); });
 
 
-exports.query = query;
-exports.SQL = SQL;
+module.exports = {
+  query, SQL, availableId, insertData, saveData, getData, getAllData,
+};
