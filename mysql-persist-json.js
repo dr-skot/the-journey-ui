@@ -3,7 +3,7 @@ const mysql = require('mysql');
 /* eslint-disable no-console */
 
 // TODO make a module parameter somehow
-const DATABASE_URL = process.env.JAWSDB_URL;
+const DATABASE_URL = process.env.CLEARDB_DATABASE_URL;
 
 const EXPIRE_TIME_IN_DAYS = 5;
 const HOURS_BETWEEN_EXPIRY_CHECKS = 12;

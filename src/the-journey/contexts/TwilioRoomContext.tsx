@@ -106,12 +106,18 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
 
     case 'roomJoined':
       window.addEventListener('beforeunload', payload.room.disconnect);
-      payload.room.on('disconnected', (room: Room, error: TwilioError) =>
-        dispatch('roomDisconnected', { room, error }));
-      payload.room.on('reconnecting', () =>
-        dispatch('setRoomStatus', { status: 'connecting' }));
-      payload.room.on('reconnected', () =>
-        dispatch('setRoomStatus', { status: 'connected' }));
+      payload.room.on('disconnected', (room: Room, error: TwilioError) => {
+        console.log('disconnected from Twilio');
+        dispatch('roomDisconnected', { room, error })
+      });
+      payload.room.on('reconnecting', () => {
+        console.log('reconnecting to Twilio');
+        dispatch('setRoomStatus', { status: 'connecting' });
+      });
+      payload.room.on('reconnected', () => {
+        console.log('reconnected to Twilio');
+        dispatch('setRoomStatus', { status: 'connected' });
+      });
       payload.room.setMaxListeners(25);
       /*
       payload.room.localParticipant.on('trackDisabled', (track: LocalTrack) =>
