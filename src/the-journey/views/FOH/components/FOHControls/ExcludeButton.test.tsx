@@ -1,10 +1,9 @@
 import React from 'react';
-import { act, render, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import ExcludeButton from './ExcludeButton';
 import WS from 'jest-websocket-mock';
-import { initWebSocketServer } from '../../../../../../room-state-manager-typescript';
+import { initWebSocketServer } from '../../../../../../room-state-manager';
 import AppStateContextProvider from '../../../../contexts/AppStateContext';
-import { useRouteMatch } from 'react-router-dom';
 import { renderWithRouterMatch } from '../../../../utils/react-testing';
 
 const wsServer = new WS('ws://localhost:8081');

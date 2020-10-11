@@ -10,6 +10,24 @@ const DEFAULT_DELAY = 0;
 const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded', 'notReady', 'excluded'];
 const SETTINGS = ['doorsClosed', 'gain', 'delayTime', 'muteAll'];
 
+const newRoomState = () => ({
+  admitted: [],
+  rejected: [],
+  doorsClosed: 'undefined',
+  focusGroup: [],
+  mutedInFocusGroup: [],
+  gain: DEFAULT_GAIN,
+  delayTime: DEFAULT_DELAY,
+  muteAll: false,
+  meetings: [],
+  userAgents: {},
+  helpNeeded: [],
+  notReady: [],
+  excluded: [],
+  roommates: [],
+});
+
+
 function tryToParse(string) {
   try { return JSON.parse(string) } catch { return undefined }
 }
@@ -49,7 +67,8 @@ function removeParticipant(roomState, identity) {
   GROUPS.forEach((group) => remove(roomState[group], identity));
   delete roomState.userAgents[identity];
   endMeetings(roomState, identity);
-  pullRoommate(roomState, identity); removeEmptyRoommateGroups(roomState);
+  pullRoommate(roomState.roommates, identity);
+  removeEmptyGroups(roomState.roommates);
 }
 
 function roommateRotate(roommates, identity) {
@@ -60,7 +79,7 @@ function roommateRotate(roommates, identity) {
     roommates[roomNumber] = roommates[roomNumber] || [];
     roommates[roomNumber].push(identity);
   }
-  removeEmptyRoommateGroups(roommates);
+  removeEmptyGroups(roommates);
 }
 
 function pullRoommate(roommates, identity) {
@@ -69,8 +88,8 @@ function pullRoommate(roommates, identity) {
   return roomNumber;
 }
 
-function removeEmptyRoommateGroups(roommates) {
-  roommates.filter((group) => group.length === 0).forEach((empty) => remove(roommates, empty));
+function removeEmptyGroups(groups) {
+  groups.filter((group) => group.length === 0).forEach((empty) => remove(groups, empty));
 }
 
 const useServer = (server) => {
@@ -78,27 +97,28 @@ const useServer = (server) => {
   initWebSocketServer(wss);
 }
 
+const getSavedRoomStates = () => {
+  return {};
+  /*
+  const rows = query(SQL.FETCH_ALL);
+  const roomStates = {};
+  rows.forEach((row) => { roomStats[row.id] = tryToParse(roomStates[row.json]) });
+  return roomStates;
+   */
+};
+
+const saveRoomState = (roomName, roomState) => {
+  return;
+  /*
+  db.updateData(roomName, roomState);
+   */
+};
+
 const initWebSocketServer = (wss) => {
   console.log("websocket server starting up");
 
   const clients = {}; // { roomName: wsConnection[] }
-  const roomStates = {}; // { roomName: roomState }
-  const newRoomState = () => ({
-    admitted: [],
-    rejected: [],
-    doorsClosed: 'undefined',
-    focusGroup: [],
-    mutedInFocusGroup: [],
-    gain: DEFAULT_GAIN,
-    delayTime: DEFAULT_DELAY,
-    muteAll: false,
-    meetings: [],
-    userAgents: {},
-    helpNeeded: [],
-    notReady: [],
-    excluded: [],
-    roommates: [],
-  });
+  const roomStates = getSavedRoomStates();
 
   // periodically purge old room state data
   const lastActivity = {} // { roomName: unix-time }
@@ -128,6 +148,7 @@ const initWebSocketServer = (wss) => {
     (clients[roomName] || []).forEach((ws) => {
       sendRoomStateUpdate(roomState, ws);
     });
+    saveRoomState(roomName, roomState);
   }
 
   wss.on('connection', (ws) => {
