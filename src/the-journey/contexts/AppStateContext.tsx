@@ -81,7 +81,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   // ping server periodically to keep alive... and get updated room state in case it's gone stale
   useEffect(() => {
     const intervalId = window.setInterval(() => {
-      server.send({ action: 'ping' });
+      // server.send({ action: 'ping' });
       dispatch('getRoomState');
     }, 10000);
     return () => window.clearInterval(intervalId);

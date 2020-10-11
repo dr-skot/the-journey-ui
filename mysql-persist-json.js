@@ -13,6 +13,7 @@ const SQL = {
   FETCH_JSON: 'SELECT json FROM json WHERE id=:id',
   FETCH_ALL: 'SELECT * FROM json',
   INSERT_JSON: 'INSERT INTO json (id, json) VALUES (:id, :json)',
+  REPLACE_JSON: 'REPLACE INTO json (id, json) VALUES (:id, :json)',
   UPDATE_JSON: 'UPDATE json SET json=:json WHERE id=:id',
   DELETE_JSON: 'DELETE FROM json WHERE id=:id',
   EXPIRE_JSON: `DELETE FROM json WHERE lastUpdate < CURDATE() - INTERVAL ${EXPIRE_TIME_IN_DAYS} DAY`,
@@ -65,6 +66,7 @@ const getConnection = () => new Promise((resolve, reject) => {
 
 // a generic query function that returns promises
 const query = (sql, vars = {}) => new Promise((resolve, reject) => {
+  // console.debug('query', sql, vars);
   getConnection().then((db) => db.query(sql, vars, (error, result) => {
     if (error) {
       console.warn('mysql query error', sql, error);
@@ -87,13 +89,13 @@ const insertData = (id, data) => (
 );
 
 const saveData = (id, data) => (
-  query(SQL.UPDATE_GAME, { id, json: JSON.stringify(data) })
+  query(SQL.REPLACE_JSON, { id, json: JSON.stringify(data) })
 );
 
 const getData = (id) => (
   query(SQL.FETCH_JSON, { id }).then((entries) => {
     if (entries.length === 0) throw new Error('Not found');
-    const data = tryToParse(entries[0].game);
+    const data = tryToParse(entries[0].json);
     if (!data) throw new Error('Invalid JSON');
     return data;
   })
@@ -122,7 +124,7 @@ async function expireJson() { query(SQL.EXPIRE_JSON).then(); }
 
 query(SQL.INSURE_TABLE)
   .then(() => {
-    console.log('mysql connected!');
+    console.log('mysql connected');
     expireJson().then();
     setInterval(expireJson, HOURS_BETWEEN_EXPIRY_CHECKS * 60 * 60 * 1000);
   })

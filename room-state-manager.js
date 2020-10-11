@@ -1,11 +1,8 @@
 const WebSocket = require('ws');
-const query = require('./mysql-persist-json');
 
-console.log('query', query);
-
-// data expires after 5 days of no activity; check every day
-const EXPIRE_TIME = 5 * 24 * 60 * 60 * 1000;
-const EXPIRY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
+const db = require('./mysql-persist-json');
+const getSavedRoomStates = async () => await db.getAllData();
+const saveRoomState = (roomName, roomState) => db.saveData(roomName, roomState);
 
 const DEFAULT_GAIN = 0.8;
 const DEFAULT_DELAY = 0;
@@ -100,40 +97,11 @@ const useServer = (server) => {
   initWebSocketServer(wss);
 }
 
-const getSavedRoomStates = () => {
-  return {};
-  /*
-  const rows = query(SQL.FETCH_ALL);
-  const roomStates = {};
-  rows.forEach((row) => { roomStats[row.id] = tryToParse(roomStates[row.json]) });
-  return roomStates;
-   */
-};
-
-const saveRoomState = (roomName, roomState) => {
-  return;
-  /*
-  db.updateData(roomName, roomState);
-   */
-};
-
-const initWebSocketServer = (wss) => {
+const initWebSocketServer = async (wss) => {
   console.log("websocket server starting up");
 
   const clients = {}; // { roomName: wsConnection[] }
-  const roomStates = getSavedRoomStates();
-
-  // periodically purge old room state data
-  const lastActivity = {} // { roomName: unix-time }
-  const expiryCheck = setInterval(() => {
-    Object.keys(roomStates).forEach((key) => {
-      if (!lastActivity[key] || Date.now() - lastActivity[key] > EXPIRE_TIME) {
-        delete roomStates[key];
-        delete lastActivity[key];
-      }
-    }, EXPIRY_CHECK_INTERVAL);
-  });
-
+  const roomStates = await getSavedRoomStates();
 
   function getRoomState(roomName) {
     if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
@@ -151,7 +119,7 @@ const initWebSocketServer = (wss) => {
     (clients[roomName] || []).forEach((ws) => {
       sendRoomStateUpdate(roomState, ws);
     });
-    saveRoomState(roomName, roomState);
+    saveRoomState(roomName, roomState).then();
   }
 
   wss.on('connection', (ws) => {
@@ -160,10 +128,9 @@ const initWebSocketServer = (wss) => {
         const request = tryToParse(message);
         const { action, payload } = request || {};
         const { roomName, identity } = payload || {};
-        let roomState = roomStates[roomName] || newRoomState();
-        roomStates[roomName] = roomState;
-        lastActivity[roomName] = Date.now();
-        if (action !== 'ping') console.log('websocket message', message);
+        let roomState = getRoomState(roomName);
+        clients[roomName] = insureMembership(clients[roomName], ws);
+        if (!action.match(/ping|getRoomState/)) console.log('websocket message', message);
         switch (action) {
           case 'ping':
             ws.send(JSON.stringify({ action: 'pong' }));
@@ -172,7 +139,7 @@ const initWebSocketServer = (wss) => {
             sendRoomStateUpdate(getRoomState(roomName), ws);
             return;
           case 'joinRoom':
-            clients[roomName] = insureMembership(clients[roomName], ws);
+            // clients[roomName] = insureMembership(clients[roomName], ws);
             if (identity) roomState.userAgents[identity] = payload.userAgent;
             break;
           case 'leaveRoom':

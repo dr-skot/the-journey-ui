@@ -17,7 +17,7 @@ interface MeetingProps {
 }
 
 export default function Meeting({ group }: MeetingProps) {
-  const [{ localTracks }, dispatch] = useTwilioRoomContext();
+  const [, dispatch] = useTwilioRoomContext();
   const [, roomStateDispatch] = useAppState();
   const { setUnmutedGroup } = useContext(AudioStreamContext);
   const meeters = sortBy(
