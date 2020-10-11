@@ -2,13 +2,16 @@ const mysql = require('mysql');
 
 /* eslint-disable no-console */
 
+// TODO make a module parameter somehow
+const DATABASE_URL = process.env.CLEARDB_DATABASE_URL;
+
 const EXPIRE_TIME_IN_DAYS = 5;
 const HOURS_BETWEEN_EXPIRY_CHECKS = 12;
 
 const SQL = {
   INSURE_TABLE: 'CREATE TABLE IF NOT EXISTS json ' +
     ' (id VARCHAR(20) PRIMARY KEY, json TEXT, ' +
-    '  lastUpdate TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP)',
+    '  lastUpdate TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW())',
   FIND_ID: 'SELECT id FROM json WHERE id=:id',
   FETCH_JSON: 'SELECT json FROM json WHERE id=:id',
   FETCH_ALL: 'SELECT * FROM json',
@@ -32,17 +35,15 @@ const tryToParse = (json) => {
   }
 };
 
-// TODO make a module parameter somehow
-const urlString = process.env.CLEARDB_DATABASE_URL;
-
 // parse URL and create connection object
-const dbURL = new URL(urlString);
+const dbURL = new URL(DATABASE_URL);
 const dbConfig = {
   host: dbURL.host,
   user: dbURL.username,
   password: dbURL.password,
   database: dbURL.pathname.slice(1), // remove leading slash
 };
+console.log('dbConfig', dbConfig);
 
 const pool = mysql.createPool(dbConfig);
 
