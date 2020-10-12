@@ -76,9 +76,6 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
-  console.log("UGH FUCKING DOORS OPEN IS", appState.doorsOpen, "BECAUSE FUCKING APP STATE IS", appState);
-  console.log("UGH FUCKING ROOM NAME IS", roomName);
-
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
     console.log('dispatch', action, payload);
@@ -98,7 +95,6 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   useEffect(() => {
     function update(message: ServerMessage) {
       if (message.action === 'roomStateUpdate' && message.payload) {
-        console.log("UGH FUCKING DOORS OPEN FROM SERVER IS", message.payload.doorsOpen, "BECAUSE FUCKING APP STATE IS", message.payload);
         setAppState(message.payload);
       }
     }

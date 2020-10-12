@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
-import { useAppState } from '../../contexts/AppStateContext';
-import { serverNow } from '../../utils/ServerDate';
-import { DEFAULT_DOOR_POLICY } from '../../utils/foh';
-import useShowtime from '../../hooks/useShowtime/useShowtime';
+import { useAppState } from '../../../contexts/AppStateContext';
+import { serverNow } from '../../../utils/ServerDate';
+import { DEFAULT_DOOR_POLICY } from '../../../utils/foh';
+import useShowtime from '../../../hooks/useShowtime/useShowtime';
 
 export default function CloseDoorsButton() {
   const [, roomStateDispatch] = useAppState();

@@ -1,15 +1,16 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import useCode from '../../hooks/useCode';
+import useCode from '../../../hooks/useCode';
 import DoorControls from './DoorControls';
-import { DEFAULT_DOOR_POLICY, timeToCodeWithTZ } from '../../utils/foh';
+import { DEFAULT_DOOR_POLICY } from '../../../utils/foh';
+import { timeToCodeWithTZ } from '../../../utils/codes';
 import { DateTime } from 'luxon';
-import { useAppState } from '../../contexts/AppStateContext';
+import { useAppState } from '../../../contexts/AppStateContext';
 
-jest.mock('../../contexts/AppStateContext');
+jest.mock('../../../contexts/AppStateContext');
 const mockUseAppState = useAppState as jest.Mock;
 
-jest.mock('../../hooks/useCode');
+jest.mock('../../../hooks/useCode');
 const mockUseCode = useCode as jest.Mock;
 
 describe("the DoorControls component", () => {

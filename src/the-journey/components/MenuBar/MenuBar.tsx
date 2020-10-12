@@ -9,7 +9,7 @@ import ToggleFullscreenButton from './ToggleFullScreenButton/ToggleFullScreenBut
 import { getRole } from '../../utils/twilio';
 import MuteAllButton from './MuteAllButton';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
-import DoorControls from './DoorControls';
+import DoorControls from './DoorControls/DoorControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

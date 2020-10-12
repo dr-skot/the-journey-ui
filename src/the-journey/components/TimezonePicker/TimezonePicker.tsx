@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MenuItem, Select } from '@material-ui/core';
-import { timezones } from '../../utils/foh';
+import { timezones } from '../../utils/codes';
 
 const currentZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 const currentCountry = currentZone && currentZone.split('/')[0]

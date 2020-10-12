@@ -2,7 +2,8 @@ import { renderHook } from '@testing-library/react-hooks';
 import useShowtime from './useShowtime';
 import useCode from '../useCode';
 import { useAppState } from '../../contexts/AppStateContext';
-import { DEFAULT_DOOR_POLICY, localTimezoneIndex, timeToCodeWithTZ } from '../../utils/foh';
+import { DEFAULT_DOOR_POLICY } from '../../utils/foh';
+import { localTimezoneIndex, timeToCodeWithTZ } from '../../utils/codes';
 import { DateTime } from 'luxon';
 
 jest.mock('../useCode');

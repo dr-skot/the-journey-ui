@@ -106,7 +106,11 @@ const initWebSocketServer = async (wss) => {
   const clients = {}; // { roomName: wsConnection[] }
   let roomStates = await getSavedRoomStates();
 
-  // TODO manage roomStates bloat with expirations
+  setInterval(() => {
+    Object.keys(roomStates).forEach((code) => {
+      if (db.shouldExpire(code)) delete roomStates[code];
+    });
+  }, 12 * 24 * 60 * 60 * 1000); // clean out old codes every 12 hrs
 
   function getRoomState(roomName) {
     if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
@@ -134,7 +138,6 @@ const initWebSocketServer = async (wss) => {
         const { action, payload } = request || {};
         const { roomName, identity } = payload || {};
         let roomState = getRoomState(roomName);
-        console.log("FUCKING GET ROOMSTATE FOR ROOM NAME", roomName, roomState);
         clients[roomName] = insureMembership(clients[roomName], ws);
         if (!action.match(/ping|getRoomState/)) console.log('websocket message', message);
         switch (action) {

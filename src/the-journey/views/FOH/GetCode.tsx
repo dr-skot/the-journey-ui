@@ -11,12 +11,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import TimezonePicker from '../../components/TimezonePicker/TimezonePicker';
-import { timeToCodeWithTZ, timezones } from '../../utils/foh';
+import { timeToCodeWithTZ, timezones } from '../../utils/codes';
 import { isDev } from '../../utils/react-help';
 import { DateTime } from 'luxon';
 import { serverNow } from '../../utils/ServerDate';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-
 
 
 const Item = styled('div')(() => ({
@@ -63,7 +62,7 @@ function initialTime() {
 }
 
 function minTime() {
-  return serverNow().minus({ days: 2 }).set({ hour: 0, minute: 0 }).toJSDate();
+  return serverNow().minus({ days: 5 }).set({ hour: 0, minute: 0 }).toJSDate();
 }
 
 function maxTime() {

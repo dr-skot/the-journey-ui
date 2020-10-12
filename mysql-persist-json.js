@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const { DateTime } = require('luxon');
+const codes = require('./codes.js');
 
 /* eslint-disable no-console */
 
@@ -116,7 +118,26 @@ const getAllData = (id) => (
 //
 // expiration
 //
-async function expireJson() { query(SQL.EXPIRE_JSON).then(); }
+function shouldExpire(code) {
+  if (code.match(/^(test|(dev-)?room\d*)/)) return false; // keep special room names
+  const [time] = codes.codeToTimeWithTZ(code) || {};
+  // expire if encoded time is more than 3 days in the past
+  return !!(time && time < DateTime.local().minus({ days: 3 }));
+}
+
+async function expireJson() {
+  query(SQL.FETCH_ALL).then((rows) => {
+    rows.forEach((row) => {
+      const code = row.id;
+      if (shouldExpire(code)) {
+        console.log('expiring code', code);
+        query(SQL.DELETE_JSON, { id: code }).then();
+      } else {
+        console.log('not expiring code', code);
+      }
+    });
+  });
+}
 
 
 //
@@ -133,5 +154,5 @@ query(SQL.INSURE_TABLE)
 
 
 module.exports = {
-  query, SQL, availableId, insertData, saveData, getData, getAllData,
+  query, SQL, availableId, insertData, saveData, getData, getAllData, shouldExpire,
 };

@@ -8,7 +8,7 @@ import {
   timezones,
   unSpinChar,
   unTailSpin,
-} from './foh';
+} from './codes';
 
 // TODO make these work without moment
 
