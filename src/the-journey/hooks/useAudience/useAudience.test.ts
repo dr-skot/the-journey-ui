@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import useParticipants from './useParticipants/useParticipants';
-import { useAppState } from '../contexts/AppStateContext';
+import useParticipants from '../useParticipants/useParticipants';
+import { useAppState } from '../../contexts/AppStateContext';
 import useAudience from './useAudience';
 
-jest.mock('./useParticipants/useParticipants');
+jest.mock('../useParticipants/useParticipants');
 const mockUseParticipants = useParticipants as jest.Mock;
 
-jest.mock('../contexts/AppStateContext');
+jest.mock('../../contexts/AppStateContext');
 const mockUseAppState = useAppState as jest.Mock;
 
 describe('useAudience', () => {

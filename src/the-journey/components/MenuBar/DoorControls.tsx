@@ -1,28 +1,23 @@
-import { useAppState } from '../../contexts/AppStateContext';
-import useShowtime from '../../hooks/useShowtime';
-import { TextField } from '@material-ui/core';
+import useShowtime from '../../hooks/useShowtime/useShowtime';
 import CloseDoorsButton from './CloseDoorsButton';
 import React from 'react';
-import { DEFAULT_DOOR_POLICY } from '../../utils/foh';
+import { formatTime } from '../../utils/foh';
+import { serverNow } from '../../utils/ServerDate';
+import DoorsOpenControl from './DoorsOpenControl';
 
 export default function DoorControls() {
-  const [roomState, roomStateDispatch] = useAppState();
-  const { local } = useShowtime() || {};
-  const { doorsOpen } = roomState;
+  const { curtain } = useShowtime() || {};
 
-  console.log("FUCKING ROOM STATE IS", roomState);
-
-  const setDoorsOpen = (e: any) => {
-    roomStateDispatch('set', { doorsOpen: e.target.value });
-  }
-
-  const value = doorsOpen === undefined ? DEFAULT_DOOR_POLICY.open : doorsOpen;
+  const showtime = curtain ? formatTime(curtain) : undefined;
+  const now = serverNow();
 
   return <>
-    { local ? `showtime ${local.time} ${local.day}` : null }
-    | doors open
-    <TextField type="number" inputProps={{ min: 0, max: 120, step: 5 }} label="minutes" variant="outlined" size="small"
-               value={value} onChange={setDoorsOpen} /> before |
-    <CloseDoorsButton/>
+    { showtime && <div style={{textAlign: 'center', marginRight: '2em' }}>
+      { /* put SHOWTIME in its own span so tests can find it with getByText */ }
+        <span>SHOWTIME</span><br/>
+        {showtime.time} {showtime.day}
+      </div> }
+    { curtain && (now < curtain ? <DoorsOpenControl/> : <CloseDoorsButton/>) }
   </>
 }
+

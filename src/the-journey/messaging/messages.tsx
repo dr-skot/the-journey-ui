@@ -1,6 +1,8 @@
 import React from 'react';
 import SimpleMessage from '../views/SimpleMessage';
-import { ShowtimeData } from '../hooks/useShowtime';
+import { ShowtimeInfo } from '../hooks/useShowtime/useShowtime';
+import { serverNow } from '../utils/ServerDate';
+import { DEFAULT_DOOR_POLICY, formatTime } from '../utils/foh';
 
 export const Messages = {
   INVALID_CODE: <SimpleMessage
@@ -10,14 +12,23 @@ export const Messages = {
       <>Please contact the box office for a valid show address.</>
     ]}
   />,
-  WRONG_TIME: ({ punct, doorPolicy, local, venue }: ShowtimeData) => <SimpleMessage
-    title={`You’re ${punct}!`}
-    paragraphs={[
-      <>This show {punct.match(/late/) ? 'started' : 'starts'} at {local.time} on {local.day}.</>,
-      <>{punct === 'early' && `Doors open ${doorPolicy.open} min before showtime.`}</>,
-      <>{punct === 'too late' && venue.doorsClose && `Doors closed at ${venue.doorsClose}.`}</>,
-    ]}
-  />,
+  WRONG_TIME: ({ curtain, open, close }: ShowtimeInfo) => {
+    const now = serverNow();
+    const late = now >= close;
+    const wayTooLate = now > curtain.plus({ minutes: DEFAULT_DOOR_POLICY.close });
+    const showtime = formatTime(curtain);
+    return <SimpleMessage
+      title={`You’re ${late ? 'too late' : 'early'}!`}
+      paragraphs={[
+        <>This show {late ? 'started' : 'starts'} at {showtime.time} on {showtime.day}.</>,
+        <>
+          { late
+            ? !wayTooLate && `Doors closed at ${formatTime(close).time}.`
+            : `Doors open at ${formatTime(open).time}` }
+        </>,
+      ]}
+    />
+  },
   UNSTAFFED_ROOM: <SimpleMessage
     title="Empty theater!"
     paragraphs={[

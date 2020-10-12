@@ -44,7 +44,7 @@ export const ServerDate = (function(serverNow) {
     // Remember the URL of this script so we can call it again during
     // synchronization.
     scripts = document.getElementsByTagName("script"),
-    URL = scripts[scripts.length - 1].src,
+    URL = scripts.length > 0 ? scripts[scripts.length - 1].src : '',
 
     synchronizationIntervalDelay,
     synchronizationInterval,
@@ -280,7 +280,7 @@ export const ServerDate = (function(serverNow) {
 // Not yet supported by all browsers (including Safari).  Calculate the
 // precision based on when the HTML page has finished loading and begins to load
 // this script from the server.
-  if (typeof performance !== "undefined") {
+  if (typeof performance !== "undefined" && performance.timing) {
     precision = (scriptLoadTime - performance.timing.domLoading) / 2;
     offset += precision;
   }

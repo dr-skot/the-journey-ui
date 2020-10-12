@@ -84,17 +84,13 @@ export default function App() {
                     <GetCode/>
                   </PrivateRoute>
 
-                  { /* this is out here because we need to match the code in AppStateContextProvider */ }
-                  <PrivateRoute path="/foh/:code?" roles="foh|operator">
-                    <Twilio><FOH/></Twilio>
-                  </PrivateRoute>
-
-
                   <Route exact path="/" component={HomePage}/>
                   <Route
                     path={(
-                      '/entry /show /test /rejected /ninja /lurk /foh /operator /focus /gallery ' +
-                      '/log /log2 /clear /testing /nothing /roommates'
+                      '/entry/:code /show/:code? /test/:code? /rejected/:code? ' +
+                      '/ninja/:code? /lurk/:code? /foh/:code? /operator/:code? /focus/:code? ' +
+                      '/gallery/:code? /log/:code? /log2/:code? /clear/:code? ' +
+                      '/testing /nothing'
                     ).split(' ')}>
                     <Twilio>
                       <Switch>
@@ -102,7 +98,7 @@ export default function App() {
                       <Route path="/show/:code?"><Show/></Route>
                       <Route path="/test/:code?"><Entry test/></Route>
                       <Route path="/rejected"><Rejected/></Route>
-                      <PrivateRoute path="/ninja/:code?" roles="operator"><Entry/></PrivateRoute>
+                      <PrivateRoute path="/ninja/:code?" roles="operator" component={Entry}/>
 
                       <PrivateRoute path="/lurk/:code?" roles="lurker|foh|operator">
                         <AutoJoin role="lurker"/>
@@ -111,7 +107,7 @@ export default function App() {
                         </UnstaffedRoomCheck>
                       </PrivateRoute>
 
-                      <PrivateRoute path="/foh/:code?" roles="foh|operator"><FOH/></PrivateRoute>
+                      <PrivateRoute path="/foh/:code?" roles="foh|operator" component={FOH}/>
 
                       <PrivateRoute path="/operator/:code?" roles="operator">
                         <AutoJoin role="operator"/><Operator/>

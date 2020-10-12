@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import usePagedAudience, { columnSplit } from './usePagedAudience';
-import useAudience from '../../hooks/useAudience';
+import useAudience from '../../hooks/useAudience/useAudience';
 import { range } from 'lodash';
 
 jest.mock('../../hooks/useAudience');

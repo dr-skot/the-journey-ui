@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Participant } from 'twilio-video';
 import { cached } from '../../../utils/react-help';
 import { useAppState } from '../../../contexts/AppStateContext';
-import useAudience from '../../../hooks/useAudience';
+import useAudience from '../../../hooks/useAudience/useAudience';
 
 // both with and without shift key
 // first half of this string will be used for the labels

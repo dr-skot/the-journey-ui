@@ -21,6 +21,8 @@ export default function Entry({ test }: { test?: boolean }) {
   checkForOperator(roomName)
     .then((hasOperator) => setRoomCheck(hasOperator ? 'good' : 'empty'))
     .catch((error) => {
+      // TODO fix end-of-JSON error we're getting as room fills up
+      // (in the meantime set roomCheck to 'good'; a full room presumably has an operator in it)
       console.log('error checking room', error);
       setRoomCheck('good'); // don't reject just because the checker's broken
     })

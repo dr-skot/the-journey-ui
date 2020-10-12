@@ -15,7 +15,7 @@ const SETTINGS = ['doorsOpen', 'doorsClosed', 'gain', 'delayTime', 'muteAll'];
 const newRoomState = () => ({
   admitted: [],
   rejected: [],
-  doorsOpen: "FUCK YOU", // DEFAULT_DOOR_POLICY.open,
+  doorsOpen: DEFAULT_DOOR_POLICY.open,
   doorsClosed: 'undefined',
   focusGroup: [],
   mutedInFocusGroup: [],

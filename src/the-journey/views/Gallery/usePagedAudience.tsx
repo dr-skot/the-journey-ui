@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MenuButton from '../../components/MenuBar/MenuButton';
-import useAudience from '../../hooks/useAudience';
+import useAudience from '../../hooks/useAudience/useAudience';
 import { cached } from '../../utils/react-help';
 import { Participant } from 'twilio-video';
 import { GALLERY_COLUMN_COUNT, GALLERY_ORDERS } from '../../../constants';
