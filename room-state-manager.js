@@ -4,15 +4,18 @@ const db = require('./mysql-persist-json');
 const getSavedRoomStates = async () => await db.getAllData();
 const saveRoomState = (roomName, roomState) => db.saveData(roomName, roomState);
 
+// TODO consolidate this with constants.ts
 const DEFAULT_GAIN = 0.8;
 const DEFAULT_DELAY = 0;
+const DEFAULT_DOOR_POLICY = { open: 30 };
 
 const GROUPS = ['admitted', 'rejected', 'focusGroup', 'mutedInFocusGroup', 'helpNeeded', 'notReady', 'excluded'];
-const SETTINGS = ['doorsClosed', 'gain', 'delayTime', 'muteAll'];
+const SETTINGS = ['doorsOpen', 'doorsClosed', 'gain', 'delayTime', 'muteAll'];
 
 const newRoomState = () => ({
   admitted: [],
   rejected: [],
+  doorsOpen: "FUCK YOU", // DEFAULT_DOOR_POLICY.open,
   doorsClosed: 'undefined',
   focusGroup: [],
   mutedInFocusGroup: [],
@@ -101,7 +104,9 @@ const initWebSocketServer = async (wss) => {
   console.log("websocket server starting up");
 
   const clients = {}; // { roomName: wsConnection[] }
-  const roomStates = await getSavedRoomStates();
+  let roomStates = await getSavedRoomStates();
+
+  // TODO manage roomStates bloat with expirations
 
   function getRoomState(roomName) {
     if (!roomStates[roomName]) roomStates[roomName] = newRoomState();
@@ -129,6 +134,7 @@ const initWebSocketServer = async (wss) => {
         const { action, payload } = request || {};
         const { roomName, identity } = payload || {};
         let roomState = getRoomState(roomName);
+        console.log("FUCKING GET ROOMSTATE FOR ROOM NAME", roomName, roomState);
         clients[roomName] = insureMembership(clients[roomName], ws);
         if (!action.match(/ping|getRoomState/)) console.log('websocket message', message);
         switch (action) {

@@ -9,8 +9,7 @@ import ToggleFullscreenButton from './ToggleFullScreenButton/ToggleFullScreenBut
 import { getRole } from '../../utils/twilio';
 import MuteAllButton from './MuteAllButton';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
-import CloseDoorsButton from './CloseDoorsButton';
-// import DelayControl from './DelayControl';
+import DoorControls from './DoorControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +53,7 @@ export default function MenuBar({ extras }: MenuBarProps) {
           {(roomStatus === 'connecting') && <CircularProgress className={classes.loadingSpinner}/>}
           <div className={classes.rightButtonContainer}>
             { extras }
-            { role === 'foh' && <CloseDoorsButton/> }
+            { role === 'foh' && <DoorControls/> }
             { role === 'operator' && roomStatus === 'connected' && <><GainControl/><MuteAllButton/></> }
             <ToggleFullscreenButton />
           </div>

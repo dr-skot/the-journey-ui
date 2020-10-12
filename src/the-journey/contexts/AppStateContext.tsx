@@ -6,6 +6,7 @@ import { TwilioRoomContext } from './TwilioRoomContext';
 import { cached, isDev } from '../utils/react-help';
 import RobustWebSocket from '../network/robust-web-socket';
 import useRoomName from '../hooks/useRoomName';
+import { DEFAULT_DOOR_POLICY } from '../utils/foh';
 type Identity = Participant.Identity;
 export type Group = Identity[];
 
@@ -17,6 +18,7 @@ let server: RobustWebSocket;
 interface AppState {
   admitted: Group,
   rejected: Group,
+  doorsOpen: number,
   doorsClosed: string,
   mutedInFocusGroup: Group,
   focusGroup: Group,
@@ -36,6 +38,7 @@ type AppStateContextValue = [AppState, Dispatcher];
 const initialState = {
   admitted: [],
   rejected: [],
+  doorsOpen: DEFAULT_DOOR_POLICY.open,
   doorsClosed: 'undefined',
   focusGroup: [],
   mutedInFocusGroup: [],
@@ -64,6 +67,7 @@ interface ProviderProps {
   children: ReactNode,
 }
 
+// TODO deal with roomName weirdness
 export default function AppStateContextProvider({ children }: ProviderProps) {
   server = server || new RobustWebSocket(serverUrl);
   const [{ room }] = useContext(TwilioRoomContext);
@@ -72,11 +76,14 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
+  console.log("UGH FUCKING DOORS OPEN IS", appState.doorsOpen, "BECAUSE FUCKING APP STATE IS", appState);
+  console.log("UGH FUCKING ROOM NAME IS", roomName);
+
   // relay dispatch actions to server
   const dispatch = useCallback((action, payload = {}) => {
     console.log('dispatch', action, payload);
-    server.send({ action, payload: { identity: me, roomName: room?.name, ...payload } });
-  },  [me, room]);
+    server.send({ action, payload: { identity: me, roomName, ...payload } });
+  },  [me, roomName]);
 
   // ping server periodically to keep alive... and get updated room state in case it's gone stale
   useEffect(() => {
@@ -91,6 +98,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   useEffect(() => {
     function update(message: ServerMessage) {
       if (message.action === 'roomStateUpdate' && message.payload) {
+        console.log("UGH FUCKING DOORS OPEN FROM SERVER IS", message.payload.doorsOpen, "BECAUSE FUCKING APP STATE IS", message.payload);
         setAppState(message.payload);
       }
     }
@@ -122,6 +130,7 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   const appStateWithCaching = {
     admitted: cachedIfEqual('admitted'),
     rejected: cachedIfEqual('rejected'),
+    doorsOpen: cachedIfEqual('doorsOpen'),
     doorsClosed: cachedIfEqual('doorsClosed'),
     focusGroup: cachedIfEqual('focusGroup'),
     mutedInFocusGroup: cachedIfEqual('mutedInFocusGroup'),
