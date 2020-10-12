@@ -108,7 +108,10 @@ const initWebSocketServer = async (wss) => {
 
   setInterval(() => {
     Object.keys(roomStates).forEach((code) => {
-      if (db.shouldExpire(code)) delete roomStates[code];
+      if (db.shouldExpire(code)) {
+        delete roomStates[code];
+        delete clients[code];
+      }
     });
   }, 12 * 24 * 60 * 60 * 1000); // clean out old codes every 12 hrs
 
