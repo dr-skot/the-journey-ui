@@ -32,8 +32,11 @@ export const Messages = {
   UNSTAFFED_ROOM: <SimpleMessage
     title="Empty theater!"
     paragraphs={[
-      <>There doesn’t seem to be a show running here.</>,
-      <>Please double-check that you have the right address, and try again closer to showtime.</>
+      <>There doesn’t seem to be a show running at this time.</>,
+      <>Please double-check the date and time on your performance confirmation email
+        and try again closer to showtime.</>,
+      <>If you think that you are reaching this page in error, please contact the box office.
+        We look forward to welcoming you to THE JOURNEY.</>,
     ]}
   />,
   TEST_ALL_GOOD: <SimpleMessage
@@ -46,15 +49,19 @@ export const Messages = {
     title="Sorry you’re having trouble..."
     paragraphs={[
       <>
-        You might have better luck in a different browser.
-        THE JOURNEY is designed to run in the latest versions of
-        Chrome, Firefox, Microsoft Edge, and Safari.
+        You might have better luck in a different browser. THE JOURNEY is designed to
+        run in the latest versions of Chrome, Firefox, Microsoft Edge, and Safari.
       </>,
       <>
-        In any case, come back at showtime!
-        Even if we can’t get your camera and mic hooked up,
-        you will still be able to watch the show.
-      </>
+        Click <a target="_blank" href="/troubleshooting-tips.pdf">here</a> for troubleshooting tips.
+      </>,
+      <>
+        If you have tried all the steps suggested in our tips and your camera or audio still isn't working,
+        be sure to arrive early for the show, so we can test further at that time.
+      </>,
+      <>
+        We look forward to welcoming you to THE JOURNEY.
+      </>,
     ]}
   />
 
