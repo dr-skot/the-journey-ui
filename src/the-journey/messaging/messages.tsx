@@ -33,7 +33,7 @@ export const Messages = {
     title="Empty theater!"
     paragraphs={[
       <>There doesn’t seem to be a show running here.</>,
-      <>Please contact the box office for a valid show address.</>,
+      <>Please double-check that you have the right address, and try again closer to showtime.</>
     ]}
   />,
   TEST_ALL_GOOD: <SimpleMessage
