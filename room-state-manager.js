@@ -142,6 +142,7 @@ const initWebSocketServer = async (wss) => {
         const { roomName, identity } = payload || {};
         let roomState = getRoomState(roomName);
         clients[roomName] = insureMembership(clients[roomName], ws);
+        if (!action) return;
         if (!action.match(/ping|getRoomState/)) console.log('websocket message', message);
         switch (action) {
           case 'ping':

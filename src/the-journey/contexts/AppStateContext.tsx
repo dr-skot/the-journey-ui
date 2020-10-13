@@ -53,8 +53,7 @@ const initialState = {
   roommates: [],
 } as AppState;
 
-const initialStateChanger: Dispatcher = () => {};
-const initalContextValue: AppStateContextValue = [initialState, initialStateChanger];
+const initalContextValue: AppStateContextValue = [initialState, () => {}];
 
 export const AppStateContext = createContext(initalContextValue);
 

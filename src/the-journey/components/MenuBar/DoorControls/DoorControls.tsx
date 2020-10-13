@@ -4,12 +4,13 @@ import React from 'react';
 import { formatTime } from '../../../utils/foh';
 import { serverNow } from '../../../utils/ServerDate';
 import DoorsOpenControl from './DoorsOpenControl';
+import useClock from '../../../hooks/useClock';
 
 export default function DoorControls() {
   const { curtain } = useShowtime() || {};
+  const now = useClock(4000) // update every 4 sec
 
   const showtime = curtain ? formatTime(curtain) : undefined;
-  const now = serverNow();
 
   return <>
     { showtime && <div style={{textAlign: 'center', marginRight: '2em' }}>

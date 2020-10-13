@@ -45,7 +45,6 @@ const dbConfig = {
   password: dbURL.password,
   database: dbURL.pathname.slice(1), // remove leading slash
 };
-console.log('dbConfig', dbConfig);
 
 const pool = mysql.createPool(dbConfig);
 

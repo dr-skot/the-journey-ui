@@ -22,6 +22,9 @@ export default function useShowtime() {
   const { curtain, timezone } = validCode;
   const { open, close } = getEntryWindow(curtain, doorsOpen, doorsClosed);
 
+  // shave seconds off curtain
+  const normalizedCurtain = curtain?.minus({ seconds: curtain.second });
+
   // TODO cache this sufficiently so as not to rerender constantly
-  return { code, curtain, open, close, timezone } as ShowtimeInfo;
+  return { code, curtain: normalizedCurtain, open, close, timezone } as ShowtimeInfo;
 }
