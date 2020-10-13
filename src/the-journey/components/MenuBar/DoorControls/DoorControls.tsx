@@ -2,7 +2,6 @@ import useShowtime from '../../../hooks/useShowtime/useShowtime';
 import CloseDoorsButton from './CloseDoorsButton';
 import React from 'react';
 import { formatTime } from '../../../utils/foh';
-import { serverNow } from '../../../utils/ServerDate';
 import DoorsOpenControl from './DoorsOpenControl';
 import useClock from '../../../hooks/useClock';
 
