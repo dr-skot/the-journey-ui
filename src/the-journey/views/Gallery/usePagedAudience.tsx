@@ -19,7 +19,7 @@ export const columnSplit = (columns: number, page: number, xs: any[]) =>
   xs.filter((_, i) => Math.floor(2 * i / columns) % 2 === page - 1);
 
 export default function usePagedAudience() {
-  const [hideBlanks, setHideBlanks] = useState(false);
+  const [hideBlanks, ] = useState(false); // discontinued functionality
   const [paged, setPaged] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [orderIndex, setOrderIndex] = useState(0);
@@ -35,8 +35,8 @@ export default function usePagedAudience() {
     { MenuButton(`order ${orderIndex + 1}`,
       () => setOrderIndex((orderIndex + 1) % GALLERY_ORDERS.length)) }
 
-    { MenuButton(`${hideBlanks ? 'show' : 'hide'} blanks`,
-    () => setHideBlanks((prev) => !prev)) }
+    { /* MenuButton(`${hideBlanks ? 'show' : 'hide'} blanks`,
+    () => setHideBlanks((prev) => !prev)) */ }
 
   </>;
 
