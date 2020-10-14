@@ -198,7 +198,7 @@ const initWebSocketServer = async (wss) => {
         }
         broadcastUpdate(roomName);
       } catch (e) {
-        console.error(e);
+        console.error('RoomStateManager: error caught by outer try block', e);
       }
     });
 

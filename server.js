@@ -168,9 +168,12 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
   const params = new URLSearchParams();
   params.append('Rules', rulesJson);
 
+  const fetchTime = Date.now();
   fetch(url, { method: 'post', body: params, headers: { 'Authorization': `Basic ${base64(auth)}` } })
     .then(response => {
-      streamToString(response.body).then((string) => console.log(string));
+      streamToString(response.body).then((string) => {
+        console.log('fetched in', Date.now() - fetchTime, 'ms:', string);
+      });
       res.send(response.body.read());
     })
     .catch(error => { console.log(error); res.send(error.body.read()); });

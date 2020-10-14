@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
 import { cached } from '../../utils/react-help';
@@ -10,7 +10,6 @@ import MenuedView from '../MenuedView';
 import WithFacts from '../Facts/WithFacts';
 import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
-import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
 
 function FocusGroupView() {
@@ -20,7 +19,6 @@ function FocusGroupView() {
     (p) => focusGroup.indexOf(p.identity)
   );
   useRerenderOnTrackSubscribed();
-  const [safer, setSafer] = useState(false);
 
   const final = cached('FocusGroup').if(sameIdentities)(group) as Participant[];
   return (
