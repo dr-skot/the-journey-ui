@@ -33,6 +33,7 @@ import Show from './the-journey/views/Entry/Show';
 import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
 import TwilioMin from './the-journey/views/Testing/TwilioMin';
+import FocusGroup2 from './the-journey/views/Focus/FocusGroup2';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -89,7 +90,7 @@ export default function App() {
                     path={(
                       '/entry/:code /show/:code? /test/:code? /rejected/:code? ' +
                       '/ninja/:code? /lurk/:code? /foh/:code? /operator/:code? /focus/:code? ' +
-                      '/gallery/:code? /log/:code? /log2/:code? /clear/:code? ' +
+                      '/gallery/:code? /log/:code? /log2/:code? /clear/:code? /focus2/:code? ' +
                       '/testing /nothing'
                     ).split(' ')}>
                     <Twilio>
@@ -115,6 +116,9 @@ export default function App() {
                       <PrivateRoute path="/focus/:code?" roles="operator">
                         <AutoJoin role="focus"/><FocusGroup/>
                       </PrivateRoute>
+                        <PrivateRoute path="/focus2/:code?" roles="operator">
+                          <AutoJoin role="focus"/><FocusGroup2/>
+                        </PrivateRoute>
                       <PrivateRoute path="/gallery/:code?" roles="operator">
                         <AutoJoin role="gallery" options={{ maxTracks: '0' }}/>
                         <HalfGallery/>

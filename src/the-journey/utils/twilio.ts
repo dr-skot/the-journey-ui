@@ -8,7 +8,7 @@ import Video, {
   Track,
   LocalDataTrack,
   CreateLocalTrackOptions,
-  VideoBandwidthProfileOptions, LocalParticipant,
+  VideoBandwidthProfileOptions, LocalParticipant, LogLevel,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { element, unixTime } from './functional';
@@ -31,6 +31,7 @@ export interface SettingsAdjust {
 const DEFAULT_OPTIONS = {
   tracks: [],
   automaticSubscription: false,
+  logLevel: 'debug' as LogLevel,
 }
 
 export function getToken(roomName: string, identity: string) {
@@ -142,9 +143,10 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
 // SUBSCRIBING
 //
 export type SubscribeProfile =
-  'data-only' | 'audio' | 'focus' | 'focus-safer' | 'gallery' | 'listen' | 'watch' | 'nothing'
+  'data-only' | 'audio' | 'focus' | 'focus-safer' | 'gallery' | 'listen' | 'watch' | 'nothing' | 'everything'
 
 const TIMEOUT_DELAY = 5000;
+const MAX_TIMEOUT_COUNT = 5;
 
 export function subscribe(roomSid: string, participantSid: string, policy: string = 'data_only',
                           focus: string[] = [], stars: string[] = []) {
@@ -159,18 +161,20 @@ export function subscribe(roomSid: string, participantSid: string, policy: strin
 
   console.log(`fetching ${url}`);
 
-  const timeoutId = setTimeout(
-    () => console.log(`fetch ${url} no answer after ${TIMEOUT_DELAY}ms`)
-    , TIMEOUT_DELAY
-  );
+  let timeoutCount = 0;
+  const timeoutId = setInterval(() => {
+      timeoutCount += 1;
+      console.log(`fetch ${url} no answer after ${timeoutCount * TIMEOUT_DELAY}ms`);
+      if (timeoutCount >= MAX_TIMEOUT_COUNT) clearInterval(timeoutId)
+    }, TIMEOUT_DELAY);
 
   return fetch(url, { headers })
-    .then(() => console.log(`${policy} subscribe successful`))
+    .then(() => console.log(`$fetch {url} successful`))
     .catch(error => {
-      console.log(`error subscribing to ${policy}:`, error);
+      console.log(`error fetching ${url}:`, error);
       throw error;
     })
-    .finally(() => clearTimeout(timeoutId));
+    .finally(() => clearInterval(timeoutId));
 }
 
 

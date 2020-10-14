@@ -122,6 +122,10 @@ const SUBSCRIBE_RULES = {
     ...eavesdrop.map((p) => ({ type: 'include', publisher: p, 'kind': 'audio' })),
   ],
 
+  everything: () => [
+    { type: 'include', all: true },
+  ],
+
   audio: () => [{ type: 'include', kind: 'audio' }],
   nothing: () => [{ type: 'exclude', all: true }],
 }
@@ -150,6 +154,7 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
 
   // const curl = `curl -X POST ${url} -u '${auth}' --data Rules='${rulesJson}' -H 'Content-Type: application/x-www-form-urlencoded'`;
   // console.log(curl);
+  console.log(`POST ${url} Rules='${rulesJson}'`);
 
   const params = new URLSearchParams();
   params.append('Rules', rulesJson);
@@ -193,7 +198,7 @@ app.get('/clear/:room', (req, res) => {
   const auth = `${twilioApiKeySID}:${twilioApiKeySecret}`
 
   // curl -X POST https://video.twilio.com/v1/Rooms/room2 --data-urlencode "Status=completed"
-  const curl = `curl -X POST ${url} -u '${auth}' -d 'Status=completed' -H 'Content-Type: application/x-www-form-urlencoded'`;
+  const curl = `curl -X POST ${url} -u <auth> -d 'Status=completed' -H 'Content-Type: application/x-www-form-urlencoded'`;
   console.log(curl);
 
   const params = new URLSearchParams();
