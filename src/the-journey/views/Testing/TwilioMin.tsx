@@ -66,10 +66,10 @@ function SimpleJoin() {
       room.disconnect();
       setRoom(undefined);
     }
-    else joinRoom('tjspxtu', 'min').then((room) => {
+    else joinRoom('tjspxtu', 'min|lurker|1').then((room) => {
       setRoom(room);
     });
-  }, [room, setRoom]);
+    }, [room, setRoom]);
 
   const publish = useCallback(() => {
     if (!room) return;
