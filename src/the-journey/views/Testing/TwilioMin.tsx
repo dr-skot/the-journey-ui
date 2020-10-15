@@ -4,8 +4,8 @@ import { LocalAudioTrack, LocalVideoTrack, Room } from 'twilio-video';
 import { Button } from '@material-ui/core';
 import { Twilio } from '../../../App';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
-//import Millicast from '../Broadcast/Millicast';
 
+const ROOM_NAME = 'jzrfcrk';
 
 export default function TwilioMin() {
   return <>
@@ -66,7 +66,7 @@ function SimpleJoin() {
       room.disconnect();
       setRoom(undefined);
     }
-    else joinRoom('tjspxtu', 'min|lurker|1').then((room) => {
+    else joinRoom(ROOM_NAME, 'min|lurker|1').then((room) => {
       setRoom(room);
     });
     }, [room, setRoom]);
