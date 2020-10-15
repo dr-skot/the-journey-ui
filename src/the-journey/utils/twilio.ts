@@ -15,6 +15,7 @@ import { element, unixTime } from './functional';
 import { isDev } from './react-help';
 import { sortBy, isEqual } from 'lodash';
 import { RenderDimensionValue } from '../contexts/settings/renderDimensions';
+import { fetchWithDelayReport } from './fetch';
 
 // same as settings but everything's optional
 export interface SettingsAdjust {
@@ -145,9 +146,6 @@ export function getLocalDataTrack(room: Room): Promise<LocalDataTrack> {
 export type SubscribeProfile =
   'data-only' | 'audio' | 'focus' | 'focus-safer' | 'gallery' | 'listen' | 'watch' | 'nothing' | 'everything'
 
-const TIMEOUT_DELAY = 5000;
-const MAX_TIMEOUT_COUNT = 5;
-
 export function subscribe(roomSid: string, participantSid: string, policy: string = 'data_only',
                           focus: string[] = [], stars: string[] = []) {
   const headers = new window.Headers();
@@ -155,49 +153,21 @@ export function subscribe(roomSid: string, participantSid: string, policy: strin
 
   const esc = encodeURIComponent;
 
+  // TODO remove stars parameter
   // TODO use a POST request for this
   const params = `${esc(roomSid)}/${esc(participantSid)}/${esc(policy)}?focus=${focus.map(esc).join(',')}&stars=${stars.map(esc)}`;
   const url = `${endpoint}/${params}`
 
-  console.log(`fetching ${url}`);
-
-  let timeoutCount = 0;
-  const timeoutId = setInterval(() => {
-      timeoutCount += 1;
-      console.log(`fetch ${url} no answer after ${timeoutCount * TIMEOUT_DELAY}ms`);
-      if (timeoutCount >= MAX_TIMEOUT_COUNT) clearInterval(timeoutId)
-    }, TIMEOUT_DELAY);
-
-  return fetch(url, { headers })
-    .then(() => console.log(`$fetch {url} successful`))
-    .catch(error => {
-      console.log(`error fetching ${url}:`, error);
-      throw error;
-    })
-    .finally(() => clearInterval(timeoutId));
+  return fetchWithDelayReport(url, { headers });
 }
-
 
 export function checkForOperator(roomName: string) {
   const headers = new window.Headers();
   const endpoint = process.env.REACT_APP_PARTICIPANTS_ENDPOINT || '/participants';
 
   const url = `${endpoint}/${encodeURIComponent(roomName)}`;
-  console.log(`fetching ${url}`);
 
-  const timeoutId = setTimeout(
-    () => console.log(`fetch ${url} no answer after ${TIMEOUT_DELAY}ms`)
-    , TIMEOUT_DELAY
-  );
-
-  return fetch(url, { headers })
-    .then((response) => response.json())
-    .then(({ participants }) => participants.some(isRole('operator')))
-    .catch((error) => {
-      console.log(`error fetching participants for room ${roomName}:`, error);
-      throw error;
-    })
-    .finally(() => clearTimeout(timeoutId));
+  return fetchWithDelayReport(url, { headers });
 }
 
 

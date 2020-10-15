@@ -173,8 +173,8 @@ app.get('/subscribe/:room/:user/:policy', (req, res) => {
     .then(response => {
       streamToString(response.body).then((string) => {
         console.log('fetched in', Date.now() - fetchTime, 'ms:', string);
+        res.send(string);
       });
-      res.send(response.body.read());
     })
     .catch(error => { console.log(error); res.send(error.body.read()); });
 });
@@ -232,12 +232,15 @@ app.get('/participants/:room', (req, res) => {
   console.log(curl);
 
   fetch(url, { method: 'get', headers: { 'Authorization': `Basic ${base64(auth)}` } })
-    .then(response => {
-      console.log('success');
-      res.send(response.body.read()); // is this right? client is getting unexpected end of json on long output
+    .then(response => response.text())
+    .then(text => {
+      console.log('participants retrieved');
+      res.send(string);
     })
-  // TODO find out what's the right way to handle this
-    // .catch(error => { console.log(json); res.send(error.body.read()); });
+    .catch(error => {
+      console.error('error fetching participants');
+      res.send(error);
+    });
 })
 
 
