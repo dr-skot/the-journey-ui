@@ -66,7 +66,7 @@ function SimpleJoin() {
       room.disconnect();
       setRoom(undefined);
     }
-    else joinRoom('dev-room3', 'min').then((room) => {
+    else joinRoom('tjspxtu', 'min').then((room) => {
       setRoom(room);
     });
   }, [room, setRoom]);
