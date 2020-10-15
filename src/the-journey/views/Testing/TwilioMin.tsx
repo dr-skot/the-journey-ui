@@ -8,13 +8,15 @@ import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 
 
 export default function TwilioMin() {
-  return true ? <SimpleJoin/> : <JoinInApp/>;
+  return <>
+    { true ? <SimpleJoin/> : <JoinInApp/> }
+    <MillicastMin/>
+  </>
 }
 
 function JoinInApp() {
   return <Twilio>
     <JoinInTwilio/>
-    <MillicastMin/>
   </Twilio>;
 }
 
