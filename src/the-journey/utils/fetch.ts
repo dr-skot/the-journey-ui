@@ -5,16 +5,17 @@ export function fetchWithDelayReport(url: string, options: RequestInit,
                                      interval = DEFAULT_INTERVAL,
                                      maxCount = DEFAULT_MAX_COUNT) {
   let count = 0;
-  console.log(`fetching ${url}`);
   const timeoutId = setInterval(() => {
     count += 1;
     console.log(`fetch ${url} no answer after ${count * interval}ms`);
     if (count >= maxCount) clearInterval(timeoutId)
   }, interval);
 
+  console.log(`fetching ${url}`);
+  const fetchTime = Date.now();
   return fetch(url, options)
     .then((result) => {
-      console.log(`fetch ${url} successful`);
+      console.log(`'fetched in ${Date.now() - fetchTime} ms: ${url}`);
       return result;
     })
     .catch((error) => {
