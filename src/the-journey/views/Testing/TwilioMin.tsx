@@ -14,6 +14,7 @@ export default function TwilioMin() {
 function JoinInApp() {
   return <Twilio>
     <JoinInTwilio/>
+    <MillicastMin/>
   </Twilio>;
 }
 
@@ -41,6 +42,7 @@ const toggle = (prev: boolean) => !prev;
 
 function SimpleJoin() {
   const [room, setRoom] = useState<Room>();
+  const [unpublished, setUnpublished] = useState(false);
   const [, render] = useState(false);
 
   console.log('SimpleJoin', { tracks: room?.localParticipant.tracks.size });
@@ -57,7 +59,11 @@ function SimpleJoin() {
   }, [room]);
 
   const toggleJoin = useCallback(() => {
-    if (room) { room.disconnect(); setRoom(undefined); }
+    if (room) {
+      unpublish();
+      room.disconnect();
+      setRoom(undefined);
+    }
     else joinRoom('dev-room3', 'min').then((room) => {
       setRoom(room);
     });
@@ -67,6 +73,7 @@ function SimpleJoin() {
     if (!room) return;
     getLocalTracks().then((tracks) => {
       publishTracks(room, tracks);
+      setUnpublished(false);
     });
   }, [room])
 
@@ -77,10 +84,11 @@ function SimpleJoin() {
       track.stop();
       track.disable();
       room.localParticipant.unpublishTrack(pub.track);
+      setUnpublished(true);
     });
   }, [room]);
 
-  const published = room
+  const published = !unpublished && room
     ? Array.from(room.localParticipant.tracks.values())
       .some((pub) =>
         (pub.track as LocalAudioTrack | LocalVideoTrack).isEnabled)
@@ -96,4 +104,15 @@ function SimpleJoin() {
       ? <Button onClick={publish}>publish</Button>
       : <Button onClick={unpublish}>unpublish</Button>) }
   </>;
+}
+
+function MillicastMin() {
+  return <div style={{ height: '100vh', width: '100%', background: 'red' }}>
+    <iframe
+      title={'The Journey'}
+      src={'/millicast-stereo/viewer.html'}
+      allowFullScreen
+      width="100%" height="100%"
+    />
+  </div>;
 }

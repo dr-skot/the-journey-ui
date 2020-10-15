@@ -90,7 +90,7 @@ export default function App() {
                     path={(
                       '/entry/:code /show/:code? /test/:code? /rejected/:code? ' +
                       '/ninja/:code? /lurk/:code? /foh/:code? /operator/:code? /focus/:code? ' +
-                      '/gallery/:code? /log/:code? /log2/:code? /clear/:code? /focus2/:code? ' +
+                      '/gallery/:code? /log/:code? /log2/:code? /clear/:code? /focus2/:code?  ' +
                       '/testing /nothing'
                     ).split(' ')}>
                     <Twilio>
