@@ -12,7 +12,7 @@ export default function MeetingButton({ participant } : { participant: Participa
   const { meeting } = useMeeting();
 
   if (!room) return null;
-  if (inGroup(notReady)(participant)) return null;
+  const arriving = inGroup(notReady)(participant);
   const meetingWithSomeoneElse = !meeting && inGroups(meetings)(participant);
 
   const foh = room.localParticipant;
@@ -26,12 +26,16 @@ export default function MeetingButton({ participant } : { participant: Participa
     }
   }
 
-  return <Button onClick={toggleMeeting} disabled={meetingWithSomeoneElse}
+  return <Button onClick={toggleMeeting} disabled={arriving || meetingWithSomeoneElse}
                  size="small" color={needsHelp ? 'primary' : 'default'} variant="contained">
-    { meetingWithSomeoneElse
-      ? 'in meeting'
-      : meeting
-        ? 'end meeting'
-        : needsHelp ? 'help!' : 'start meeting' }
+    { arriving
+      ? 'in lobby'
+      : meetingWithSomeoneElse
+        ? 'in meeting'
+        : meeting
+          ? 'end meeting'
+          : needsHelp
+            ? 'help!'
+            : 'start meeting' }
   </Button>;
 }

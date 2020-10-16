@@ -32,7 +32,7 @@ export default function CameraMicButton({ participant }: { participant: Particip
     : (
       <Button onClick={toggleMute}>
         { spying ? <CameraIcon /> : <CameraOffIcon /> }
-        { /* <AudioLevelIndicator audioTrack={audioTrack} background={'white'} /> */ }
+        <AudioLevelIndicator audioTrack={audioTrack} background={'white'} />
       </Button>
     );
 }

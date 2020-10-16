@@ -14,7 +14,7 @@ const URLSearchParams = require('url').URLSearchParams;
 const roomStateManager = require('./room-state-manager');
 
 const USE_HTTPS = false;
-// const USE_HTTPS = true;
+// const USE_HTTPS = isDev();
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -273,7 +273,6 @@ app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'build/index.html'))
 });
 
-console.log('starting HTTPS ?', USE_HTTPS);
 const server = USE_HTTPS
   ? https.createServer({
       key: fs.readFileSync('server.key'),

@@ -3,8 +3,6 @@ import { styled } from '@material-ui/core/styles';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import Millicast from './Millicast';
 import { inGroup } from '../../utils/twilio';
-import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
-import SubscribeToFocusGroupAudioMinusRoommates from '../../subscribers/SubscribeToFocusGroupAudioMinusRoommates';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
 import { useAppState } from '../../contexts/AppStateContext';
 import SubscribeToFocusGroupAudioMinusMutedMinusRoommates
