@@ -13,8 +13,8 @@ const VideoGrant = AccessToken.VideoGrant;
 const URLSearchParams = require('url').URLSearchParams;
 const roomStateManager = require('./room-state-manager');
 
-// const USE_HTTPS = false;
-const USE_HTTPS = true;
+const USE_HTTPS = false;
+// const USE_HTTPS = true;
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
