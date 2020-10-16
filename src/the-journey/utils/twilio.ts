@@ -8,7 +8,7 @@ import Video, {
   Track,
   LocalDataTrack,
   CreateLocalTrackOptions,
-  VideoBandwidthProfileOptions, LocalParticipant, LogLevel,
+  VideoBandwidthProfileOptions, LocalParticipant,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { element, unixTime } from './functional';
@@ -32,7 +32,6 @@ export interface SettingsAdjust {
 const DEFAULT_OPTIONS = {
   tracks: [],
   automaticSubscription: false,
-  logLevel: 'debug' as LogLevel,
 }
 
 export function getToken(roomName: string, identity: string) {
@@ -85,21 +84,6 @@ export function publishTracks(room: Room, tracks: LocalTrack[]) {
 
 export function joinRoom(roomName: string, identity: string, options:  Video.ConnectOptions = {}, tracks: LocalTrack[] = []) {
   return getToken(roomName, identity).then(token => connect(token, roomName, options, tracks));
-}
-
-
-export type TrackFilter = 'audio' | 'video' | 'data' | undefined
-
-export function getTracks(room: Room, kind: TrackFilter = undefined) {
-  const tracks = new Map();
-  room.participants.forEach((p) => {
-    tracks.set(p.identity,
-      kind === 'audio' ? p.audioTracks
-    : kind === 'video' ? p.videoTracks
-    : kind === 'data' ? p.dataTracks
-    : p.tracks);
-  });
-  return tracks;
 }
 
 export function getLocalTracks(deviceIds: { video?: string, audio?: string } = {}) {
