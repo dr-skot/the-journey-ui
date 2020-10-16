@@ -21,9 +21,9 @@ export default function AudioTrack({ track }: AudioTrackProps) {
       console.log('AudioTrack setting volume at creation to', 0.1);
       volumeSettable.volume = 0.1;
       // TODO ifIsMobileSafari ?
-      console.log('Pausing and playing');
-      audioEl.current?.pause();
-      audioEl.current?.play();
+      console.log('not Pausing and playing');
+      //audioEl.current?.pause();
+      //audioEl.current?.play();
     });
     document.body.appendChild(audioEl.current);
     return () => track.detach().forEach(el => el.remove());
