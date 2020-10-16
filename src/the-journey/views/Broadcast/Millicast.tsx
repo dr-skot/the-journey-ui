@@ -4,6 +4,7 @@ import fscreen from 'fscreen';
 import { remove } from '../../utils/functional';
 import { isFirefox } from '../../utils/browser';
 import CenteredInWindow from '../../components/CenteredInWindow';
+import { isFunction } from 'lodash';
 
 const ClickBlocker = styled('div')(() => ({
   position: 'absolute',
@@ -70,8 +71,10 @@ export default function Millicast() {
       player.muted = false;
       player.play().finally();
     }
-    if (iframeRef.current) fscreen.requestFullscreen(iframeRef.current);
     setButtonClicked(true);
+    if (iframeRef.current && isFunction(fscreen.requestFullscreen)) {
+      fscreen.requestFullscreen(iframeRef.current);
+    }
   };
 
   return (
