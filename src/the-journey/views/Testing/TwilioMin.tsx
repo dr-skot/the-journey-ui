@@ -60,17 +60,6 @@ function SimpleJoin() {
     }
   }, [room]);
 
-  const toggleJoin = useCallback(() => {
-    if (room) {
-      unpublish();
-      room.disconnect();
-      setRoom(undefined);
-    }
-    else joinRoom(ROOM_NAME, 'min|lurker|1').then((room) => {
-      setRoom(room);
-    });
-    }, [room, setRoom]);
-
   const publish = useCallback(() => {
     if (!room) return;
     getLocalTracks().then((tracks) => {
@@ -89,6 +78,17 @@ function SimpleJoin() {
       setUnpublished(true);
     });
   }, [room]);
+
+  const toggleJoin = useCallback(() => {
+    if (room) {
+      unpublish();
+      room.disconnect();
+      setRoom(undefined);
+    }
+    else joinRoom(ROOM_NAME, 'min|lurker|1').then((room) => {
+      setRoom(room);
+    });
+  }, [room, setRoom, unpublish]);
 
   const published = !unpublished && room
     ? Array.from(room.localParticipant.tracks.values())
