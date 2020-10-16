@@ -7,6 +7,9 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import SubscribeToFocusGroupAudioMinusRoommates from '../../subscribers/SubscribeToFocusGroupAudioMinusRoommates';
 import HelpIsComingNotification from '../Entry/components/HelpIsComingNotification';
 import { useAppState } from '../../contexts/AppStateContext';
+import SubscribeToFocusGroupAudioMinusMutedMinusRoommates
+  from '../../subscribers/SubscribeToFocusGroupAudioMinusMutedMinusRoommates';
+import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -24,8 +27,8 @@ export default function Broadcast() {
   console.log("RENDER: Broadcast");
 
   return <>
-    <SubscribeToFocusGroupAudioMinusRoommates/>
-    <FocusGroupAudio/>
+    <SubscribeToFocusGroupAudioMinusMutedMinusRoommates/>
+    <PlayAllSubscribedAudio/>
     <HighPriorityInFocusGroup/>
       <Container>
         <Main>

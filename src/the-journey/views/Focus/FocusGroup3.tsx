@@ -12,6 +12,8 @@ import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import { Button } from '@material-ui/core';
 import Subscribe from '../../subscribers/Subscribe';
+import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
+import SubscribeToFocusGroupAudioMinusMuted from '../../subscribers/SubscribeToFocusGroupAudioMinusMuted';
 
 function FocusGroupView() {
   const [{ focusGroup }] = useAppState();
@@ -38,19 +40,17 @@ function FocusGroupView() {
   const final = cached('FocusGroupView.final').if(sameIdentities)(group) as Participant[];
   return (
     <MenuedView menuExtras={menuExtras}>
-      <Subscribe profile={safer ? 'focus-safer' : 'focus'} focus={focusGroup}/>
+      <SubscribeToFocusGroupAudioMinusMuted/>
       <FlexibleGallery participants={final} />
     </MenuedView>
   );
 }
 
-export default function FocusGroup() {
-  return (
-    <>
-      <FocusGroupAudio/>
-      <WithFacts>
-        <FocusGroupView />
-      </WithFacts>
-    </>
-  );
+export default function FocusGroup3() {
+  return <>
+    <PlayAllSubscribedAudio/>
+    <WithFacts>
+      <FocusGroupView />
+    </WithFacts>
+  </>
 }

@@ -34,6 +34,7 @@ import UnstaffedRoomCheck from './the-journey/components/UnstaffedRoomCheck';
 import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
 import TwilioMin from './the-journey/views/Testing/TwilioMin';
 import FocusGroup2 from './the-journey/views/Focus/FocusGroup2';
+import FocusGroup3 from './the-journey/views/Focus/FocusGroup3';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -118,6 +119,9 @@ export default function App() {
                       </PrivateRoute>
                         <PrivateRoute path="/focus2/:code?" roles="operator">
                           <AutoJoin role="focus"/><FocusGroup2/>
+                        </PrivateRoute>
+                        <PrivateRoute path="/focus3/:code?" roles="operator">
+                          <AutoJoin role="focus"/><FocusGroup3/>
                         </PrivateRoute>
                       <PrivateRoute path="/gallery/:code?" roles="operator">
                         <AutoJoin role="gallery" options={{ maxTracks: '0' }}/>
