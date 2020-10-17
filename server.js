@@ -141,8 +141,8 @@ function streamToString (stream) {
 
 app.get('/subscribe/:room/:user/:policy', (req, res) => {
   if (req.params.policy === 'none') { res.end(); return; } // support this noop for completeness
-  const focus = (req.query.focus || '').split(',') || [];
-  const stars = (req.query.stars || '').split(',') || [];
+  const focus = (req.query.focus || '').split(',').filter((x) => x.length > 0);
+  const stars = (req.query.stars || '').split(',').filter((x) => x.length > 0);
   const basicRules = SUBSCRIBE_RULES.basic();
   const moreRules = (SUBSCRIBE_RULES[req.params.policy] || noop)(focus) || [];
   const rules = basicRules
