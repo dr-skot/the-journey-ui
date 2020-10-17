@@ -143,7 +143,7 @@ export default function App() {
 
 }
 
-/*
+/* TODO reinstate this?
 const VideoAppFull = React.memo(({ view }: VideoAppProps) => {
   const { error, setError, settings } = useAppState();
 
