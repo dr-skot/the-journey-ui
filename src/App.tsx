@@ -72,6 +72,7 @@ export default function App() {
 
   console.log('RENDER APP');
   console.warn('does log rocket collect warn?');
+  console.info('does log rocket collect info?');
   console.debug('does log rocket collect debug?');
   console.error('does log rocket collect error?');
   return (
