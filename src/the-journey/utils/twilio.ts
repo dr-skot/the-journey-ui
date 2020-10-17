@@ -8,7 +8,7 @@ import Video, {
   Track,
   LocalDataTrack,
   CreateLocalTrackOptions,
-  VideoBandwidthProfileOptions, LocalParticipant,
+  VideoBandwidthProfileOptions, LocalParticipant, LogLevel,
 } from 'twilio-video';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { element, unixTime } from './functional';
@@ -32,6 +32,7 @@ export interface SettingsAdjust {
 const DEFAULT_OPTIONS = {
   tracks: [],
   automaticSubscription: false,
+  logLevel: 'debug' as LogLevel,
 }
 
 export function getToken(roomName: string, identity: string) {

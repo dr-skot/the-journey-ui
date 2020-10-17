@@ -71,6 +71,9 @@ export default function App() {
   // const height = useHeight();
 
   console.log('RENDER APP');
+  console.warn('does log rocket collect warn?');
+  console.debug('does log rocket collect debug?');
+  console.error('does log rocket collect error?');
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />

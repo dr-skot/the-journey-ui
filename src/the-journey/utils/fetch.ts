@@ -15,7 +15,7 @@ export function fetchWithDelayReport(url: string, options: RequestInit,
   const fetchTime = Date.now();
   return fetch(url, options)
     .then((result) => {
-      console.log(`'fetched in ${Date.now() - fetchTime} ms: ${url}`);
+      console.log(`fetched in ${Date.now() - fetchTime} ms: ${url}`);
       return result;
     })
     .catch((error) => {
