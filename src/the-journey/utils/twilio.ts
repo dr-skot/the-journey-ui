@@ -159,7 +159,6 @@ export function checkForOperator(roomName: string) {
     ));
 }
 
-
 export type UserRole =
   'audience' | 'operator' | 'gallery' | 'foh' | 'lurker' | 'sign-interpreter' | 'star' | 'focus' | 'log' | 'comm'
 
