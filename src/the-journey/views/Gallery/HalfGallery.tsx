@@ -30,7 +30,7 @@ const Main = styled('div')({
 const half = (n: number) => Math.ceil(n / 2);
 
 function HalfGalleryView() {
-  useRerenderOnTrackSubscribed(); // TODO is this necessary? only for non-fixed I think
+  // useRerenderOnTrackSubscribed(); // TODO is this necessary? only for non-fixed I think
   const [halfSubscribe, setHalfSubscribe] = useState(false);
   const { gallery, paged, hideBlanks, menuButtons, order } = usePagedAudience();
 
@@ -43,8 +43,6 @@ function HalfGalleryView() {
     { menuButtons }
   </>;
 
-  const identities = getIdentities(gallery);
-
   const galleryProps = {
     participants: gallery,
     fixedLength: hideBlanks ? undefined : paged ? half(GALLERY_SIZE) : GALLERY_SIZE,
@@ -52,6 +50,7 @@ function HalfGalleryView() {
   };
 
   const final = cached('HalfGallery.galleryProps').ifEqual(galleryProps) as FlexibleGalleryProps;
+  const identities = getIdentities(order.map((n) => gallery[n - 1]).filter((p) => !!p));
 
   return (
     <Container>
