@@ -6,7 +6,6 @@ import Broadcast from '../Broadcast/Broadcast';
 import { useLocalTracks } from '../../hooks/useLocalTracks';
 
 export default function Lurk() {
-  useLocalTracks();
   return <>
     <AutoJoin role="lurker"/>
     <UnstaffedRoomCheck>
