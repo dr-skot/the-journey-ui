@@ -33,8 +33,13 @@ export default function useAudioElementCreator() {
     function resetParticipants() {
       setParticipants(Array.from(room!.participants.values()));
     }
+    // TODO what about unsubscribed
     room.on('trackSubscribed', resetParticipants);
-    return () => { room.off('trackSubscribed', resetParticipants); }
+    room.on('trackUnsubscribed', resetParticipants);
+    return () => {
+      room.off('trackSubscribed', resetParticipants);
+      room.off('trackUnsubscribed', resetParticipants);
+    }
   }, [room])
 
   // reset settings when unmute group changes
@@ -52,6 +57,7 @@ export default function useAudioElementCreator() {
         Array.from(p.audioTracks.values())
           .map((pub) => pub.track)
           .filter((track) => track !== null)))) as unknown as RemoteAudioTrack[];
+    console.log('attaching', tracks.length, 'tracks to elements');
     tracks.forEach((track) => {
       const audioElement = track.attach();
       audioElement.addEventListener('canplay', () => {
@@ -62,6 +68,7 @@ export default function useAudioElementCreator() {
       document.body.appendChild(audioElement);
     });
     return () => {
+      console.log('detaching', tracks.length, 'tracks from elements');
       tracks.forEach((track) => {
         track.detach().forEach((el) => el.remove())
       });
