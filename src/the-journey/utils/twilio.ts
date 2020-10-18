@@ -64,7 +64,7 @@ export function publishTracks(room: Room, tracks: LocalTrack[]) {
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
 
-  // console.log('publishTracks', tracks);
+  console.log('publishTracks', tracks);
 
   const me = room.localParticipant;
   const priorities: Priorities = isRole('star')(me)

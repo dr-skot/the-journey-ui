@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import { checkForOperator } from '../../utils/twilio';
-import GetMedia from './GetMedia';
 import NameForm from './NameForm';
 import useRoomName from '../../hooks/useRoomName';
 import { Messages } from '../../messaging/messages';
