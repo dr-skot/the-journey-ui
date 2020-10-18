@@ -63,7 +63,6 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       break;
 
     case 'getLocalTracks':
-      console.debug('TwilioRoomContext.getLocalTracks');
       getLocalTracks(payload.deviceIds)
         .then(tracks => {
           dispatch('gotLocalTracks', { tracks });
@@ -81,7 +80,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
 
     case 'getLocalTracksFailed':
       // TODO don't assume permission denied is the reason, check the error
-      console.log('getLocalTracksFailed', payload.error);
+      console.error('getLocalTracksFailed', payload.error);
       newState = { ...state, error: payload.error, mediaPermissionDenied: true };
       break;
 
@@ -98,7 +97,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
           if (payload.then) payload.then(room);
         })
         .catch((error) => {
-          console.log('room join failed!')
+          console.error('room join failed!')
           dispatch('roomJoinFailed', { error });
           if (payload.catch) payload.catch(error);
         });

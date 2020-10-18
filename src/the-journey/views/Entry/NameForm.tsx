@@ -73,7 +73,6 @@ export default function NameForm({ roomName, role = 'audience', options= {} }: N
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const identity = getIdentity(role, username);
-    console.log('NameForm.handleSubmit: dispatch join room');
     dispatch('joinRoom', { roomName, identity, options });
     roomStateDispatch('setMembership', { group: 'notReady', identity, value: true });
   };

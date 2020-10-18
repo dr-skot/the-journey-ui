@@ -44,8 +44,7 @@ export function getToken(roomName: string, identity: string) {
 
 export let joinOptions: Video.ConnectOptions = {};
 export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}, tracks: LocalTrack[]) {
-  console.log('connecting with options', { ...DEFAULT_OPTIONS, ...options });
-  console.log('connecting with tracks', tracks);
+  console.log('connecting with options', { ...DEFAULT_OPTIONS, ...options }, { tracks });
   joinOptions = { ...DEFAULT_OPTIONS, ...options };
   return Video.connect(token, {
     ...DEFAULT_OPTIONS,
@@ -64,8 +63,6 @@ type Priorities = Record<Track.Kind, Track.Priority>;
 export function publishTracks(room: Room, tracks: LocalTrack[]) {
   const videoTrack = tracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const audioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
-
-  console.log('publishTracks', tracks);
 
   const me = room.localParticipant;
   const priorities: Priorities = isRole('star')(me)
@@ -89,7 +86,6 @@ export function joinRoom(roomName: string, identity: string, options:  Video.Con
 }
 
 export function getLocalTracks(deviceIds: { video?: string, audio?: string } = {}) {
-  console.log('get local tracks!');
   return Video.createLocalTracks({
     video: {
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
@@ -101,7 +97,7 @@ export function getLocalTracks(deviceIds: { video?: string, audio?: string } = {
     },
   })
     .catch((error) => {
-    console.log('error getting tracks', error);
+    console.error('error getting tracks', error);
     throw error;
   })
 }
@@ -215,7 +211,7 @@ export function toggleVideoEnabled(room: Room | undefined, localTracks: (LocalVi
          localParticipant?.publishTrack(track, { priority: 'low' });
          return [...localTracks, track];
        })
-       .catch((e: Error) => console.log('error gettingLocalVideoTrack', e));
+       .catch((e: Error) => console.error('error gettingLocalVideoTrack', e));
   }
 }
 
