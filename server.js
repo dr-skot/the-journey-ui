@@ -235,7 +235,7 @@ app.get('/participants/:room', (req, res) => {
     .then(response => response.text())
     .then(text => {
       console.log('participants retrieved');
-      res.send(string);
+      res.send(text);
     })
     .catch(error => {
       console.error('error fetching participants');

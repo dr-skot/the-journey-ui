@@ -92,7 +92,7 @@ export default function App() {
                       <Route path="/show/:code?"><Show/></Route>
                       <Route path="/test/:code?"><Entry test/></Route>
                       <Route path="/rejected"><Rejected/></Route>
-                      <PrivateRoute path="/ninja/:code?" roles="operator" component={Entry}/>
+                      <PrivateRoute path="/ninja/:code?" roles="operator"><Entry/></PrivateRoute>
 
                       <PrivateRoute path="/lurk/:code?" roles="lurker|foh|operator">
                         <AutoJoin role="lurker"/>

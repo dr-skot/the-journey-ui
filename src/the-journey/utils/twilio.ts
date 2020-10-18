@@ -152,7 +152,11 @@ export function checkForOperator(roomName: string) {
 
   const url = `${endpoint}/${encodeURIComponent(roomName)}`;
 
-  return fetchWithDelayReport(url, { headers });
+  return fetchWithDelayReport(url, { headers })
+    .then((result) => result.json())
+    .then((data) => (
+      data.participants?.some((p: string) => p.match(/^operator\|operator\|/))
+    ));
 }
 
 

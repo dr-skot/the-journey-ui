@@ -8,7 +8,4 @@ import './chat.css';
 
 if (!isDev()) LogRocket.init('ophgzh/the-journey');
 
-// will this help?
-window.addEventListener('beforeunload', () => console.trace());
-
 ReactDOM.render(<App />, document.getElementById('root'));

@@ -5,7 +5,6 @@ import { GALLERY_SIZE } from './FlexibleGallery';
 import { styled } from '@material-ui/core/styles';
 import { getIdentities } from '../../utils/twilio';
 import { cached } from '../../utils/react-help';
-import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import WithFacts from '../Facts/WithFacts';
 import Subscribe from '../../subscribers/Subscribe';
 import MenuButton from '../../components/MenuBar/MenuButton';
