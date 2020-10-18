@@ -8,6 +8,7 @@ import CenteredInWindow from '../../components/CenteredInWindow';
 import { CircularProgress } from '@material-ui/core';
 import SafeRedirect from '../../components/SafeRedirect';
 import Broadcast from '../Broadcast/Broadcast';
+import { useLocalTracks } from '../../hooks/useLocalTracks';
 
 type RoomCheck = 'checking' | 'good' | 'empty';
 
@@ -39,6 +40,7 @@ export default function LurkEntry() {
 function StaffedRoomEntry() {
   const [{ room, roomStatus }] = useTwilioRoomContext();
   const roomName = useRoomName();
+  useLocalTracks();
 
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName} role="lurker"/>
 
