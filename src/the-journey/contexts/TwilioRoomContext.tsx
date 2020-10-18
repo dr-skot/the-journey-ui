@@ -63,6 +63,7 @@ const reducer: React.Reducer<TwilioState, ReducerRequest> = (state: TwilioState,
       break;
 
     case 'getLocalTracks':
+      console.debug('TwilioRoomContext.getLocalTracks');
       getLocalTracks(payload.deviceIds)
         .then(tracks => {
           dispatch('gotLocalTracks', { tracks });

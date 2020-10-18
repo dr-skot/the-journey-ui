@@ -14,6 +14,8 @@ export default function LurkEntry() {
   const [roomCheck, setRoomCheck] = useState<RoomCheck>('checking');
   const roomName = useRoomName();
 
+  console.debug('HEY ITS LURKENTRY');
+
   // check for unstaffed room
   checkForOperator(roomName)
     .then((hasOperator) => setRoomCheck(hasOperator ? 'good' : 'empty'))

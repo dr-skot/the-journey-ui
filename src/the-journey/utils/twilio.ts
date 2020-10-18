@@ -45,6 +45,7 @@ export function getToken(roomName: string, identity: string) {
 export let joinOptions: Video.ConnectOptions = {};
 export function connect(token: string, roomName: string, options: Video.ConnectOptions = {}, tracks: LocalTrack[]) {
   console.log('connecting with options', { ...DEFAULT_OPTIONS, ...options });
+  console.log('connecting with tracks', tracks);
   joinOptions = { ...DEFAULT_OPTIONS, ...options };
   return Video.connect(token, {
     ...DEFAULT_OPTIONS,
@@ -88,6 +89,7 @@ export function joinRoom(roomName: string, identity: string, options:  Video.Con
 }
 
 export function getLocalTracks(deviceIds: { video?: string, audio?: string } = {}) {
+  console.log('get local tracks!');
   return Video.createLocalTracks({
     video: {
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
