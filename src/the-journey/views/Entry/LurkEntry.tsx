@@ -7,6 +7,7 @@ import { Messages } from '../../messaging/messages';
 import CenteredInWindow from '../../components/CenteredInWindow';
 import { CircularProgress } from '@material-ui/core';
 import SafeRedirect from '../../components/SafeRedirect';
+import Broadcast from '../Broadcast/Broadcast';
 
 type RoomCheck = 'checking' | 'good' | 'empty';
 
@@ -44,5 +45,5 @@ function StaffedRoomEntry() {
   const { identity } = room.localParticipant;
   sessionStorage.setItem('roomJoined', JSON.stringify({ identity, roomName }))
 
-  return <SafeRedirect push to="/show"/>
+  return <Broadcast/>
 }
