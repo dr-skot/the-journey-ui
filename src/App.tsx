@@ -31,7 +31,7 @@ import PopulateDemo from './the-journey/views/Gallery/PopulateDemo';
 import TwilioMin from './the-journey/views/Testing/TwilioMin';
 import FocusGroup2 from './the-journey/views/Focus/FocusGroup2';
 import Lurk from './the-journey/views/Entry/Lurk';
-import LurkEntry from './the-journey/views/Entry/LurkEntry';
+import Lurk2 from './the-journey/views/Entry/Lurk2';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -97,7 +97,7 @@ export default function App() {
                   </PrivateRoute>
 
                   <PrivateRoute path="/lurk2/:code?" roles="lurker|foh|operator">
-                    <LurkEntry/>
+                    <Lurk2/>
                   </PrivateRoute>
 
                   <PrivateRoute path="/foh/:code?" roles="foh|operator" component={FOH}/>

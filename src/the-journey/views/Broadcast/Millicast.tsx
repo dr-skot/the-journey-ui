@@ -6,8 +6,6 @@ import { isFirefox } from '../../utils/browser';
 import CenteredInWindow from '../../components/CenteredInWindow';
 import { isFunction } from 'lodash';
 
-const SILENCE_URL = `${process.env.PUBLIC_URL}/silence.mp3`;
-
 const ClickBlocker = styled('div')(() => ({
   position: 'absolute',
   height: '90vh',
@@ -73,11 +71,6 @@ export default function Millicast() {
       player.muted = false;
       player.play().finally();
     }
-    // create and play a silent audio element on this click
-    // in hopes of initiating audio permissions in mobile safari
-    new Audio(SILENCE_URL).play()
-      .then(() => console.debug('played silence'))
-      .catch((e) => console.error('error playing silence', e));
     setButtonClicked(true);
     if (iframeRef.current && isFunction(fscreen.requestFullscreen)) {
       fscreen.requestFullscreen(iframeRef.current);
