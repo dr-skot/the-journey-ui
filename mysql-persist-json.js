@@ -70,6 +70,7 @@ const getConnection = () => new Promise((resolve, reject) => {
 const query = (sql, vars = {}) => new Promise((resolve, reject) => {
   // console.debug('query', sql, vars);
   getConnection().then((db) => db.query(sql, vars, (error, result) => {
+    db.release();
     if (error) {
       console.warn('mysql query error', sql, error);
       reject(error);
