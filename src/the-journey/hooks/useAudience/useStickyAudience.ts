@@ -1,5 +1,5 @@
 import useParticipants from '../useParticipants/useParticipants';
-import { getIdentities, inGroups, isRole, sortedParticipants } from '../../utils/twilio';
+import { inGroups, isRole, sortedParticipants } from '../../utils/twilio';
 import { useAppState } from '../../contexts/AppStateContext';
 import { and, not } from '../../utils/functional';
 import { Participant } from 'twilio-video';
