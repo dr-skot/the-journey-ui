@@ -145,6 +145,12 @@ export function subscribe(roomSid: string, participantSid: string, policy: strin
 }
 
 export function checkForOperator(roomName: string) {
+  return getParticipantList(roomName).then((participants) =>
+    participants?.some((p: string) => p.match(/^operator\|operator\|/))
+  );
+}
+
+export function getParticipantList(roomName: string) {
   const headers = new window.Headers();
   const endpoint = process.env.REACT_APP_PARTICIPANTS_ENDPOINT || '/participants';
 
@@ -152,9 +158,7 @@ export function checkForOperator(roomName: string) {
 
   return fetchWithDelayReport(url, { headers })
     .then((result) => result.json())
-    .then((data) => (
-      data.participants?.some((p: string) => p.match(/^operator\|operator\|/))
-    ));
+    .then((data) => data.participants);
 }
 
 export type UserRole =

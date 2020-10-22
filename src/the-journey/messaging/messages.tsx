@@ -39,6 +39,13 @@ export const Messages = {
         We look forward to welcoming you to THE JOURNEY.</>,
     ]}
   />,
+  FULL_THEATER: <SimpleMessage
+    title="Theater full!"
+    paragraphs={[
+      <>Sorry, there's no more room in this theater.</>,
+      <>Please contact the box office to resolve this issue.</>,
+    ]}
+  />,
   TEST_ALL_GOOD: <SimpleMessage
     title="That’s all there is to it!"
     paragraphs={[

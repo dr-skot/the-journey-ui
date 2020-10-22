@@ -1,14 +1,14 @@
 import React from 'react';
 import AutoJoin from '../../components/AutoJoin';
-import UnstaffedRoomCheck from '../../components/UnstaffedRoomCheck';
 import WithFacts from '../Facts/WithFacts';
 import Broadcast from '../Broadcast/Broadcast';
+import RoomCheck from './RoomCheck';
 
 export default function Lurk() {
   return <>
     <AutoJoin role="lurker"/>
-    <UnstaffedRoomCheck>
+    <RoomCheck>
       <WithFacts><Broadcast/></WithFacts>
-    </UnstaffedRoomCheck>
+    </RoomCheck>
   </>;
 }
