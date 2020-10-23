@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { joinRoom } from '../../utils/twilio';
-import { Participant, RemoteAudioTrack, RemoteAudioTrackPublication, Room } from 'twilio-video';
-import { Button } from '@material-ui/core';
+import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
+import { Button, TextField } from '@material-ui/core';
 import { getAudioContext } from '../../utils/audio';
-import { remove } from '../../utils/functional';
+import { playTracks, setDelayTime } from '../../utils/trackPlayer';
+import { DEFAULT_DELAY } from '../../contexts/AudioStreamContext/AudioStreamContext';
 
 export default function Receiver() {
   const [room, setRoom] = useState<Room>();
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [playing, setPlaying] = useState(false);
+  const [delayValue, setDelayValue] = useState(DEFAULT_DELAY);
 
   useEffect(() => {
     joinRoom('audio-test', 'receiver', { automaticSubscription: true })
@@ -26,19 +29,24 @@ export default function Receiver() {
     }
   }, [room])
 
-  const playTrack = useCallback((pub?: RemoteAudioTrackPublication) => {
-    if (!pub) return;
-    console.log('playing track', pub.track);
-  }, []);
-
-  return <>
+    return <>
     <h1>Reciever</h1>
-    { Array.from(room?.participants.values() || []).map((p) => (
+      <div>
+        <TextField type="number" inputProps={{ min: 0, max: 10, step: 0.1 }}
+                   label="delay" variant="outlined" size="small"
+                   value={delayValue} onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      setDelayTime(value);
+                      setDelayValue(value);
+                    }}/>
+      </div>
+    { participants.map((p) => (
       <div key={p.identity}>
         <p>{ p.identity }</p>
         <Button onClick={() => {
-          playWithAudioContext(p.audioTracks.values().next().value.track);
-        }}>play</Button>
+          playTracks(playing ? [] : [p.audioTracks.values().next().value.track]);
+          setPlaying((prev) => !prev);
+        }}>{ playing ? 'stop' : 'play' }</Button>
       </div>
     ))}
   </>;
