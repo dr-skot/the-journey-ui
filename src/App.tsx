@@ -32,6 +32,9 @@ import TwilioMin from './the-journey/views/Testing/TwilioMin';
 import FocusGroup2 from './the-journey/views/Focus/FocusGroup2';
 import Lurk from './the-journey/views/Entry/Lurk';
 import Lurk2 from './the-journey/views/Entry/Lurk2';
+import Sender from './the-journey/views/Testing/Sender';
+import AudioTest from './the-journey/views/Testing/AudioTest';
+import Receiver from './the-journey/views/Testing/Receiver';
 
 // import SignLanguageEntry from './the-journey/views/Broadcast/components/SignLanguageEntry';
 // import ErrorDialog from './twilio/components/ErrorDialog/ErrorDialog';
@@ -71,6 +74,9 @@ export default function App() {
           <Switch>
             <Route path="/pop" component={PopulateDemo}/>
             <Route path="/min" component={TwilioMin}/>
+            <Route path="/audio" component={AudioTest}/>
+            <Route path="/sender" component={Sender}/>
+            <Route path="/receiver" component={Receiver}/>
 
             <PrivateRoute path="/code" roles="foh|operator">
               <GetCode/>

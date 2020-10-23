@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
 import useAudioContext from '../../contexts/AudioStreamContext/useAudioContext';
 import { remove } from '../../utils/functional';
@@ -11,20 +11,13 @@ const nodes: AudioNode[] = [];
 
 export default function AudioNode({ track }: AudioTrackProps) {
   const audioContext = useAudioContext();
-  const [outputNode, setOutputNode] = useState<AudioNode>();
-
-  useEffect(() => {
-    if (!audioContext) return;
-    const gainNode = audioContext.createGain();
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.connect(audioContext.destination);
-    setOutputNode(gainNode);
-  }, [audioContext]);
 
   useEffect(() => {
     console.log('audiocontext?')
-    if (!audioContext || !outputNode) return;
+    if (!audioContext) return;
     console.log('yes, setting up node for', track.mediaStreamTrack);
+    const destination = audioContext.createMediaStreamDestination();
+
     const mediaStreamTrack = track.mediaStreamTrack //.clone(); // use a clone?? is this the key?
     // chrome seems to require this
     // mediaStreamTrack.enabled = true;
@@ -32,17 +25,21 @@ export default function AudioNode({ track }: AudioTrackProps) {
     const stream = new MediaStream([mediaStreamTrack])
     const node = audioContext.createMediaStreamSource(stream);
     nodes.push(node);
-    node.connect(outputNode);
+    node.connect(destination);
+    // Then, set the MediaStreamDestinationNode's MediaStream as the `srcObject` on an
+    // <audio> or <video> element.
+    var audio = document.createElement('audio');
+    audio.srcObject = destination.stream;
+    audio.autoplay = true;
+    document.body.appendChild(audio);
     return () => {
       console.log('disconnecting node')
-      node.mediaStream.getTracks().forEach(track => {
-        // track.stop();
-        // track.enabled = false;
-      });
+      audio.pause();
+      audio.remove();
       node.disconnect();
       remove(nodes, node);
     }
-  }, [outputNode, audioContext, track.mediaStreamTrack]);
+  }, [audioContext, track.mediaStreamTrack]);
 
   return null;
 }

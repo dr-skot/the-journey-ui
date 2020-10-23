@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
-import { getRole, getTimestamp, getUsername } from '../../utils/twilio';
+import { getLocalTracks, getRole, getTimestamp, getUsername } from '../../utils/twilio';
 import { DateTime } from 'luxon';
 import { Button } from '@material-ui/core';
 import AudioElement from './AudioElement';
-import AudioNode from './AudioNode';
+import AudioNode from './AudioNode2';
 import AutoJoin from '../../components/AutoJoin';
 import Subscribe from '../../subscribers/Subscribe';
 import CloningAudioNode from './CloningAudioNode';
@@ -87,6 +87,7 @@ export default function Testing() {
     <div style={{margin: '2em'}}>
       <AutoJoin />
       <Subscribe profile="audio"/>
+      <div><Button onClick={() => getLocalTracks()}>get local tracks</Button></div>
       <h1>Room "{room?.name}": all participants</h1>
       { participants.map((p) => p && <TestingParticipant key={p.identity} participant={p} />) }
     </div>
