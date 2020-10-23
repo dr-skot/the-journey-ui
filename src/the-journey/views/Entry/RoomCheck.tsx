@@ -6,7 +6,7 @@ import CenteredInWindow from '../../components/CenteredInWindow';
 import { CircularProgress } from '@material-ui/core';
 import { Messages } from '../../messaging/messages';
 
-const MAX_PARTICIPANTS = 3;
+const MAX_PARTICIPANTS = 48;
 const RETRY_INTERVAL = 3000;
 
 interface RoomCheckProps {
