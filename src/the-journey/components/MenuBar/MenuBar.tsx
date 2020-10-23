@@ -10,6 +10,7 @@ import { getRole } from '../../utils/twilio';
 import MuteAllButton from './MuteAllButton';
 import useFullScreenToggle from '../../../twilio/hooks/useFullScreenToggle/useFullScreenToggle';
 import DoorControls from './DoorControls/DoorControls';
+import DelayControl from './DelayControl';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +55,7 @@ export default function MenuBar({ extras }: MenuBarProps) {
           <div className={classes.rightButtonContainer}>
             { extras }
             { role === 'foh' && <DoorControls/> }
-            { role === 'operator' && roomStatus === 'connected' && <><GainControl/><MuteAllButton/></> }
+            { role === 'operator' && roomStatus === 'connected' && <><DelayControl/><GainControl/><MuteAllButton/></> }
             <ToggleFullscreenButton />
           </div>
         </Toolbar>

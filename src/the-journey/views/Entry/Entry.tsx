@@ -23,7 +23,6 @@ function RoomEntry({ test }: { test?: boolean }) {
 
   if (!room || roomStatus === 'disconnected') return <NameForm roomName={roomName}/>
 
-  console.debug('SAVING IDENTITY');
   const { identity } = room.localParticipant;
   sessionStorage.setItem('roomJoined', JSON.stringify({ identity, roomName }))
 

@@ -1,9 +1,12 @@
 import { RemoteAudioTrack } from 'twilio-video';
 import { difference } from 'lodash';
-import { DEFAULT_DELAY, DEFAULT_GAIN } from '../contexts/AudioStreamContext/AudioStreamContext';
 import { getAudioContext } from './audio';
+import { constrain } from './functional';
 
-const MAX_DELAY_TIME = 10;
+export const MAX_DELAY_TIME = 10;
+export const DEFAULT_GAIN = 0.8;
+export const DEFAULT_DELAY = 0;
+
 let delayTime = DEFAULT_DELAY;
 let gain = DEFAULT_GAIN;
 
@@ -79,15 +82,18 @@ function getGainNode(audioContext: AudioContext) {
   return gainNode;
 }
 
+export const getGain = () => gain;
+export const getDelayTime = () => delayTime;
+
 export function setGain(value: number) {
-  gain = value;
+  gain = constrain(0, 1)(value);
   Object.values(players).forEach((player) => {
     player.gainNode.gain.value = value;
   });
 }
 
 export function setDelayTime(value: number) {
-  delayTime = value;
+  delayTime = constrain(0, MAX_DELAY_TIME)(value);
   Object.values(players).forEach((player) => {
     player.delayNode.delayTime.value = value;
   });

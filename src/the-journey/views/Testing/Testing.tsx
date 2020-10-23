@@ -5,37 +5,26 @@ import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
 import { getLocalTracks, getRole, getTimestamp, getUsername } from '../../utils/twilio';
 import { DateTime } from 'luxon';
 import { Button } from '@material-ui/core';
-import AudioElement from './AudioElement';
-import AudioNode from './AudioNode2';
 import AutoJoin from '../../components/AutoJoin';
 import Subscribe from '../../subscribers/Subscribe';
-import CloningAudioNode from './CloningAudioNode';
+import { playTracks } from '../../utils/trackPlayer';
 
 let globalRoom: Room | undefined;
 
 interface UnmuteButtonsProps { track: RemoteAudioTrack | null }
 export function UnmuteButtons({ track }: UnmuteButtonsProps) {
-  const [elementMuted, setElementMuted] = useState(true);
-  const [nodeMuted, setNodeMuted] = useState(true);
-  const [cloningNodeMuted, setCloningNodeMuted] = useState(true);
+  const [muted, setMuted] = useState(true);
 
   return track
     ? (
-    <>
-      <Button onClick={() => setElementMuted(!elementMuted)} variant="outlined">
-        {`${elementMuted ? 'audio' : 'destroy'} element`}
+      <Button onClick={() => {
+        playTracks(muted ? [track] : []);
+        setMuted((prev) => !prev);
+      }}>
+        { muted ? 'play' : 'stop' }
       </Button>
-      <Button onClick={() => setNodeMuted(!nodeMuted)} variant="outlined">
-        {`${nodeMuted ? 'audio' : 'destroy'} node`}
-      </Button>
-      <Button onClick={() => setCloningNodeMuted(!cloningNodeMuted)} variant="outlined">
-        {`${cloningNodeMuted ? 'audio' : 'destroy'} cloning node`}
-      </Button>
-      { !elementMuted && <AudioElement track={track} /> }
-      { !nodeMuted && <AudioNode track={track} /> }
-      { !cloningNodeMuted && <CloningAudioNode track={track} /> }
-    </>
-    ) : <span>null track</span>;
+    )
+    : <span>null track</span>;
 }
 
 interface TestingParticipantProps { participant: Participant }

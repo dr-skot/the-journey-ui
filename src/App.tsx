@@ -7,8 +7,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import TwilioRoomContextProvider, { useTwilioRoomContext } from './the-journey/contexts/TwilioRoomContext';
 import { getUsername } from './the-journey/utils/twilio';
-import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext/AudioStreamContext';
-import FallbackToAudioElements from './the-journey/contexts/AudioStreamContext/FallbackToAudioElements';
+import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext';
 import AppStateContextProvider from './the-journey/contexts/AppStateContext';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
@@ -51,7 +50,6 @@ export function Twilio({ children }: { children: ReactNode }) {
       <TwilioRoomContextProvider>
         <NameHelmet/>
         <AudioStreamContextProvider>
-          <FallbackToAudioElements/>
           <AppStateContextProvider>
             <ReconnectingNotification />
             { children }
@@ -75,8 +73,6 @@ export default function App() {
             <Route path="/pop" component={PopulateDemo}/>
             <Route path="/min" component={TwilioMin}/>
             <Route path="/audio" component={AudioTest}/>
-            <Route path="/sender" component={Sender}/>
-            <Route path="/receiver" component={Receiver}/>
 
             <PrivateRoute path="/code" roles="foh|operator">
               <GetCode/>

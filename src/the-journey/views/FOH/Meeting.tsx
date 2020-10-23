@@ -7,7 +7,7 @@ import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import MenuedView from '../MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Controls from '../../components/Controls/Controls';
-import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
+import { AudioStreamContext } from '../../contexts/AudioStreamContext';
 import { useAppState } from '../../contexts/AppStateContext';
 import useChat from '../../hooks/useChat';
 type Identity = Participant.Identity;

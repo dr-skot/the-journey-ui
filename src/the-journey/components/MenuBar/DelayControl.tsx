@@ -1,39 +1,19 @@
-import React, { useCallback, useEffect } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import MinusIcon from '@material-ui/icons/RemoveCircle';
-import PlusIcon from '@material-ui/icons/AddCircle';
+import React from 'react';
 import { useAppState } from '../../contexts/AppStateContext';
-
-const valence = (x: number) => (x < 0 ? -1 : 1);
+import { TextField } from '@material-ui/core';
+import { MAX_DELAY_TIME } from '../../utils/trackPlayer';
 
 export default function DelayControl() {
   const [{ delayTime }, roomStateDispatch] = useAppState();
 
-  const bumpDelayTime = useCallback((bump: number) => {
-    roomStateDispatch('set', { delayTime: delayTime + bump });
-  }, [delayTime, roomStateDispatch])
-
-  useEffect(() => {
-    const handleKeys = (e: KeyboardEvent) => {
-      const bumpIndex = ['_-|=+'].indexOf(e.key) - 2 || -100;
-      if (bumpIndex < -2) return;
-      const bump = 1 / (10 ^ Math.abs(bumpIndex)) * valence(bumpIndex);
-      bumpDelayTime(bump);
-    }
-    document.addEventListener('keydown', handleKeys);
-    return () => document.removeEventListener('keydown', handleKeys);
-  }, [bumpDelayTime])
+  const setDelayTime = (e: any) => {
+    roomStateDispatch('set', { delayTime: e.target.value });
+  }
 
   return (
-  <>
-    delay
-    <IconButton aria-label="decrease delay" onClick={() => bumpDelayTime(-0.1)}>
-      <MinusIcon />
-    </IconButton>
-      {delayTime ? delayTime.toFixed(2) : 0}
-    <IconButton aria-label="increase delay" onClick={() => bumpDelayTime(0.1)}>
-       <PlusIcon />
-    </IconButton>
-  </>
+    <TextField type="number" inputProps={{ min: 0, max: 9.9, step: 0.1 }}
+               label="delay" variant="outlined" size="small"
+               value={delayTime} onChange={setDelayTime}
+    />
   );
 }

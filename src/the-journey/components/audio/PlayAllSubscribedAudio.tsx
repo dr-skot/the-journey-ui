@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { getIdentities } from '../../utils/twilio';
-import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
+import { AudioStreamContext } from '../../contexts/AudioStreamContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 
 export default function PlayAllSubscribedAudio() {

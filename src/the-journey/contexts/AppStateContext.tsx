@@ -1,12 +1,13 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { createContext, ReactNode, useEffect } from 'react';
 import { Participant } from 'twilio-video';
-import { AudioStreamContext, DEFAULT_DELAY, DEFAULT_GAIN } from './AudioStreamContext/AudioStreamContext';
+import { AudioStreamContext } from './AudioStreamContext';
 import { TwilioRoomContext } from './TwilioRoomContext';
 import { cached, isDev } from '../utils/react-help';
 import RobustWebSocket from '../network/robust-web-socket';
 import useRoomName from '../hooks/useRoomName';
 import { DEFAULT_DOOR_POLICY } from '../utils/foh';
+import { DEFAULT_DELAY, DEFAULT_GAIN } from '../utils/trackPlayer';
 type Identity = Participant.Identity;
 export type Group = Identity[];
 

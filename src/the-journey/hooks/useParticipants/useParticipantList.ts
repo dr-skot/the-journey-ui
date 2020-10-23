@@ -8,6 +8,7 @@ export default function useParticipantList(roomName: string, retryTimeout: numbe
 
   useEffect(() => {
     const update = () => { getParticipantList(roomName).then(setList) };
+    update();
     const intervalId = setInterval(update, retryTimeout);
     return () => clearInterval(intervalId);
   }, [roomName, retryTimeout, setList]);

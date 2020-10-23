@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { AudioStreamContext } from '../../contexts/AudioStreamContext/AudioStreamContext';
+import { AudioStreamContext } from '../../contexts/AudioStreamContext';
 import { cached } from '../../utils/react-help';
 import { difference } from 'lodash';
 import { useAppState } from '../../contexts/AppStateContext';

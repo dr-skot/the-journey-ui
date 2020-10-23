@@ -3,8 +3,7 @@ import { joinRoom } from '../../utils/twilio';
 import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
 import { Button, TextField } from '@material-ui/core';
 import { getAudioContext } from '../../utils/audio';
-import { playTracks, setDelayTime } from '../../utils/trackPlayer';
-import { DEFAULT_DELAY } from '../../contexts/AudioStreamContext/AudioStreamContext';
+import { DEFAULT_DELAY, playTracks, setDelayTime } from '../../utils/trackPlayer';
 
 export default function Receiver() {
   const [room, setRoom] = useState<Room>();
