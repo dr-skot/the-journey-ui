@@ -73,6 +73,8 @@ export default function App() {
             <Route path="/pop" component={PopulateDemo}/>
             <Route path="/min" component={TwilioMin}/>
             <Route path="/audio" component={AudioTest}/>
+            <Route path="/sender" component={Sender}/>
+            <Route path="/receiver" component={Receiver}/>
 
             <PrivateRoute path="/code" roles="foh|operator">
               <GetCode/>
