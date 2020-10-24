@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { joinRoom } from '../../utils/twilio';
-import { Participant, RemoteAudioTrack, Room } from 'twilio-video';
+import { getLocalTracks, joinRoom } from '../../utils/twilio';
+import { Participant, Room } from 'twilio-video';
 import { Button, TextField } from '@material-ui/core';
-import { getAudioContext } from '../../utils/audio';
 import { DEFAULT_DELAY, playTracks, setDelayTime } from '../../utils/trackPlayer';
+
 
 export default function Receiver() {
   const [room, setRoom] = useState<Room>();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [playing, setPlaying] = useState(false);
   const [delayValue, setDelayValue] = useState(DEFAULT_DELAY);
+
+  useEffect(() => {
+    getLocalTracks();
+  }, [])
+
+  const togglePlaying = (p: Participant) => {
+    if (!p.audioTracks?.values()?.next()?.value) return;
+    console.log('toggle playing!');
+    setPlaying((prev) => {
+      console.log('playing?', prev);
+      playTracks(prev ? [] : [p.audioTracks.values().next().value.track]);
+      return !prev;
+    })
+  }
 
   useEffect(() => {
     joinRoom('audio-test', 'receiver', { automaticSubscription: true })
@@ -26,7 +40,7 @@ export default function Receiver() {
       room.off('participantConnected', update);
       room.off('participantDisconnected', update);
     }
-  }, [room])
+  }, [room]);
 
     return <>
     <h1>Reciever</h1>
@@ -43,41 +57,10 @@ export default function Receiver() {
       <div key={p.identity}>
         <p>{ p.identity }</p>
         <Button onClick={() => {
-          playTracks(playing ? [] : [p.audioTracks.values().next().value.track]);
-          setPlaying((prev) => !prev);
+          // togglePlaying(p);
+          setInterval(() => togglePlaying(p), 3000);
         }}>{ playing ? 'stop' : 'play' }</Button>
       </div>
     ))}
   </>;
-}
-
-
-function playWithAudioContext(track: RemoteAudioTrack) {
-  getAudioContext().then((audioContext) => {
-    // create a media stream source using the track
-    const stream = new MediaStream([track.mediaStreamTrack])
-    const node = audioContext.createMediaStreamSource(stream);
-    console.debug('node created', node);
-
-    // create a media stream destination in the audio context
-    const destination = audioContext.createMediaStreamDestination();
-    const delayNode = audioContext.createDelay(10);
-    delayNode.delayTime.value = 2;
-
-    delayNode.connect(destination);
-    node.connect(delayNode);
-
-    console.debug('connected to delayNode', delayNode);
-    console.debug('connected to destination', destination);
-
-    // set the destination's MediaStream as the audio element's srcObject
-    const audio = document.createElement('audio');
-    audio.srcObject = destination.stream;
-    audio.autoplay = true;
-    console.debug('attached to audio', audio);
-
-    // add audio element to document
-    document.body.appendChild(audio);
-    console.log('added to document');
-  });
 }
