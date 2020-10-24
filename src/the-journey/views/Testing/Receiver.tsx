@@ -11,9 +11,11 @@ export default function Receiver() {
   const [playing, setPlaying] = useState(false);
   const [delayValue, setDelayValue] = useState(DEFAULT_DELAY);
 
+  /*
   useEffect(() => {
     getLocalTracks();
   }, [])
+   */
 
   const togglePlaying = (p: Participant) => {
     if (!p.audioTracks?.values()?.next()?.value) return;
