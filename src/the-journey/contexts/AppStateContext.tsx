@@ -7,7 +7,7 @@ import { cached, isDev } from '../utils/react-help';
 import RobustWebSocket from '../network/robust-web-socket';
 import useRoomName from '../hooks/useRoomName';
 import { DEFAULT_DOOR_POLICY } from '../utils/foh';
-import { DEFAULT_DELAY, DEFAULT_GAIN } from '../utils/trackPlayer';
+import { DEFAULT_DELAY, DEFAULT_GAIN } from '../utils/AudioOut';
 type Identity = Participant.Identity;
 export type Group = Identity[];
 

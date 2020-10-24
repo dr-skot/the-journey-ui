@@ -32,7 +32,7 @@ export interface SettingsAdjust {
 const DEFAULT_OPTIONS = {
   tracks: [],
   automaticSubscription: false,
-  // logLevel: 'debug' as LogLevel,
+  logLevel: 'warn' as LogLevel, // the default
 }
 
 export function getToken(roomName: string, identity: string) {

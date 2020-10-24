@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { getLocalTracks, joinRoom } from '../../utils/twilio';
+import { joinRoom } from '../../utils/twilio';
 import { Participant, Room } from 'twilio-video';
 import { Button, TextField } from '@material-ui/core';
-import { DEFAULT_DELAY, playTracks, setDelayTime } from '../../utils/trackPlayer';
+import { playTracks } from '../../utils/trackPlayer';
+import { DEFAULT_DELAY, setDelayTime } from '../../utils/AudioOut';
 
 
 export default function Receiver() {
@@ -10,12 +11,6 @@ export default function Receiver() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [playing, setPlaying] = useState(false);
   const [delayValue, setDelayValue] = useState(DEFAULT_DELAY);
-
-  /*
-  useEffect(() => {
-    getLocalTracks();
-  }, [])
-   */
 
   const togglePlaying = (p: Participant) => {
     if (!p.audioTracks?.values()?.next()?.value) return;

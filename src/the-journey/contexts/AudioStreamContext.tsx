@@ -2,8 +2,9 @@ import React, { createContext, ReactNode, useCallback, useEffect, useState } fro
 import { isEqual, pick, values, flatMap } from 'lodash';
 import { Participant, RemoteAudioTrack } from 'twilio-video';
 import { cached } from '../utils/react-help';
-import { getDelayTime, getGain, playTracks, setDelayTime, setGain } from '../utils/trackPlayer';
+import { playTracks } from '../utils/trackPlayer';
 import useRemoteTracks from '../hooks/useRemoteTracks';
+import { getDelayTime, getGain, setDelayTime, setGain } from '../utils/AudioOut';
 
 type Identity = Participant.Identity;
 
