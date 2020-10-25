@@ -1,12 +1,10 @@
+const gestures = ['touchstart', 'click', 'keydown'];
+
 export default function onNextGesture(callback: EventListener) {
-  const listenerTypes = ['touchstart', 'click', 'keydown'];
-  const callbackOnce = (event: Event) => {
-    listenerTypes.forEach((type) => {
-      document.removeEventListener(type, callbackOnce);
+  gestures.forEach((type) => {
+    window.addEventListener(type, function handler(event: Event) {
+      gestures.forEach((type) => window.removeEventListener(type, handler));
+      callback(event);
     });
-    callback(event);
-  }
-  listenerTypes.forEach((type) => {
-    document.addEventListener(type, callbackOnce, { once: true });
   });
 }

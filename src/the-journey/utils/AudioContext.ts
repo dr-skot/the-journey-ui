@@ -12,7 +12,7 @@ export function getAudioContext() : Promise<AudioContext> {
   if (!AUDIO_CONTEXT_SUPPORTED) return Promise.reject(new Error('AudioContext not supported'));
   audioContext = audioContext || (AudioContext && new AudioContext());
   if (audioContext && !contextAcquisitionReported) {
-    console.log('got AudioContext');
+    console.debug('AudioContext acquired');
     contextAcquisitionReported = true;
   }
   if (audioContext) return Promise.resolve(audioContext);

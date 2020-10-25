@@ -50,7 +50,7 @@ export function getAudioOut(): Promise<AudioOut> {
 
 function initializeAudioOut(audioContext: AudioContext) {
   if (audioOut) return audioOut;
-  console.debug('initializing audio out');
+  console.debug('AudioOut: initializing');
   const channelMergerNode = audioContext.createChannelMerger(MAX_INPUTS);
   const delayNode = audioContext.createDelay(MAX_DELAY_TIME);
   const gainNode = audioContext.createGain();
@@ -63,17 +63,12 @@ function initializeAudioOut(audioContext: AudioContext) {
   channelMergerNode.connect(delayNode).connect(gainNode).connect(destination);
 
   audioElement.srcObject = destination.stream;
-  // audioElement.autoplay = true;
-  console.debug('attached to audio', audioElement);
-
-  // add audio element to document
   document.body.appendChild(audioElement);
-  console.log('added to document');
 
   audioElement.play().then(() => {
-    console.debug('audio element playing');
+    console.debug('AudioOut: element is playing', audioElement);
   }).catch((error) => {
-    console.error('didn’t play', error);
+    console.error('AudioOut: element didn’t play', error);
   })
 
   audioOut = {

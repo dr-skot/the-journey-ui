@@ -61,11 +61,11 @@ export default function Millicast() {
     }
   }, [onVideoReady, onError]);
 
-  const needButton = player && (player.muted || player.paused) && (!buttonClicked);
+  // TODO for this to stay up-to-date, player, muted, paused need to be state variables
+  const needButton = player && (player.muted || player.paused) && !buttonClicked;
 
   const finalTouches = (e: any) => {
     e.preventDefault();
-    e.stopPropagation();
     if (player) {
       // player.controls = false;
       player.muted = false;
@@ -95,7 +95,7 @@ export default function Millicast() {
         </CenteredInWindow>
       ) }
       { isFirefox && <ClickBlocker onClick={(e) => {
-        console.log('click blocker!');
+        console.warn('click blocked!');
         e.stopPropagation()
       }} /> }
       { loading && !error && (
