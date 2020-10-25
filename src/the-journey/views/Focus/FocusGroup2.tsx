@@ -8,7 +8,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import MenuedView from '../MenuedView';
 import WithFacts from '../Facts/WithFacts';
-import FocusGroupAudio from '../../components/audio/FocusGroupAudio';
+import PlayFocusGroupAudio from '../../components/audio/PlayFocusGroupAudio';
 import useRerenderOnTrackSubscribed from '../../hooks/useRerenderOnTrackSubscribed';
 import Subscribe from '../../subscribers/Subscribe';
 
@@ -32,7 +32,7 @@ function FocusGroupView() {
 export default function FocusGroup2() {
   return (
     <>
-      <FocusGroupAudio/>
+      <PlayFocusGroupAudio/>
       <WithFacts>
         <FocusGroupView />
       </WithFacts>

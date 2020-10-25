@@ -86,3 +86,5 @@ function initializeAudioOut(audioContext: AudioContext) {
 
   return audioOut;
 }
+
+getAudioOut();

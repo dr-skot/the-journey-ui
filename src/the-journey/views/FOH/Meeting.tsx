@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { sortBy } from 'lodash';
 import { Participant } from 'twilio-video';
 import { inGroup, isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
-import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import MenuedView from '../MenuedView';
 import FlexibleGallery from '../Gallery/FlexibleGallery';
 import Controls from '../../components/Controls/Controls';

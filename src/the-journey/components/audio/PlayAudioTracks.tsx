@@ -4,7 +4,7 @@ import { DEFAULT_DELAY, DEFAULT_GAIN, setDelayTime, setGain } from '../../utils/
 import { playTracks } from '../../utils/trackPlayer';
 import useRemoteTracks from '../../hooks/useRemoteTracks';
 import { RemoteAudioTrack, Participant } from 'twilio-video';
-import { pick, keys, values, flatMap } from 'lodash';
+import { pick, values, flatMap } from 'lodash';
 
 interface PlayAudioTracksProps {
   group?: Participant.Identity[],
@@ -27,7 +27,7 @@ export default function PlayAudioTracks({ group, controlled }: PlayAudioTracksPr
     let selection = group ? pick(trackMap, group) : trackMap;
     console.log('PlayAudioTracks.selection', selection);
     playTracks(controlled && muteAll ? [] : flatMap(values(selection)));
-  }, [trackMap, group, muteAll]);
+  }, [group, controlled, trackMap, muteAll]);
 
   return null;
 }
