@@ -7,7 +7,7 @@ import FlexibleGallery from '../../Gallery/FlexibleGallery';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import SubscribeToFocusGroupAudioAndStar from '../../../subscribers/SubscribeToFocusGroupAudioAndStar';
 import WithFacts from '../../Facts/WithFacts';
-import PlayAllSubscribedAudio from '../../../components/audio/PlayAllSubscribedAudio';
+import PlayAudioTracks from '../../../components/audio/PlayAudioTracks';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -26,7 +26,7 @@ export default function Broadcast() {
 
   return <>
     <SubscribeToFocusGroupAudioAndStar/>
-    <PlayAllSubscribedAudio/>
+    <PlayAudioTracks controlled/>
     <WithFacts>
       <Container>
         <Main>

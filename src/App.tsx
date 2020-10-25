@@ -7,7 +7,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import TwilioRoomContextProvider, { useTwilioRoomContext } from './the-journey/contexts/TwilioRoomContext';
 import { getUsername } from './the-journey/utils/twilio';
-import AudioStreamContextProvider from './the-journey/contexts/AudioStreamContext';
 import AppStateContextProvider from './the-journey/contexts/AppStateContext';
 import AutoJoin from './the-journey/components/AutoJoin';
 import GetCode from './the-journey/views/FOH/GetCode';
@@ -49,12 +48,10 @@ export function Twilio({ children }: { children: ReactNode }) {
     <UnsupportedBrowserWarning>
       <TwilioRoomContextProvider>
         <NameHelmet/>
-        <AudioStreamContextProvider>
           <AppStateContextProvider>
             <ReconnectingNotification />
             { children }
           </AppStateContextProvider>
-        </AudioStreamContextProvider>
       </TwilioRoomContextProvider>
     </UnsupportedBrowserWarning>
   );

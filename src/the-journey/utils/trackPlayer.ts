@@ -26,6 +26,7 @@ export function playTracks(tracks: RemoteAudioTrack[]) {
 }
 
 function addChannel(track: RemoteAudioTrack) {
+  if (!track?.mediaStreamTrack?.clone) return;
   getAudioOut().then((audioOut) => {
     // create a media stream source using the track
     const stream = new MediaStream([track.mediaStreamTrack.clone()])

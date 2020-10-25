@@ -1,17 +1,17 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { useTwilioRoomContext } from '../../contexts/TwilioRoomContext';
 import SignIn from './SignIn';
 import Meeting from './Meeting';
 import useMeeting from '../../hooks/useMeeting';
 import WithFacts from '../Facts/WithFacts';
 import MenuedView from '../MenuedView';
-import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
 import { isRole } from '../../utils/twilio';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import FlexibleGallery, { GALLERY_SIZE } from '../Gallery/FlexibleGallery';
 import Subscribe from '../../subscribers/Subscribe';
 import useRoomName from '../../hooks/useRoomName';
 import useChat from '../../hooks/useChat';
+import PlayAudioTracks from '../../components/audio/PlayAudioTracks';
 
 export default function FOH() {
   const [{ roomStatus }] = useTwilioRoomContext();
@@ -25,27 +25,18 @@ export default function FOH() {
 
 function FOHView() {
   const { meeting } = useMeeting();
-
   const chat = useChat('foh');
 
-  return (
-    <>
-      <PlayAllSubscribedAudio />
-      { meeting ? <Meeting group={meeting} /> : <FOHGallery chat={chat} /> }
-    </>
-  );
+  return meeting ? <Meeting group={meeting} /> : <FOHGallery chat={chat} />;
 }
 
 function FOHGallery({ chat }: { chat: ReactNode }) {
-  const [, dispatch] = useTwilioRoomContext();
-
-  // initialize by subscribing to gallery
+  // initialize by subscribing to data only
   // FOH controls may punch in to audio and video feeds
-  useEffect(() => dispatch('subscribe', { profile: 'data-only' }), [dispatch])
-
   return (
     <WithFacts>
       <Subscribe profile="data-only" />
+      <PlayAudioTracks/>
       <MenuedView>
         <Gallery />
         { chat }

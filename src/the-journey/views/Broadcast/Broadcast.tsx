@@ -7,7 +7,7 @@ import HelpIsComingNotification from '../Entry/components/HelpIsComingNotificati
 import { useAppState } from '../../contexts/AppStateContext';
 import SubscribeToFocusGroupAudioMinusMutedMinusRoommates
   from '../../subscribers/SubscribeToFocusGroupAudioMinusMutedMinusRoommates';
-import PlayAllSubscribedAudio from '../../components/audio/PlayAllSubscribedAudio';
+import PlayAudioTracks from '../../components/audio/PlayAudioTracks';
 
 const Container = styled('div')(() => ({
   position: 'relative',
@@ -26,7 +26,7 @@ export default function Broadcast() {
 
   return <>
     <SubscribeToFocusGroupAudioMinusMutedMinusRoommates/>
-    <PlayAllSubscribedAudio/>
+    <PlayAudioTracks controlled/>
     <HighPriorityInFocusGroup/>
       <Container>
         <Main>

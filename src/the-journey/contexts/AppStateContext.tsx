@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { createContext, ReactNode, useEffect } from 'react';
 import { Participant } from 'twilio-video';
-import { AudioStreamContext } from './AudioStreamContext';
 import { TwilioRoomContext } from './TwilioRoomContext';
 import { cached, isDev } from '../utils/react-help';
 import RobustWebSocket from '../network/robust-web-socket';
@@ -73,7 +72,6 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
   const [{ room }] = useContext(TwilioRoomContext);
   const roomName = useRoomName();
   const [appState, setAppState] = useState<AppState>(initialState);
-  const { setGain, setDelayTime, setMuteAll } = useContext(AudioStreamContext);
   const me = room?.localParticipant.identity;
 
   // relay dispatch actions to server
@@ -111,14 +109,6 @@ export default function AppStateContextProvider({ children }: ProviderProps) {
       room.on('disconnected', () => dispatch('leaveRoom'));
     }
   }, [room, dispatch]);
-
-  // wire gain and delayTime to the audio streams
-  useEffect(() => { setGain(appState.gain) },
-    [appState.gain, setGain]);
-  useEffect(() => { setDelayTime(appState.delayTime) },
-    [appState.delayTime, setDelayTime]);
-  useEffect(() => { setMuteAll(appState.muteAll) },
-    [appState.muteAll, setMuteAll]);
 
   const cachedIfEqual = (propName: keyof AppState) =>
     cached(`RoomState.${propName}`).ifEqual(appState[propName])
